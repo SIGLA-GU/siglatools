@@ -44,7 +44,9 @@ class Example(object):
         Check that the value is an integer. If not, raises a ValueError.
         """
         if not isinstance(val, int):
-            raise ValueError(f"Provided value: {val} (type: {type(val)}, is not an integer.)")
+            raise ValueError(
+                f"Provided value: {val} (type: {type(val)}, is not an integer.)"
+            )
 
     def __init__(self, init_value: int = 10):
         # Check initial value

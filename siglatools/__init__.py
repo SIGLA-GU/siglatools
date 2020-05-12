@@ -13,4 +13,3 @@ from .example import Example  # noqa: F401
 
 def get_module_version():
     return __version__
-
