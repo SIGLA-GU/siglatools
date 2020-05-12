@@ -1,0 +1,26 @@
+name: Run Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron:  '*/5 * * * *'
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install .[all]
+    - name: Run Pipeline
+      run: |
+        my_example -f 1 -s 2
+
