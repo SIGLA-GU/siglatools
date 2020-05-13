@@ -44,7 +44,10 @@ interactive_requirements = [
     "matplotlib",
 ]
 
-requirements = []
+requirements = [
+    "gspread",
+    "oauth2client"
+]
 
 extra_requirements = {
     "test": test_requirements,
