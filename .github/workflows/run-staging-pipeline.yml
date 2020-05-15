@@ -1,0 +1,28 @@
+name: Run Staging Pipeline
+
+on:
+  repository_dispatch:
+    types: run-staging-pipeline
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: '0 7 * * 0'
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install .[all]
+    - name: Run Staging Pipeline
+      run: |
+        my_example -ce ${{ secrets.GA_CLIENT_EMAIL }} -ci ${{ secrets.GA_CLIENT_ID }} -ccu ${{ secrets.GA_CLIENT_CERT_URL }} -pk ${{ secrets.GA_PRIVATE_KEY }} -pki ${{ secrets.GA_PRIVATE_KEY_ID }} -pi ${{ secrets.GA_PROJECT_ID }}
+
