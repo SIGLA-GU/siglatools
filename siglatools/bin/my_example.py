@@ -131,7 +131,7 @@ def main():
             },
             scopes=scopes,
         )
-        service = build("sheets", "v4", credentials=creds)
+        service = build("sheets", "v4", credentials=creds, cache_discovery=False)
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY",
                                     range="Presidency Template!A1:A4").execute()
