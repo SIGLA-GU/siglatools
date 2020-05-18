@@ -26,7 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
       run: |
-        python -m pip install --upgrade pip
+        pip install --upgrade pip setuptools wheel
         pip install .[all]
     - name: Test with pytest
       run: |
@@ -44,8 +44,8 @@ jobs:
         python-version: 3.7
     - name: Install Dependencies
       run: |
-        python -m pip install --upgrade pip
+        pip install --upgrade pip setuptools wheel
         pip install .[test]
     - name: Lint with flake8
       run: |
-        flake8 siglatools --count --verbose --max-line-length=127 --show-source --statistics
+        flake8 siglatools --count --verbose --max-line-length=120 --show-source --statistics
