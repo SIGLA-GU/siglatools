@@ -137,10 +137,10 @@ def main():
                                     range="Presidency Template!A1:A4").execute()
         rows = result.get("values", [])
         print(rows)
-        with MongoClient(args.db_connection_url) as client:
-            db = client.admin
-            serverStatusResult = db.command("serverStatus")
-            print(serverStatusResult)
+        client = MongoClient(args.db_connection_url)
+        db = client.admin
+        serverStatusResult = db.command("serverStatus")
+        print(serverStatusResult)
         print("done")
     except Exception as e:
         log.error("=============================================")
