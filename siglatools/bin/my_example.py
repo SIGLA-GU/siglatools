@@ -11,9 +11,9 @@ import logging
 import sys
 import traceback
 
-from googleapiclient.discovery import build
 from google.oauth2 import service_account
-# from pymongo import MongoClient
+from googleapiclient.discovery import build
+from pymongo import MongoClient
 
 from siglatools import get_module_version
 
@@ -137,10 +137,10 @@ def main():
                                     range="Presidency Template!A1:A4").execute()
         rows = result.get("values", [])
         print(rows)
-        # client = MongoClient(args.db_connection_url)
-        # db = client.admin
-        # serverStatusResult = db.command("serverStatus")
-        # print(serverStatusResult)
+        client = MongoClient(args.db_connection_url)
+        db = client.admin
+        serverStatusResult = db.command("serverStatus")
+        print(serverStatusResult)
     except Exception as e:
         log.error("=============================================")
         if dbg:
