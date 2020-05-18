@@ -107,3 +107,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Editor stuff
+.vscode
