@@ -1,0 +1,22 @@
+siglatools.bin package
+======================
+
+Submodules
+----------
+
+siglatools.bin.my\_example module
+---------------------------------
+
+.. automodule:: siglatools.bin.my_example
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools.bin
+   :members:
+   :undoc-members:
+   :show-inheritance:

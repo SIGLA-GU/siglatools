@@ -1,0 +1,29 @@
+siglatools package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+
+   siglatools.bin
+
+Submodules
+----------
+
+siglatools.example module
+-------------------------
+
+.. automodule:: siglatools.example
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools
+   :members:
+   :undoc-members:
+   :show-inheritance:
