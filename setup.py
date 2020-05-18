@@ -9,7 +9,6 @@ with open("README.md") as readme_file:
     readme = readme_file.read()
 
 test_requirements = [
-    "codecov",
     "flake8",
     "black",
     "pytest",

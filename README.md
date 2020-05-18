@@ -2,7 +2,6 @@
 
 [![Build Status](https://github.com/tohuynh/siglatools/workflows/Build%20Master/badge.svg)](https://github.com/tohuynh/siglatools/actions)
 [![Documentation](https://github.com/tohuynh/siglatools/workflows/Documentation/badge.svg)](https://tohuynh.github.io/siglatools)
-[![Code Coverage](https://codecov.io/gh/tohuynh/siglatools/branch/master/graph/badge.svg)](https://codecov.io/gh/tohuynh/siglatools)
 
 Python Boilerplate contains all the boilerplate you need to create a Python package.
 
