@@ -45,8 +45,10 @@ interactive_requirements = [
 ]
 
 requirements = [
-    "gspread",
-    "oauth2client"
+    "google-api-python-client",
+    "google-auth",
+    "pymongo",
+    "dnspython"
 ]
 
 extra_requirements = {
