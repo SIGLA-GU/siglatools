@@ -14,6 +14,7 @@ import traceback
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 from siglatools import get_module_version
 
@@ -132,16 +133,26 @@ def main():
             scopes=scopes,
         )
         service = build("sheets", "v4", credentials=creds, cache_discovery=False)
-        sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY",
-                                    range="Presidency Template!A1:A4").execute()
-        rows = result.get("values", [])
-        print(rows)
-        client = MongoClient(args.db_connection_url)
-        db = client.admin
-        serverStatusResult = db.command("serverStatus")
-        print(serverStatusResult)
-        print("done")
+        request = service.spreadsheets().get(spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY", ranges=[])
+        response = request.execute()
+        # titles = [sheet["properties"]["title"] for sheet in response["sheets"]]
+        print(response)
+        result = service.spreadsheets().values().batchGet(
+            spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY",
+            ranges=["Presidency Template!A1:A4", "Codes Template!A1:A4"],
+            majorDimension="COLUMNS").execute()
+        # rows = result.get("value", [])
+        ranges = result.get("valueRanges", [])
+        # print(rows)
+        print(ranges)
+        print("new changes")
+        '''client = MongoClient(args.db_connection_url)
+        db = client["sigla-staging-db"]
+        insti = db.insititutions
+        insti.update_one(
+            {"_id": ObjectId("5ec44b9667056b34e3a17334")},
+            {"$set": {rows[0][0]: rows[1][0]}}
+        )'''
     except Exception as e:
         log.error("=============================================")
         if dbg:
