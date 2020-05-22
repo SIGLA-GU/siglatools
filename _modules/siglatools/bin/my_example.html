@@ -188,11 +188,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 
-<span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>
-<span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
-<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span>
-<span class="kn">from</span> <span class="nn">bson.objectid</span> <span class="kn">import</span> <span class="n">ObjectId</span>
-
 <span class="kn">from</span> <span class="nn">siglatools</span> <span class="kn">import</span> <span class="n">get_module_version</span>
 
 <span class="c1">###############################################################################</span>
@@ -291,45 +286,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">()</span>
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
-        <span class="n">scopes</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;https://www.googleapis.com/auth/spreadsheets&quot;</span>
-        <span class="p">]</span>
-        <span class="n">creds</span> <span class="o">=</span> <span class="n">service_account</span><span class="o">.</span><span class="n">Credentials</span><span class="o">.</span><span class="n">from_service_account_info</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;service_account&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">project_id</span><span class="p">,</span>
-                <span class="s2">&quot;private_key_id&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">private_key_id</span><span class="p">,</span>
-                <span class="s2">&quot;private_key&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span>
-                <span class="s2">&quot;client_email&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">client_email</span><span class="p">,</span>
-                <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
-                <span class="s2">&quot;auth_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;https://accounts.google.com/o/oauth2/auth&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;token_uri&quot;</span><span class="p">:</span> <span class="s2">&quot;https://oauth2.googleapis.com/token&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;auth_provider_x509_cert_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.googleapis.com/oauth2/v1/certs&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;client_x509_cert_url&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">client_cert_url</span><span class="p">,</span>
-            <span class="p">},</span>
-            <span class="n">scopes</span><span class="o">=</span><span class="n">scopes</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">service</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s2">&quot;sheets&quot;</span><span class="p">,</span> <span class="s2">&quot;v4&quot;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">creds</span><span class="p">,</span> <span class="n">cache_discovery</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spreadsheetId</span><span class="o">=</span><span class="s2">&quot;1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY&quot;</span><span class="p">,</span> <span class="n">ranges</span><span class="o">=</span><span class="p">[])</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="c1"># titles = [sheet[&quot;properties&quot;][&quot;title&quot;] for sheet in response[&quot;sheets&quot;]]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
-            <span class="n">spreadsheetId</span><span class="o">=</span><span class="s2">&quot;1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY&quot;</span><span class="p">,</span>
-            <span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Presidency Template!A1:A4&quot;</span><span class="p">,</span> <span class="s2">&quot;Codes Template!A1:A4&quot;</span><span class="p">],</span>
-            <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="c1"># rows = result.get(&quot;value&quot;, [])</span>
-        <span class="n">ranges</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="c1"># print(rows)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;new changes pr&quot;</span><span class="p">)</span>
-        <span class="sd">&#39;&#39;&#39;client = MongoClient(args.db_connection_url)</span>
-<span class="sd">        db = client[&quot;sigla-staging-db&quot;]</span>
-<span class="sd">        insti = db.insititutions</span>
-<span class="sd">        insti.update_one(</span>
-<span class="sd">            {&quot;_id&quot;: ObjectId(&quot;5ec44b9667056b34e3a17334&quot;)},</span>
-<span class="sd">            {&quot;$set&quot;: {rows[0][0]: rows[1][0]}}</span>
-<span class="sd">        )&#39;&#39;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;running pipeline&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;=============================================&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dbg</span><span class="p">:</span>
