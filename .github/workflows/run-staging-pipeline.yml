@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.issue.labels.*.name, 'Run Staging Pipeline')
     steps:
+    - name: Dump GitHub repository context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github.repository) }}
+      run: echo "$GITHUB_CONTEXT"
     - uses: actions/checkout@v1
     - name: Set up Python
       uses: actions/setup-python@v1
