@@ -14,13 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.issue.labels.*.name, 'Run Staging Pipeline')
     steps:
-    - name: Dump GitHub repository context
+    - name: Dump GitHub context
       env:
-        GITHUB_CONTEXT: ${{ toJson(github.repository.owner.login) }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT"
+    - name: Dump GitHub repo context
+      env:
+        GITHUB_REPO: ${{ toJson(github.repository) }}
+      run: echo "$GITHUB_REPO"
+    - name: Dump GitHub owner context
+      env:
+        GITHUB_OWNER: ${{ toJson(github.repository.owner) }}
+      run: echo "$GITHUB_OWNER"
     - name: Dump GitHub actor context
       env:
-        GITHUB_ACTOR: ${{ toJson(github.actor.login) }}
+        GITHUB_ACTOR: ${{ toJson(github.actor) }}
       run: echo "$GITHUB_ACTOR"
     - uses: actions/checkout@v1
     - name: Set up Python
