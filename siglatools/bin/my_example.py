@@ -11,11 +11,6 @@ import logging
 import sys
 import traceback
 
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from pymongo import MongoClient
-from bson.objectid import ObjectId
-
 from siglatools import get_module_version
 
 ###############################################################################
@@ -114,45 +109,7 @@ def main():
     try:
         args = Args()
         dbg = args.debug
-        scopes = [
-            "https://www.googleapis.com/auth/spreadsheets"
-        ]
-        creds = service_account.Credentials.from_service_account_info(
-            {
-                "type": "service_account",
-                "project_id": args.project_id,
-                "private_key_id": args.private_key_id,
-                "private_key": args.private_key,
-                "client_email": args.client_email,
-                "client_id": args.client_id,
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "client_x509_cert_url": args.client_cert_url,
-            },
-            scopes=scopes,
-        )
-        service = build("sheets", "v4", credentials=creds, cache_discovery=False)
-        request = service.spreadsheets().get(spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY", ranges=[])
-        response = request.execute()
-        # titles = [sheet["properties"]["title"] for sheet in response["sheets"]]
-        print(response)
-        result = service.spreadsheets().values().batchGet(
-            spreadsheetId="1370tkp5r7_pg_8Z3uHzd-8FmjSrWxBqWLoP5pIY0PeY",
-            ranges=["Presidency Template!A1:A4", "Codes Template!A1:A4"],
-            majorDimension="COLUMNS").execute()
-        # rows = result.get("value", [])
-        ranges = result.get("valueRanges", [])
-        # print(rows)
-        print(ranges)
-        print("new changes pr")
-        '''client = MongoClient(args.db_connection_url)
-        db = client["sigla-staging-db"]
-        insti = db.insititutions
-        insti.update_one(
-            {"_id": ObjectId("5ec44b9667056b34e3a17334")},
-            {"$set": {rows[0][0]: rows[1][0]}}
-        )'''
+        print("running pipeline")
     except Exception as e:
         log.error("=============================================")
         if dbg:
