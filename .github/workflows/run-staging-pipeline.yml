@@ -1,8 +1,8 @@
 name: Run Staging Pipeline
 
 on:
-  repository_dispatch:
-    types: run-staging-pipeline
+  issues:
+    types: [opened]
   pull_request:
     branches:
       - master
@@ -12,6 +12,7 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'Run Staging Pipeline')
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python
