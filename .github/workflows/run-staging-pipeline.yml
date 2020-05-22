@@ -10,7 +10,8 @@ on:
     - cron: '0 7 * * 0'
 
 jobs:
-  authorization:
+  authorization_and_correct_label:
+    if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
     runs-on: ubuntu-latest
     steps:
     - name: Authorization check
@@ -21,9 +22,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pipeline:
-    needs: [authorization]
+    needs: [authorization_and_correct_label]
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python
