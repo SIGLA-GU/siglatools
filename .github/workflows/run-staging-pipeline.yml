@@ -10,19 +10,22 @@ on:
     - cron: '0 7 * * 0'
 
 jobs:
-  pipeline:
+  authorize:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
     steps:
-    - uses: octokit/request-action@v2.0.0
-      id: collaborator_check
+    - name: Authorization check
+      uses: octokit/request-action@v2.0.0
       with:
         route: GET /repos/:repository/collaborators/${{ github.actor }}
         repository: ${{ github.repository }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  pipeline:
+    needs: [authorize]
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
+    steps:
     - uses: actions/checkout@v1
-      if: ${{ github.actor == github.repository_owner || steps.collaborator_check.outcome == 'success' }}
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
