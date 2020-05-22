@@ -145,7 +145,7 @@ def main():
         ranges = result.get("valueRanges", [])
         # print(rows)
         print(ranges)
-        print("new changes")
+        print("new changes pr")
         '''client = MongoClient(args.db_connection_url)
         db = client["sigla-staging-db"]
         insti = db.insititutions
