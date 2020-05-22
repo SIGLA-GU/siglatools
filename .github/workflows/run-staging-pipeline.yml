@@ -12,29 +12,17 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'Run Staging Pipeline')
+    if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
     steps:
-    - name: Dump GitHub context
+    - uses: octokit/request-action@v2.0.0
+      id: collaborator_check
+      with:
+        route: GET /repos/:repository/collaborators/${{ github.actor }}
+        repository: ${{ github.repository }}
       env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-    - name: Dump GitHub repo context
-      env:
-        GITHUB_REPO: ${{ toJson(github.repository) }}
-      run: echo "$GITHUB_REPO"
-    - name: Dump GitHub owner context
-      env:
-        GITHUB_OWNER: ${{ toJson(github.repository.owner) }}
-      run: echo "$GITHUB_OWNER"
-    - name: Dump GitHub actor context
-      env:
-        GITHUB_ACTOR: ${{ toJson(github.actor) }}
-      run: echo "$GITHUB_ACTOR"
-    - name: Dump collab context
-      env:
-        GITHUB_COLLAB: github.repository.collaborators_url
-      run: echo "$GITHUB_COLLAB"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/checkout@v1
+      if: ${{ github.actor == github.repository_owner || steps.collaborator_check.outcome == 'success' }}
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
