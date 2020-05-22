@@ -32,7 +32,7 @@ jobs:
       run: echo "$GITHUB_ACTOR"
     - name: Dump collab context
       env:
-        GITHUB_COLLAB: ${{ github.repository.collaborators_url }}
+        GITHUB_COLLAB: github.repository.collaborators_url
       run: echo "$GITHUB_COLLAB"
     - uses: actions/checkout@v1
     - name: Set up Python
