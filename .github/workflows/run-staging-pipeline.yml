@@ -10,7 +10,7 @@ on:
     - cron: '0 7 * * 0'
 
 jobs:
-  authorize:
+  authorization:
     runs-on: ubuntu-latest
     steps:
     - name: Authorization check
@@ -21,7 +21,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pipeline:
-    needs: [authorize]
+    needs: [authorization]
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.issue.labels.*.name, 'Run Staging Pipeline') }}
     steps:
