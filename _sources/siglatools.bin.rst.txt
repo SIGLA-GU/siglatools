@@ -4,10 +4,10 @@ siglatools.bin package
 Submodules
 ----------
 
-siglatools.bin.my\_example module
----------------------------------
+siglatools.bin.run\_sigla\_pipeline module
+------------------------------------------
 
-.. automodule:: siglatools.bin.my_example
+.. automodule:: siglatools.bin.run_sigla_pipeline
    :members:
    :undoc-members:
    :show-inheritance:
