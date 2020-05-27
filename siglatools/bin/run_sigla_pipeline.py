@@ -32,7 +32,7 @@ class Args(argparse.Namespace):
 
     def __parse(self):
         p = argparse.ArgumentParser(
-            prog="run_exmaple", description="A simple example of a bin script"
+            prog="run_sigla_pipeline", description="A script to run sigla data pipeline"
         )
         p.add_argument(
             "-v",

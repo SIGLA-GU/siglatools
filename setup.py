@@ -78,7 +78,7 @@ setup(
     description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
     entry_points={
         "console_scripts": [
-            "my_example=siglatools.bin.my_example:main"
+            "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main"
         ],
     },
     install_requires=requirements,
