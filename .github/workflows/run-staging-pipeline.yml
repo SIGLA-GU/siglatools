@@ -22,5 +22,5 @@ jobs:
         pip install .[all]
     - name: Run Staging Pipeline
       run: |
-        my_example -ce ${{ secrets.GA_CLIENT_EMAIL }} -ci ${{ secrets.GA_CLIENT_ID }} -ccu ${{ secrets.GA_CLIENT_CERT_URL }} -pk ${{ secrets.GA_PRIVATE_KEY }} -pki ${{ secrets.GA_PRIVATE_KEY_ID }} -pi ${{ secrets.GA_PROJECT_ID }} -dbcu ${{ secrets.STAGING_DB_CONNECTION_URL }}
+        run_sigla_pipeline -ce ${{ secrets.GA_CLIENT_EMAIL }} -ci ${{ secrets.GA_CLIENT_ID }} -ccu ${{ secrets.GA_CLIENT_CERT_URL }} -pk ${{ secrets.GA_PRIVATE_KEY }} -pki ${{ secrets.GA_PRIVATE_KEY_ID }} -pi ${{ secrets.GA_PROJECT_ID }} -dbcu ${{ secrets.STAGING_DB_CONNECTION_URL }}
 
