@@ -29,7 +29,12 @@ jobs:
       run: |
         pip install --upgrade pip setuptools wheel
         pip install .[all]
+    - uses: actions/checkout@v2
+    - name: Decrypt Google API secret
+      run: ./.github/scripts/decrypt_google_api_secret.sh
+      env:
+        GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
     - name: Run Production Pipeline
       run: |
-        run_sigla_pipeline -ce ${{ secrets.GA_CLIENT_EMAIL }} -ci ${{ secrets.GA_CLIENT_ID }} -ccu ${{ secrets.GA_CLIENT_CERT_URL }} -pk ${{ secrets.GA_PRIVATE_KEY }} -pki ${{ secrets.GA_PRIVATE_KEY_ID }} -pi ${{ secrets.GA_PROJECT_ID }} -dbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
+        run_sigla_pipeline -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json -dbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
 
