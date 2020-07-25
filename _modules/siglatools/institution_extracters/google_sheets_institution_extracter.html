@@ -352,7 +352,8 @@
             <span class="k">for</span> <span class="n">sheet</span> <span class="ow">in</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sheets&quot;</span><span class="p">)</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_constitutional_rights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_constitutional_rights</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
             <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
@@ -370,7 +371,8 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">institution</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_constitutional_amendments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_constitutional_amendments</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
             <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
@@ -390,8 +392,9 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">institution</span><span class="p">]</span>
 
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_institution_by_rows</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span>
+        <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of institutions and their variables from a sheet.</span>
@@ -435,8 +438,9 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">institutions</span>
 
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_institution_by_triples</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span>
+        <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of institutions and their variables from a sheet.</span>
@@ -588,7 +592,8 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">spreadsheet_ids</span></div>
 
-<div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.process_sheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">[docs]</a>    <span class="k">def</span> <span class="nf">process_sheet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
+<div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.process_sheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        TODO</span>
 <span class="sd">        Process a sheet to get its data in a format ready to consumed by DB.</span>
@@ -608,7 +613,9 @@
             <span class="n">google_sheets_format</span>
             <span class="o">==</span> <span class="n">institution_extracters_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_triples</span>
         <span class="p">):</span>
-            <span class="n">formatted_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_institution_by_triples</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">_get_institution_by_triples</span><span class="p">(</span>
+                <span class="n">sheet_data</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                 <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>
@@ -618,7 +625,9 @@
             <span class="n">google_sheets_format</span>
             <span class="o">==</span> <span class="n">institution_extracters_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_rows</span>
         <span class="p">):</span>
-            <span class="n">formatted_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_institution_by_rows</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">_get_institution_by_rows</span><span class="p">(</span>
+                <span class="n">sheet_data</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                 <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>

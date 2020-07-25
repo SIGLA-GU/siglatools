@@ -219,10 +219,9 @@
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span>
-    <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extracter</span><span class="p">:</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
     <span class="c1"># Get the spreadsheet data.</span>
+    <span class="n">extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">extracter</span><span class="o">.</span><span class="n">get_spreadsheet_data</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">)</span>
 
 
@@ -233,12 +232,10 @@
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span>
-    <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span> <span class="n">extracter</span><span class="p">:</span> <span class="n">GoogleSheetsInstitutionExtracter</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
     <span class="c1"># Transform the sheet data into formatted sheet data, in order to load it into the database.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">extracter</span><span class="o">.</span><span class="n">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unable to read </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2"> &quot;</span>
@@ -291,14 +288,12 @@
         <span class="c1"># Extract sheets data.</span>
         <span class="c1"># Get back list of List of SheetData</span>
         <span class="n">spreadsheets_data</span> <span class="o">=</span> <span class="n">_extract</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="n">spreadsheets_id</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">google_sheets_institution_extracter</span><span class="p">),</span>
+            <span class="n">spreadsheets_id</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="c1"># Flatten the list of list of SheetData</span>
         <span class="n">flattened_spreadsheets_data</span> <span class="o">=</span> <span class="n">_flatten_list</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">)</span>
         <span class="c1"># Transform list of SheetData into FormattedSheetData</span>
-        <span class="n">formatted_sheets_data</span> <span class="o">=</span> <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="n">flattened_spreadsheets_data</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">google_sheets_institution_extracter</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="n">formatted_sheets_data</span> <span class="o">=</span> <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flattened_spreadsheets_data</span><span class="p">)</span>
         <span class="c1"># Load list of FormattedSheetData into the database.</span>
         <span class="c1"># Get back List of List of doc ids</span>
         <span class="n">document_ids</span> <span class="o">=</span> <span class="n">_load</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">formatted_sheets_data</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">))</span>
