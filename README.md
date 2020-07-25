@@ -8,15 +8,11 @@ Python Boilerplate contains all the boilerplate you need to create a Python pack
 ---
 
 ## Features
-* Store values and retain the prior value in memory
-* ... some other functionality
+* Bin script to run SIGLA ETL pipeline
 
 ## Quick Start
-```python
-from siglatools import Example
-
-a = Example()
-a.get_value()  # 10
+```
+run_sigla_pipeline -msi <master_spreadsheet_id> -dbcu <db_connection_url> -gacp /path/to/google-api-credentials.json
 ```
 
 ## Installation
