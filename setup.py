@@ -46,8 +46,11 @@ interactive_requirements = [
 requirements = [
     "google-api-python-client",
     "google-auth",
-    "pymongo[tls]",
-    "dnspython"
+    "pymongo",
+    "dnspython",
+    "dask[bag]",
+    "distributed",
+    "prefect"
 ]
 
 extra_requirements = {
