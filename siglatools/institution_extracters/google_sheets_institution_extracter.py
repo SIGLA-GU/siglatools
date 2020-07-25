@@ -31,16 +31,6 @@ class FormattedSheetData(NamedTuple):
     formatted_data: List
 
 
-class SpreadsheetData(NamedTuple):
-    # TODO make this appear in doc
-    # The list of sheet titles of a spreadsheet.
-    sheet_titles: List[str]
-    # The meta data of spreadsheet, one datum (a dict) for each sheet.
-    meta_data: List[Dict[str, str]]
-    # The data of a spreadsheet, one datum (a list of list) for each sheet.
-    data: List[List[List[str]]]
-
-
 class A1Notation(NamedTuple):
     # This doesn't capture all possible A1 notations because start_row and end_row are required,
     # but they don't have to be.
@@ -128,17 +118,19 @@ class GoogleSheetsInstitutionExtracter:
                     a1_notation.start_column,
                     a1_notation.end_column,
                 )
-            elif (
-                len(a1_notation.start_column) == len(a1_notation.end_column)
-                and a1_notation.start_column > a1_notation.end_column
-            ):
-                # Start column is greater than end column
-                raise exceptions.InvalidRangeInA1Notation(
-                    a1_notation.sheet_title,
-                    a1_notation.start_column,
-                    a1_notation.end_column,
-                )
+            elif len(a1_notation.start_column) == len(a1_notation.end_column):
+                if a1_notation.start_column > a1_notation.end_column:
+                    # Start column is greater than end column
+                    raise exceptions.InvalidRangeInA1Notation(
+                        a1_notation.sheet_title,
+                        a1_notation.start_column,
+                        a1_notation.end_column,
+                    )
+                else:
+                    # Start column is less than or equal to end column
+                    return str(a1_notation)
             else:
+                # Length of start column is less than end column
                 return str(a1_notation)
         elif any(
             field is not None
@@ -390,12 +382,6 @@ class GoogleSheetsInstitutionExtracter:
             )
             for i, a1_notation in enumerate(meta_data_a1_notations)
         ]
-
-        """return SpreadsheetData(
-            sheet_titles=[a1_notation.sheet_title for a1_notation in meta_data_a1_notations],
-            meta_data=meta_data,
-            data=data
-        )"""
 
     def get_spreadsheets_id(self, master_spreadsheet_id: str) -> List[str]:
         """
