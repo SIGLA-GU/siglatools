@@ -9,7 +9,6 @@ from googleapiclient.discovery import build
 
 from . import constants as institution_extracters_constants
 from . import exceptions
-from .institution_extracter import InstitutionExtracter
 
 ###############################################################################
 
@@ -58,7 +57,7 @@ class A1Notation(NamedTuple):
             return f"{self.sheet_title}!{self.start_row}:{self.end_row}"
 
 
-class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
+class GoogleSheetsInstitutionExtracter:
     def __init__(self, credentials_path: str):
         self._credentials_path = credentials_path
         # Creates a Credentials instance from a service account json file.
