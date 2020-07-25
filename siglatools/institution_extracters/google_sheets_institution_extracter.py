@@ -172,7 +172,8 @@ class GoogleSheetsInstitutionExtracter:
             for sheet in spreadsheet_response.get("sheets")
         ]
 
-    def _get_constitutional_rights(self, sheet_data: SheetData) -> List:
+    @staticmethod
+    def _get_constitutional_rights(sheet_data: SheetData) -> List:
         institution = {
             "name": sheet_data.meta_data.get("name"),
             "category": sheet_data.meta_data.get("category"),
@@ -190,7 +191,8 @@ class GoogleSheetsInstitutionExtracter:
         }
         return [institution]
 
-    def _get_constitutional_amendments(self, sheet_data: SheetData) -> List:
+    @staticmethod
+    def _get_constitutional_amendments(sheet_data: SheetData) -> List:
         institution = {
             "name": sheet_data.meta_data.get("name"),
             "category": sheet_data.meta_data.get("category"),
@@ -210,8 +212,9 @@ class GoogleSheetsInstitutionExtracter:
         }
         return [institution]
 
+    @staticmethod
     def _get_institution_by_rows(
-        self, sheet_data: SheetData
+        sheet_data: SheetData,
     ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
         """
         Get the list of institutions and their variables from a sheet.
@@ -255,8 +258,9 @@ class GoogleSheetsInstitutionExtracter:
         )
         return institutions
 
+    @staticmethod
     def _get_institution_by_triples(
-        self, sheet_data: SheetData
+        sheet_data: SheetData,
     ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
         """
         Get the list of institutions and their variables from a sheet.
@@ -408,7 +412,8 @@ class GoogleSheetsInstitutionExtracter:
         )
         return spreadsheet_ids
 
-    def process_sheet_data(self, sheet_data: SheetData) -> FormattedSheetData:
+    @staticmethod
+    def process_sheet_data(sheet_data: SheetData) -> FormattedSheetData:
         """ 
         TODO
         Process a sheet to get its data in a format ready to consumed by DB.
@@ -428,7 +433,9 @@ class GoogleSheetsInstitutionExtracter:
             google_sheets_format
             == institution_extracters_constants.GoogleSheetsFormat.institution_by_triples
         ):
-            formatted_data = self._get_institution_by_triples(sheet_data)
+            formatted_data = GoogleSheetsInstitutionExtracter._get_institution_by_triples(
+                sheet_data
+            )
             return FormattedSheetData(
                 sheet_title=sheet_data.sheet_title,
                 meta_data=sheet_data.meta_data,
@@ -438,7 +445,9 @@ class GoogleSheetsInstitutionExtracter:
             google_sheets_format
             == institution_extracters_constants.GoogleSheetsFormat.institution_by_rows
         ):
-            formatted_data = self._get_institution_by_rows(sheet_data)
+            formatted_data = GoogleSheetsInstitutionExtracter._get_institution_by_rows(
+                sheet_data
+            )
             return FormattedSheetData(
                 sheet_title=sheet_data.sheet_title,
                 meta_data=sheet_data.meta_data,
