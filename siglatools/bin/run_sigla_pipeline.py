@@ -39,10 +39,9 @@ logging.basicConfig(
 
 
 @task
-def _extract(
-    spreadsheet_id: str, extracter: GoogleSheetsInstitutionExtracter,
-) -> List[SheetData]:
+def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[SheetData]:
     # Get the spreadsheet data.
+    extracter = GoogleSheetsInstitutionExtracter(google_api_credentials_path)
     return extracter.get_spreadsheet_data(spreadsheet_id)
 
 
@@ -53,12 +52,10 @@ def _flatten_list(outer_list: List[List]) -> List:
 
 
 @task
-def _transform(
-    sheet_data: SheetData, extracter: GoogleSheetsInstitutionExtracter
-) -> FormattedSheetData:
+def _transform(sheet_data: SheetData) -> FormattedSheetData:
     # Transform the sheet data into formatted sheet data, in order to load it into the database.
     try:
-        return extracter.process_sheet_data(sheet_data)
+        return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
     except exceptions.UnrecognizedGoogleSheetsFormat:
         log.error(
             f"Unable to read {sheet_data.sheet_title} "
@@ -111,14 +108,12 @@ def run_sigla_pipeline(
         # Extract sheets data.
         # Get back list of List of SheetData
         spreadsheets_data = _extract.map(
-            spreadsheets_id, unmapped(google_sheets_institution_extracter),
+            spreadsheets_id, unmapped(google_api_credentials_path),
         )
         # Flatten the list of list of SheetData
         flattened_spreadsheets_data = _flatten_list(spreadsheets_data)
         # Transform list of SheetData into FormattedSheetData
-        formatted_sheets_data = _transform.map(
-            flattened_spreadsheets_data, unmapped(google_sheets_institution_extracter),
-        )
+        formatted_sheets_data = _transform.map(flattened_spreadsheets_data)
         # Load list of FormattedSheetData into the database.
         # Get back List of List of doc ids
         document_ids = _load.map(formatted_sheets_data, unmapped(db_connection_url))
