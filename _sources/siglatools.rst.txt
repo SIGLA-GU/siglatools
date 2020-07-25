@@ -7,18 +7,8 @@ Subpackages
 .. toctree::
 
    siglatools.bin
-
-Submodules
-----------
-
-siglatools.example module
--------------------------
-
-.. automodule:: siglatools.example
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   siglatools.databases
+   siglatools.institution_extracters
 
 Module contents
 ---------------

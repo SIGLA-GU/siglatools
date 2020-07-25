@@ -1,0 +1,30 @@
+siglatools.databases package
+============================
+
+Submodules
+----------
+
+siglatools.databases.constants module
+-------------------------------------
+
+.. automodule:: siglatools.databases.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+siglatools.databases.mongodb\_database module
+---------------------------------------------
+
+.. automodule:: siglatools.databases.mongodb_database
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools.databases
+   :members:
+   :undoc-members:
+   :show-inheritance:

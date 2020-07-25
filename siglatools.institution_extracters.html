@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>siglatools.institution_extracters package &mdash; SIGLA Tools 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="siglatools.databases package" href="siglatools.databases.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SIGLA Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="siglatools.html">siglatools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="siglatools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="siglatools.bin.html">siglatools.bin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.institution_extracters package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Math notation example</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SIGLA Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">siglatools</a> &raquo;</li>
+        
+          <li><a href="siglatools.html">siglatools package</a> &raquo;</li>
+        
+      <li>siglatools.institution_extracters package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/siglatools.institution_extracters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="siglatools.databases.html" class="btn btn-neutral float-left" title="siglatools.databases package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="siglatools-institution-extracters-package">
+<h1>siglatools.institution_extracters package<a class="headerlink" href="#siglatools-institution-extracters-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-siglatools.institution_extracters.constants">
+<span id="siglatools-institution-extracters-constants-module"></span><h2>siglatools.institution_extracters.constants module<a class="headerlink" href="#module-siglatools.institution_extracters.constants" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">GoogleSheetsFormat</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_rows">
+<code class="sig-name descname">institution_by_rows</code><em class="property"> = 'institution-by-rows'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_rows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_triples">
+<code class="sig-name descname">institution_by_triples</code><em class="property"> = 'institution-by-triples'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_triples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-siglatools.institution_extracters.exceptions">
+<span id="siglatools-institution-extracters-exceptions-module"></span><h2>siglatools.institution_extracters.exceptions module<a class="headerlink" href="#module-siglatools.institution_extracters.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">IncompleteColumnRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str</em>, <em class="sig-param">start_column: str</em>, <em class="sig-param">end_column: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#IncompleteColumnRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str, start: Union[int, str], end: Union[int, str], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnrecognizedGoogleSheetsFormat</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str</em>, <em class="sig-param">format: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnrecognizedGoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-siglatools.institution_extracters.google_sheets_institution_extracter">
+<span id="siglatools-institution-extracters-google-sheets-institution-extracter-module"></span><h2>siglatools.institution_extracters.google_sheets_institution_extracter module<a class="headerlink" href="#module-siglatools.institution_extracters.google_sheets_institution_extracter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">A1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">start_row</em>, <em class="sig-param">end_row</em>, <em class="sig-param">start_column</em>, <em class="sig-param">end_column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Create new instance of A1Notation(sheet_title, start_row, end_row, start_column, end_column)</p>
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column">
+<em class="property">property </em><code class="sig-name descname">end_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row">
+<em class="property">property </em><code class="sig-name descname">end_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">
+<em class="property">property </em><code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column">
+<em class="property">property </em><code class="sig-name descname">start_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row">
+<em class="property">property </em><code class="sig-name descname">start_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">FormattedSheetData</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">meta_data</em>, <em class="sig-param">formatted_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#FormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Create new instance of FormattedSheetData(sheet_title, meta_data, formatted_data)</p>
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.formatted_data">
+<em class="property">property </em><code class="sig-name descname">formatted_data</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.formatted_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.meta_data">
+<em class="property">property </em><code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.meta_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.sheet_title">
+<em class="property">property </em><code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">GoogleSheetsInstitutionExtracter</code><span class="sig-paren">(</span><em class="sig-param">credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">
+<code class="sig-name descname">get_spreadsheet_data</code><span class="sig-paren">(</span><em class="sig-param">spreadsheet_id: str</em><span class="sig-paren">)</span> &#x2192; List[siglatools.institution_extracters.google_sheets_institution_extracter.SheetData]<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the spreadsheet data given a spreadsheet id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spreadsheet_id</strong> (<em>str</em>) – The id of the spreadsheet.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>spreadsheet_data</strong> – The spreadsheet data. Please the SheetData class to view its attributes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData" title="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData">SheetData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheets_id">
+<code class="sig-name descname">get_spreadsheets_id</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheets_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheets_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of spreadsheet ids from a master spreadsheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The id of the master spreadsheet.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>spreadsheet_ids</strong> – The list of spreadsheet ids.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">
+<code class="sig-name descname">process_sheet_data</code><span class="sig-paren">(</span><em class="sig-param">sheet_data: siglatools.institution_extracters.google_sheets_institution_extracter.SheetData</em><span class="sig-paren">)</span> &#x2192; siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.process_sheet_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO
+Process a sheet to get its data in a format ready to consumed by DB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sheet_data</strong> (<em>SheetData</em>) – The data of the sheet.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>formatted_sheet_data</strong> – The data in reqired format. TODO</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData" title="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData">FormattedSheetData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">SheetData</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">meta_data</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#SheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Create new instance of SheetData(sheet_title, meta_data, data)</p>
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.data">
+<em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.meta_data">
+<em class="property">property </em><code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.meta_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.sheet_title">
+<em class="property">property </em><code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-siglatools.institution_extracters">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-siglatools.institution_extracters" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, To Huynh
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

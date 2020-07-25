@@ -1,0 +1,38 @@
+siglatools.institution\_extracters package
+==========================================
+
+Submodules
+----------
+
+siglatools.institution\_extracters.constants module
+---------------------------------------------------
+
+.. automodule:: siglatools.institution_extracters.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+siglatools.institution\_extracters.exceptions module
+----------------------------------------------------
+
+.. automodule:: siglatools.institution_extracters.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+siglatools.institution\_extracters.google\_sheets\_institution\_extracter module
+--------------------------------------------------------------------------------
+
+.. automodule:: siglatools.institution_extracters.google_sheets_institution_extracter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools.institution_extracters
+   :members:
+   :undoc-members:
+   :show-inheritance:

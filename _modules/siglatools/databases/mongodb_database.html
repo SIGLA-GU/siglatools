@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>siglatools.databases.mongodb_database &mdash; SIGLA Tools 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> SIGLA Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Package modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../siglatools.html">siglatools package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.bin.html">siglatools.bin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.databases.html">siglatools.databases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Math notation example</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SIGLA Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../siglatools.html">siglatools</a> &raquo;</li>
+        
+      <li>siglatools.databases.mongodb_database</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for siglatools.databases.mongodb_database</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">ReturnDocument</span>
+
+<span class="kn">from</span> <span class="nn">..institution_extracters</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">institution_extracter_constants</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters.google_sheets_institution_extracter</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FormattedSheetData</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">database_constants</span>
+
+<span class="c1">###############################################################################</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(levelname)4s</span><span class="s2">: </span><span class="si">%(module)s</span><span class="s2">:</span><span class="si">%(lineno)4s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1">###############################################################################</span>
+
+
+<div class="viewcode-block" id="MongoDBDatabase"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase">[docs]</a><span class="k">class</span> <span class="nc">MongoDBDatabase</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">,</span> <span class="n">connect</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db_connection_url</span> <span class="o">=</span> <span class="n">db_connection_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get_default_database</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_find_one_and_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">primary_keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">document</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert/update a document into the collection.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection: str</span>
+<span class="sd">            The the collection the document should be added to.</span>
+<span class="sd">        primary_keys: Dict[str, str]</span>
+<span class="sd">            The primary keys and their values to specify a unique document in the collection.</span>
+<span class="sd">        document: Dict[str, str]</span>
+<span class="sd">            The document to be inserted/updated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        document: Dict[str, str]</span>
+<span class="sd">            The inserted/updated document.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">.</span><span class="n">find_one_and_update</span><span class="p">(</span>
+            <span class="n">primary_keys</span><span class="p">,</span>
+            <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="n">document</span><span class="p">},</span>
+            <span class="n">return_document</span><span class="o">=</span><span class="n">ReturnDocument</span><span class="o">.</span><span class="n">AFTER</span><span class="p">,</span>
+            <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">document</span><span class="p">)</span><span class="si">}</span><span class="s2"> to collection </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">document</span>
+
+    <span class="k">def</span> <span class="nf">_load_institutions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">institution_primary_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">variable_primary_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">formatted_data</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+        <span class="n">document_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">formatted_data</span><span class="p">:</span>
+            <span class="n">institution_without_variables_field</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">institution</span><span class="p">}</span>
+            <span class="n">institution_without_variables_field</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+                <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span>
+            <span class="p">)</span>
+            <span class="n">institution_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_one_and_update</span><span class="p">(</span>
+                <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
+                <span class="p">{</span><span class="n">pk</span><span class="p">:</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">pk</span> <span class="ow">in</span> <span class="n">institution_primary_keys</span><span class="p">},</span>
+                <span class="n">institution_without_variables_field</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">document_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;collection&quot;</span><span class="p">:</span> <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span>
+            <span class="p">):</span>
+                <span class="n">variable_pks</span> <span class="o">=</span> <span class="p">{</span><span class="n">pk</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">pk</span> <span class="ow">in</span> <span class="n">variable_primary_keys</span><span class="p">}</span>
+                <span class="n">variable_pks</span><span class="p">[</span><span class="s2">&quot;institution_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span>
+                <span class="n">variable_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_one_and_update</span><span class="p">(</span>
+                    <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
+                    <span class="n">variable_pks</span><span class="p">,</span>
+                    <span class="n">variable</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">document_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">variable_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;collection&quot;</span><span class="p">:</span> <span class="n">database_constants</span><span class="o">.</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Finished loading institution </span><span class="si">{</span><span class="nb">str</span><span class="p">({</span><span class="n">pk</span><span class="p">:</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">pk</span> <span class="ow">in</span> <span class="n">institution_primary_keys</span><span class="p">})</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">document_ids</span>
+
+<div class="viewcode-block" id="MongoDBDatabase.close_connection"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.close_connection">[docs]</a>    <span class="k">def</span> <span class="nf">close_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cleanup client resources and disconnect from MongoDB.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MongoDBDatabase.clean_up"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.clean_up">[docs]</a>    <span class="k">def</span> <span class="nf">clean_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete documents from the database that are not in the list of document_ids.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        document_ids: List[Dict]</span>
+<span class="sd">            The list of document ids and their collections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create a list of document ids for each collection.</span>
+        <span class="n">document_ids_by_collection</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">document_ids</span><span class="p">:</span>
+            <span class="n">collection</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;collection&quot;</span><span class="p">)</span>
+            <span class="n">doc_id</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">document_ids_by_collection</span><span class="p">:</span>
+                <span class="n">document_ids_by_collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">document_ids_by_collection</span><span class="p">[</span><span class="n">collection</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc_id</span><span class="p">]</span>
+
+        <span class="c1">#  Delete documents from collection if they are not in the list of document ids.</span>
+        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">document_ids_by_collection</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found and loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">document_ids_by_collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">collection</span><span class="p">))</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">delete_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">.</span><span class="n">delete_many</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$nin&quot;</span><span class="p">:</span> <span class="n">document_ids_by_collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">collection</span><span class="p">)}}</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Deleted </span><span class="si">{</span><span class="n">delete_result</span><span class="o">.</span><span class="n">deleted_count</span><span class="si">}</span><span class="s2"> old documents from </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MongoDBDatabase.load"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formatted_sheet_data</span><span class="p">:</span> <span class="n">FormattedSheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the formatted sheet data into the database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        formatted_sheet_data: FormattedSheetData</span>
+<span class="sd">            The formatted sheet data. Please see the class FormattedSheetData to view its attributes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        document_ids: List[A1Notatoin]</span>
+<span class="sd">            The list of inserted/updated document ids and their collections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">google_sheets_format</span> <span class="o">=</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">google_sheets_format</span>
+            <span class="o">==</span> <span class="n">institution_extracter_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_triples</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_institutions</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;heading&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished loading sheet </span><span class="si">{</span><span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">google_sheets_format</span>
+            <span class="o">==</span> <span class="n">institution_extracter_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_rows</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_institutions</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;heading&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished loading sheet </span><span class="si">{</span><span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span>
+                <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span> <span class="n">google_sheets_format</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;MongoDBDatabase [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_connection_url</span><span class="si">}</span><span class="s2">]&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, To Huynh
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
