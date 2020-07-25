@@ -20,7 +20,9 @@ class IncompleteColumnRangeInA1Notation(Exception):
 
 
 class InvalidRangeInA1Notation(Exception):
-    def __init__(self, sheet_title: str, start: Union[int, str], end: Union[int, str], **kwargs):
+    def __init__(
+        self, sheet_title: str, start: Union[int, str], end: Union[int, str], **kwargs
+    ):
         super().__init__(**kwargs)
         self.sheet_title = sheet_title
         self.start = start

@@ -7,7 +7,6 @@ from typing import Dict, List, NamedTuple, Optional, Union
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from ..databases import constants as database_constants
 from . import constants as institution_extracters_constants
 from . import exceptions
 from .institution_extracter import InstitutionExtracter
@@ -16,11 +15,21 @@ from .institution_extracter import InstitutionExtracter
 
 log = logging.getLogger(__name__)
 
-GOOGLE_API_SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets"
-]
+GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 ###############################################################################
+
+
+class SheetData(NamedTuple):
+    sheet_title: str
+    meta_data: Dict[str, str]
+    data: List[List[str]]
+
+
+class FormattedSheetData(NamedTuple):
+    sheet_title: str
+    meta_data: Dict[str, str]
+    formatted_data: List
 
 
 class SpreadsheetData(NamedTuple):
@@ -50,15 +59,11 @@ class A1Notation(NamedTuple):
 
 
 class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
-    def __init__(
-        self,
-        credentials_path: str,
-        **kwargs
-    ):
+    def __init__(self, credentials_path: str):
+        self._credentials_path = credentials_path
         # Creates a Credentials instance from a service account json file.
         credentials = service_account.Credentials.from_service_account_file(
-            credentials_path,
-            scopes=GOOGLE_API_SCOPES
+            credentials_path, scopes=GOOGLE_API_SCOPES
         )
         # Construct a Resource for interacting with Google Sheets API
         service = build("sheets", "v4", credentials=credentials, cache_discovery=False)
@@ -111,24 +116,41 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
         if int(a1_notation.start_row) > int(a1_notation.end_row):
             # Start row is greater than end row
             raise exceptions.InvalidRangeInA1Notation(
-                a1_notation.sheet_title, a1_notation.start_row, a1_notation.end_row)
-        elif a1_notation.start_column is not None and a1_notation.end_column is not None:
+                a1_notation.sheet_title, a1_notation.start_row, a1_notation.end_row
+            )
+        elif (
+            a1_notation.start_column is not None and a1_notation.end_column is not None
+        ):
             # Start and end column are both present
             if len(a1_notation.start_column) > len(a1_notation.end_column):
                 # Length of start column is greater than length end column
                 raise exceptions.InvalidRangeInA1Notation(
-                    a1_notation.sheet_title, a1_notation.start_column, a1_notation.end_column)
-            elif (len(a1_notation.start_column) == len(a1_notation.end_column)
-                    and a1_notation.start_column > a1_notation.end_column):
+                    a1_notation.sheet_title,
+                    a1_notation.start_column,
+                    a1_notation.end_column,
+                )
+            elif (
+                len(a1_notation.start_column) == len(a1_notation.end_column)
+                and a1_notation.start_column > a1_notation.end_column
+            ):
                 # Start column is greater than end column
                 raise exceptions.InvalidRangeInA1Notation(
-                    a1_notation.sheet_title, a1_notation.start_column, a1_notation.end_column)
+                    a1_notation.sheet_title,
+                    a1_notation.start_column,
+                    a1_notation.end_column,
+                )
             else:
                 return str(a1_notation)
-        elif any(field is not None for field in [a1_notation.start_column, a1_notation.end_column]):
+        elif any(
+            field is not None
+            for field in [a1_notation.start_column, a1_notation.end_column]
+        ):
             # Either start column or end column is present
             raise exceptions.IncompleteColumnRangeInA1Notation(
-                a1_notation.sheet_title, a1_notation.start_column, a1_notation.end_column)
+                a1_notation.sheet_title,
+                a1_notation.start_column,
+                a1_notation.end_column,
+            )
         else:
             # Neither start column nor end column is present
             return str(a1_notation)
@@ -148,87 +170,110 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
             The list of A1Notations, one for each sheet.
         """
         # Get the spreadsheet
-        spreadsheet_response = self.spreadsheets.get(spreadsheetId=spreadsheet_id).execute()
-        # Create an A1Notation for each sheet's meta datum
+        spreadsheet_response = self.spreadsheets.get(
+            spreadsheetId=spreadsheet_id
+        ).execute()
+        # Create an A1Notation for each sheet's meta data
         return [
-            A1Notation(sheet_title=sheet.get("properties").get("title"), start_row=1, end_row=2)
+            A1Notation(
+                sheet_title=sheet.get("properties").get("title"), start_row=1, end_row=2
+            )
             for sheet in spreadsheet_response.get("sheets")
         ]
 
-    """def _get_composite_variable(
-        self,
-        sheet_title: str,
-        meta_datum: Dict[str, str],
-        datum: List[List[str]]
-    ) -> List:"""
+    def _get_constitutional_rights(self, sheet_data: SheetData) -> List:
+        institution = {
+            "name": sheet_data.meta_data.get("name"),
+            "category": sheet_data.meta_data.get("category"),
+            "country": sheet_data.meta_data.get("country"),
+            "variables": [
+                {
+                    "heading": row[0],
+                    "beneficiaries": row[1],
+                    "name": row[2],
+                    "orig_text": row[3],
+                    "source": row[4],
+                }
+                for row in sheet_data.data[1:]
+            ],
+        }
+        return [institution]
+
+    def _get_constitutional_amendments(self, sheet_data: SheetData) -> List:
+        institution = {
+            "name": sheet_data.meta_data.get("name"),
+            "category": sheet_data.meta_data.get("category"),
+            "country": sheet_data.meta_data.get("country"),
+            "variables": [
+                {
+                    "heading": row[0],
+                    "name_and_number": row[1],
+                    "date_in_force": row[2],
+                    "portions_of_constitutional_text_modified": row[3],
+                    "sigla_answer": row[4],
+                    "orig_text": row[5],
+                    "source": row[6],
+                }
+                for row in sheet_data.data[1:]
+            ],
+        }
+        return [institution]
 
     def _get_institution_by_rows(
-        self,
-        sheet_title: str,
-        meta_datum: Dict[str, str],
-        datum: List[List[str]]
+        self, sheet_data: SheetData
     ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
         """
         Get the list of institutions and their variables from a sheet.
 
         Parameters
         ----------
-        sheet_title: str
-            The title of a sheet.
-        meta_datum: Dict[str, str]
-            The meta datum of a sheet.
-        datum: List[List[str]]
-            The datum of a sheet.
+        sheet_data: SheetData
+            The data of a sheet.
 
         Returns
         ----------
         institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
             The list of institutions and their variables
         """
-        # Get the variable names in the 2nd row of datum,
+        # Get the variable names in the 2nd row of data,
         # exclulde 'Source' columns and the first column (the institution name in Spanish)
-        variable_names = [name for name in datum[1][1:] if name != "Source"]
+        variable_names = [name for name in sheet_data.data[1][1:] if name != "Source"]
 
         institutions = [
             {
-                "collection": database_constants.DatabaseCollection.institutions,
                 "name": institution_row[0],
-                "category": meta_datum.get("category"),
+                "category": sheet_data.meta_data.get("category"),
                 "variables": [
                     {
-                        # The headings are found in the 1st row of datum
+                        # The headings are found in the 1st row of data
                         # The indices of institution_row are 1-more than the indices of variable_names
-                        "heading": datum[0][j * 2 + 1],
+                        "heading": sheet_data.data[0][j * 2 + 1],
                         "name": variable_name,
                         "sigla_answer": institution_row[j * 2 + 1],
-                        "source": institution_row[j * 2 + 2]
+                        "source": institution_row[j * 2 + 2],
                     }
                     for j, variable_name in enumerate(variable_names)
-                ]
+                ],
             }
-            # The institutions starts in the 3rd row of datum
-            for institution_row in datum[2:]
+            # The institutions starts in the 3rd row of data
+            for institution_row in sheet_data.data[2:]
         ]
 
+        log.info(
+            f"Found {len(institutions)} institutionss from sheet {sheet_data.sheet_title}"
+        )
         return institutions
 
     def _get_institution_by_triples(
-        self,
-        sheet_title: str,
-        meta_datum: Dict[str, str],
-        datum: List[List[str]]
+        self, sheet_data: SheetData
     ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
         """
         Get the list of institutions and their variables from a sheet.
 
         Parameters
         ----------
-        sheet_title: str
-            The title of a sheet.
-        meta_datum: Dict[str, str]
-            The meta datum of a sheet.
-        datum: List[List[str]]
-            The datum of a sheet.
+        sheet_data: SheetData
+            The data of the sheet.
 
         Returns
         ----------
@@ -237,19 +282,18 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
         """
         # print(sheet_title)
 
-        # Get the institution names from the first row of datum
+        # Get the institution names from the first row of data
         institution_names = [
             institution_name
-            for institution_name in datum[0]
+            for institution_name in sheet_data.data[0]
             if institution_name
         ]
         # log.info(institution_names)
         institutions = [
             {
-                "collection": database_constants.DatabaseCollection.institutions,
                 "name": institution_name,
-                "category": meta_datum.get("category"),
-                "country": meta_datum.get("country"),
+                "category": sheet_data.meta_data.get("category"),
+                "country": sheet_data.meta_data.get("country"),
                 "variables": [
                     {
                         "heading": variable_row[0],
@@ -257,18 +301,21 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
                         "index": j,
                         "sigla_answer": variable_row[2 + i * 3],
                         "orig_text": variable_row[2 + i * 3 + 1],
-                        "source": variable_row[2 + i * 3 + 2]
+                        "source": variable_row[2 + i * 3 + 2],
                     }
-                    # The variables starts in the 3rd row of datum
-                    for j, variable_row in enumerate(datum[2:])
-                ]
+                    # The variables starts in the 3rd row of data
+                    for j, variable_row in enumerate(sheet_data.data[2:])
+                ],
             }
             for i, institution_name in enumerate(institution_names)
         ]
 
+        log.info(
+            f"Found {len(institutions)} institutionss from sheet {sheet_data.sheet_title}"
+        )
         return institutions
 
-    def get_spreadsheet_data(self, spreadsheet_id: str) -> SpreadsheetData:
+    def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
         """
         Get the spreadsheet data given a spreadsheet id.
 
@@ -279,19 +326,24 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
 
         Returns
         ----------
-        spreadsheet_data: SpreadSheetData
-            The spreadsheet data. Please the SpreadsheetData class to view its attributes.
+        spreadsheet_data: List[SheetData]
+            The spreadsheet data. Please the SheetData class to view its attributes.
         """
         # Get an A1Notation for each sheet's meta data
         meta_data_a1_notations = self._get_meta_data_a1_notations(spreadsheet_id)
         # Get the meta data for each sheet
-        meta_data_response = self.spreadsheets.values().batchGet(
-            spreadsheetId=spreadsheet_id,
-            ranges=[
-                self._construct_a1_notation(a1_notation) for a1_notation in meta_data_a1_notations
-            ],
-            majorDimension="COLUMNS"
-        ).execute()
+        meta_data_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[
+                    self._construct_a1_notation(a1_notation)
+                    for a1_notation in meta_data_a1_notations
+                ],
+                majorDimension="COLUMNS",
+            )
+            .execute()
+        )
         # Get data within a range (specified by an a1 notation) for each sheet
         meta_data_value_ranges = meta_data_response.get("valueRanges")
         # print(meta_data_value_ranges)
@@ -307,27 +359,46 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
                 start_row=int(meta_datum.get("start_row")),
                 end_row=int(meta_datum.get("end_row")),
                 start_column=meta_datum.get("start_column"),
-                end_column=meta_datum.get("end_column")
+                end_column=meta_datum.get("end_column"),
             )
             for i, meta_datum in enumerate(meta_data)
         ]
         # Get data within a range (specified by an a1 notation) for each sheet
-        data_response = self.spreadsheets.values().batchGet(
-            spreadsheetId=spreadsheet_id,
-            ranges=[
-                self._construct_a1_notation(a1_notation) for a1_notation in bounding_box_a1_notations
-            ],
-            majorDimension="ROWS"
-        ).execute()
-        data = [value_range.get("values") for value_range in data_response.get("valueRanges")]
+        data_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[
+                    self._construct_a1_notation(a1_notation)
+                    for a1_notation in bounding_box_a1_notations
+                ],
+                majorDimension="ROWS",
+            )
+            .execute()
+        )
+        data = [
+            value_range.get("values")
+            for value_range in data_response.get("valueRanges")
+        ]
 
-        return SpreadsheetData(
+        log.info(f"Finished extracting spreadsheet {spreadsheet_id}")
+        log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_id}")
+        return [
+            SheetData(
+                sheet_title=a1_notation.sheet_title,
+                meta_data=meta_data[i],
+                data=data[i],
+            )
+            for i, a1_notation in enumerate(meta_data_a1_notations)
+        ]
+
+        """return SpreadsheetData(
             sheet_titles=[a1_notation.sheet_title for a1_notation in meta_data_a1_notations],
             meta_data=meta_data,
             data=data
-        )
+        )"""
 
-    def get_spreadsheet_ids(self, master_spreadsheet_id: str) -> List[str]:
+    def get_spreadsheets_id(self, master_spreadsheet_id: str) -> List[str]:
         """
         Get the list of spreadsheet ids from a master spreadsheet.
 
@@ -345,37 +416,56 @@ class GoogleSheetsInstitutionExtracter(InstitutionExtracter):
 
         # There is only sheet in the master spreadsheet.
         # All spreadsheet ids are in the first column.
-        return [row[0] for row in spreadsheet_data.data[0]]
+        spreadsheet_ids = [row[0] for row in spreadsheet_data[0].data]
+        # spreadsheet_ids = [row[0] for row in spreadsheet_data.data[0]]
+        log.info(
+            f"Found {len(spreadsheet_ids)} spreadsheets from master spreadsheet {master_spreadsheet_id}"
+        )
+        return spreadsheet_ids
 
-    def process_sheet_data(
-        self,
-        sheet_title: str,
-        meta_datum: Dict[str, str],
-        datum: List[List[str]]
-    ) -> List:
+    def process_sheet_data(self, sheet_data: SheetData) -> FormattedSheetData:
         """ 
         TODO
         Process a sheet to get its data in a format ready to consumed by DB.
 
         Parameters
         ----------
-        sheet_title: str
-            The title of a sheet.
-        meta_datum: Dict[str, str]
-            The meta datum of a sheet.
-        datum: List[List[str]]
-            The datum of a sheet.
+        sheet_data: SheetData
+            The data of the sheet.
 
         Returns
         ----------
-        data: List
+        formatted_sheet_data: FormattedSheetData
             The data in reqired format. TODO
         """
-        google_sheets_format = meta_datum.get("format")
-        if google_sheets_format == institution_extracters_constants.GoogleSheetsFormat.institution_by_triples:
-            return self._get_institution_by_triples(sheet_title, meta_datum, datum)
-        elif google_sheets_format == institution_extracters_constants.GoogleSheetsFormat.institution_by_rows:
-            return self._get_institution_by_rows(sheet_title, meta_datum, datum)
+        google_sheets_format = sheet_data.meta_data.get("format")
+        if (
+            google_sheets_format
+            == institution_extracters_constants.GoogleSheetsFormat.institution_by_triples
+        ):
+            formatted_data = self._get_institution_by_triples(sheet_data)
+            return FormattedSheetData(
+                sheet_title=sheet_data.sheet_title,
+                meta_data=sheet_data.meta_data,
+                formatted_data=formatted_data,
+            )
+        elif (
+            google_sheets_format
+            == institution_extracters_constants.GoogleSheetsFormat.institution_by_rows
+        ):
+            formatted_data = self._get_institution_by_rows(sheet_data)
+            return FormattedSheetData(
+                sheet_title=sheet_data.sheet_title,
+                meta_data=sheet_data.meta_data,
+                formatted_data=formatted_data,
+            )
         else:
-            pass
-            # raise exceptions.UnrecognizedGoogleSheetsFormat(sheet_title, google_sheets_format)
+            raise exceptions.UnrecognizedGoogleSheetsFormat(
+                sheet_data.sheet_title, google_sheets_format
+            )
+
+    def __str__(self):
+        return f"<GoogleSheetsInstitutionExtracter [{self._credentials_path}]>"
+
+    def __repr__(self):
+        return str(self)
