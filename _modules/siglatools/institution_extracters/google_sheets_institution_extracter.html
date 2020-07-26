@@ -200,20 +200,57 @@
 
 
 <div class="viewcode-block" id="SheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData">[docs]</a><span class="k">class</span> <span class="nc">SheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The extracted data from a Google Sheet.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sheet_title: str</span>
+<span class="sd">            The title of the sheet.</span>
+<span class="sd">        meta_data: Dict[str, str]</span>
+<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
+<span class="sd">        data: List[List[str]]</span>
+<span class="sd">            The data of the sheet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="FormattedSheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData">[docs]</a><span class="k">class</span> <span class="nc">FormattedSheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The formatted data from a Google Sheet.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sheet_title: str</span>
+<span class="sd">            The title of the sheet.</span>
+<span class="sd">        meta_data: Dict[str, str]</span>
+<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
+<span class="sd">        formatted_data: List</span>
+<span class="sd">            The formatted data of the sheet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">formatted_data</span><span class="p">:</span> <span class="n">List</span></div>
 
 
 <div class="viewcode-block" id="A1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">[docs]</a><span class="k">class</span> <span class="nc">A1Notation</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="c1"># This doesn&#39;t capture all possible A1 notations because start_row and end_row are required,</span>
-    <span class="c1"># but they don&#39;t have to be.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A1 notation refers to a group of cells within a bounding rectangle in a sheet.</span>
+<span class="sd">    This doesn&#39;t capture all possible A1 notations because start_row and end_row are required,</span>
+<span class="sd">    but they don&#39;t have to be.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sheet_title: str</span>
+<span class="sd">            The title of the sheet that contains the a group of cells.</span>
+<span class="sd">        start_row: int</span>
+<span class="sd">            The top row boundary of a group of cells.</span>
+<span class="sd">        end_row: int</span>
+<span class="sd">            The bottom row boundary of a group of cells.</span>
+<span class="sd">        start_column: Optional[str] = None</span>
+<span class="sd">            The left column boundary of a group of cells.</span>
+<span class="sd">        end_column: Optional[str] = None</span>
+<span class="sd">            The right column boundary of a group of cells</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">start_row</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">end_row</span><span class="p">:</span> <span class="nb">int</span>
@@ -221,6 +258,9 @@
     <span class="n">end_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns str representation of the a1 notation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">!</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>

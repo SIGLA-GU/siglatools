@@ -241,8 +241,26 @@
 <span id="siglatools-institution-extracters-google-sheets-institution-extracter-module"></span><h2>siglatools.institution_extracters.google_sheets_institution_extracter module<a class="headerlink" href="#module-siglatools.institution_extracters.google_sheets_institution_extracter" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">A1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">start_row</em>, <em class="sig-param">end_row</em>, <em class="sig-param">start_column</em>, <em class="sig-param">end_column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">A1Notation</code><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A1 notation refers to a group of cells within a bounding rectangle in a sheet.
+This doesn’t capture all possible A1 notations because start_row and end_row are required,
+but they don’t have to be.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the a group of cells.</p>
+</dd>
+<dt>start_row: int</dt><dd><p>The top row boundary of a group of cells.</p>
+</dd>
+<dt>end_row: int</dt><dd><p>The bottom row boundary of a group of cells.</p>
+</dd>
+<dt>start_column: Optional[str] = None</dt><dd><p>The left column boundary of a group of cells.</p>
+</dd>
+<dt>end_column: Optional[str] = None</dt><dd><p>The right column boundary of a group of cells</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p>Create new instance of A1Notation(sheet_title, start_row, end_row, start_column, end_column)</p>
 <dl class="method">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column">
@@ -278,8 +296,20 @@
 
 <dl class="class">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">FormattedSheetData</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">meta_data</em>, <em class="sig-param">formatted_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#FormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">FormattedSheetData</code><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#FormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The formatted data from a Google Sheet.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
+</dd>
+<dt>meta_data: Dict[str, str]</dt><dd><p>The meta data of the sheet, found in the first two rows.</p>
+</dd>
+<dt>formatted_data: List</dt><dd><p>The formatted data of the sheet.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p>Create new instance of FormattedSheetData(sheet_title, meta_data, formatted_data)</p>
 <dl class="method">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData.formatted_data">
@@ -361,8 +391,20 @@ Process a sheet to get its data in a format ready to consumed by DB.</p>
 
 <dl class="class">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">SheetData</code><span class="sig-paren">(</span><em class="sig-param">sheet_title</em>, <em class="sig-param">meta_data</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#SheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">SheetData</code><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#SheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The extracted data from a Google Sheet.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
+</dd>
+<dt>meta_data: Dict[str, str]</dt><dd><p>The meta data of the sheet, found in the first two rows.</p>
+</dd>
+<dt>data: List[List[str]]</dt><dd><p>The data of the sheet.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p>Create new instance of SheetData(sheet_title, meta_data, data)</p>
 <dl class="method">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.SheetData.data">
