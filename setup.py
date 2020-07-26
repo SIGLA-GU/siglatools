@@ -78,7 +78,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    description="Tools to extract SIGLA data from Google Sheets and load into MongoDB",
     entry_points={
         "console_scripts": [
             "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main"

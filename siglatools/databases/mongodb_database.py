@@ -152,7 +152,7 @@ class MongoDBDatabase:
 
         Returns
         ----------
-        document_ids: List[A1Notatoin]
+        document_ids: List[A1Notation]
             The list of inserted/updated document ids and their collections.
         """
         google_sheets_format = formatted_sheet_data.meta_data.get("format")

@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/tohuynh/siglatools/workflows/Build%20Master/badge.svg)](https://github.com/tohuynh/siglatools/actions)
 [![Documentation](https://github.com/tohuynh/siglatools/workflows/Documentation/badge.svg)](https://tohuynh.github.io/siglatools)
 
-Python Boilerplate contains all the boilerplate you need to create a Python package.
+Tools to extract SIGLA data from Google Sheets and load into MongoDB.
 
 ---
 

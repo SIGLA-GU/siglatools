@@ -20,20 +20,57 @@ GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 class SheetData(NamedTuple):
+    """
+    The extracted data from a Google Sheet.
+
+    Attributes:
+        sheet_title: str
+            The title of the sheet.
+        meta_data: Dict[str, str]
+            The meta data of the sheet, found in the first two rows.
+        data: List[List[str]]
+            The data of the sheet.
+    """
     sheet_title: str
     meta_data: Dict[str, str]
     data: List[List[str]]
 
 
 class FormattedSheetData(NamedTuple):
+    """
+    The formatted data from a Google Sheet.
+
+    Attributes:
+        sheet_title: str
+            The title of the sheet.
+        meta_data: Dict[str, str]
+            The meta data of the sheet, found in the first two rows.
+        formatted_data: List
+            The formatted data of the sheet.
+    """
     sheet_title: str
     meta_data: Dict[str, str]
     formatted_data: List
 
 
 class A1Notation(NamedTuple):
-    # This doesn't capture all possible A1 notations because start_row and end_row are required,
-    # but they don't have to be.
+    """
+    A1 notation refers to a group of cells within a bounding rectangle in a sheet.
+    This doesn't capture all possible A1 notations because start_row and end_row are required,
+    but they don't have to be.
+
+    Attributes:
+        sheet_title: str
+            The title of the sheet that contains the a group of cells.
+        start_row: int
+            The top row boundary of a group of cells.
+        end_row: int
+            The bottom row boundary of a group of cells.
+        start_column: Optional[str] = None
+            The left column boundary of a group of cells.
+        end_column: Optional[str] = None
+            The right column boundary of a group of cells
+    """
     sheet_title: str
     start_row: int
     end_row: int
@@ -41,6 +78,9 @@ class A1Notation(NamedTuple):
     end_column: Optional[str] = None
 
     def __str__(self) -> str:
+        """
+        Returns str representation of the a1 notation.
+        """
         if self.start_column is not None and self.end_column is not None:
             return f"{self.sheet_title}!{self.start_column}{self.start_row}:{self.end_column}{self.end_row}"
         else:
