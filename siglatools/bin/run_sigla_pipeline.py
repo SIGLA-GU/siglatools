@@ -19,19 +19,17 @@ from prefect.engine.executors import DaskExecutor
 from siglatools import get_module_version
 
 from ..databases import MongoDBDatabase
-from ..institution_extracters import exceptions
 from ..institution_extracters.google_sheets_institution_extracter import (
-    FormattedSheetData,
     GoogleSheetsInstitutionExtracter,
-    SheetData,
 )
+from ..institution_extracters.utils import FormattedSheetData, SheetData
 
 ###############################################################################
 
-log = logging.getLogger()
 logging.basicConfig(
     level=logging.INFO, format="[%(levelname)4s:%(lineno)4s %(asctime)s] %(message)s"
 )
+log = logging.getLogger()
 
 ###############################################################################
 
@@ -54,28 +52,16 @@ def _flatten_list(outer_list: List[List]) -> List:
 @task
 def _transform(sheet_data: SheetData) -> FormattedSheetData:
     # Transform the sheet data into formatted sheet data, in order to load it into the database.
-    try:
-        return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
-    except exceptions.UnrecognizedGoogleSheetsFormat:
-        log.error(
-            f"Unable to read {sheet_data.sheet_title} "
-            f"because of unknown google sheets format {sheet_data.meta_data.get('format')}"
-        )
+    return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
 
 
 @task
 def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str) -> List:
     # Load the formatted sheet data into the database.
-    try:
-        database = MongoDBDatabase(db_connection_url)
-        loaded_document_ids = database.load(formatted_sheet_data)
-        database.close_connection()
-        return loaded_document_ids
-    except exceptions.UnrecognizedGoogleSheetsFormat:
-        log.error(
-            f"Unable to load {formatted_sheet_data.sheet_title} "
-            f"because of unknown google sheets format {formatted_sheet_data.meta_data.get('format')}"
-        )
+    database = MongoDBDatabase(db_connection_url)
+    loaded_document_ids = database.load(formatted_sheet_data)
+    database.close_connection()
+    return loaded_document_ids
 
 
 @task
