@@ -85,6 +85,7 @@ def _get_institution_by_rows(
         {
             "name": institution_row[0],
             "category": sheet_data.meta_data.get("category"),
+            "child_collection": DatabaseCollection.variables,
             "childs": [
                 {
                     # The headings are found in the 1st row of data
@@ -135,6 +136,7 @@ def _get_institution_by_triples(
             "name": institution_name,
             "category": sheet_data.meta_data.get("category"),
             "country": sheet_data.meta_data.get("country"),
+            "child_collection": DatabaseCollection.variables,
             "childs": [
                 {
                     "heading": variable_row[0],

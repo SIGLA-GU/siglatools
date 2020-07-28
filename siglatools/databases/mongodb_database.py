@@ -138,6 +138,7 @@ class MongoDBDatabase:
                 "name": formatted_sheet_data.meta_data.get("variable_heading"),
                 "country": formatted_sheet_data.meta_data.get("country"),
                 "category": formatted_sheet_data.meta_data.get("category"),
+                "child_collection": formatted_sheet_data.meta_data.get("data_type")
             }
             # Find the specific institution
             specific_institution_doc = self._find_one(
