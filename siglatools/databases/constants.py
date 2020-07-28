@@ -5,3 +5,11 @@
 class DatabaseCollection:
     institutions = "institutions"
     variables = "variables"
+    rights = "rights"
+    amendments = "amendments"
+    legal_framework = "legal_framework"
+
+
+class VariableType:
+    standard = "standard"
+    composite = "composite"
