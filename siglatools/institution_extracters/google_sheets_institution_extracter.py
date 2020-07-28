@@ -35,21 +35,20 @@ def _get_composite_variable(
     sheet_data: SheetData,
 ) -> List[Dict[str, Union[int, List[Dict[str, str]]]]]:
     """
-    Get the constitutional rights belonging to an Constitutions institution.
+    Get the composite variable from a SheetData.
 
     Parameters
     ----------
     sheet_data: SheetData
-        The sheet data containing the constitutional rights.
+        The sheet data containing the composite variable.
 
     Returns
     ----------
-    rights: List[Dict[str, Union[int, str]]]
-        A list of constitutional rights.
-
+    composite_variable: List[Dict[str, Union[int, List[Dict[str, str]]]]]
+        A list of individual variables of a composite varible.
     """
     column_names = sheet_data.data[0]
-    rights = [
+    composite_variable = [
         {
             "index": i,
             "sigla_answers": [
@@ -59,7 +58,7 @@ def _get_composite_variable(
         }
         for i, row in enumerate(sheet_data.data[1:])
     ]
-    return rights
+    return composite_variable
 
 
 def _get_institution_by_rows(
