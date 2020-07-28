@@ -36,13 +36,16 @@ class InvalidRangeInA1Notation(Exception):
 
 
 class UnrecognizedGoogleSheetsFormat(Exception):
-    def __init__(self, sheet_title: str, format: str, **kwargs):
+    def __init__(
+        self, sheet_title: str, google_sheets_format: str, data_type: str, **kwargs
+    ):
         super().__init__(**kwargs)
         self.sheet_title = sheet_title
-        self.format = format
+        self.google_sheets_format = google_sheets_format
+        self.data_type = data_type
 
     def __str__(self):
         return (
             f"In {self.sheet_title}, the specified format is not a valid Google Sheets format. "
-            f"Received format: {self.format}."
+            f"Received format: {self.google_sheets_format}, data_type: {self.data_type}."
         )
