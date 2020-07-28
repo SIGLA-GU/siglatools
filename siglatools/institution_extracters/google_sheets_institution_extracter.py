@@ -2,55 +2,169 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Union
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from . import constants as institution_extracters_constants
+from ..databases.constants import DatabaseCollection, VariableType
 from . import exceptions
+from .constants import GoogleSheetsFormat as gs_format
+from .utils import FormattedSheetData, SheetData
 
 ###############################################################################
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)4s: %(module)s:%(lineno)4s %(asctime)s] %(message)s",
+)
 log = logging.getLogger(__name__)
 
 GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+COMPOSITE_VARIABLE_HEADINGS = {
+    "Constitutional Rights": DatabaseCollection.rights,
+    "Constitutional Amendments": DatabaseCollection.amendments,
+    "Legal Framework": DatabaseCollection.legal_framework,
+}
 
 ###############################################################################
 
 
-class SheetData(NamedTuple):
+def _get_composite_variable(
+    sheet_data: SheetData,
+) -> List[Dict[str, Union[int, List[Dict[str, str]]]]]:
     """
-    The extracted data from a Google Sheet.
+    Get the constitutional rights belonging to an Constitutions institution.
 
-    Attributes:
-        sheet_title: str
-            The title of the sheet.
-        meta_data: Dict[str, str]
-            The meta data of the sheet, found in the first two rows.
-        data: List[List[str]]
-            The data of the sheet.
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The sheet data containing the constitutional rights.
+
+    Returns
+    ----------
+    rights: List[Dict[str, Union[int, str]]]
+        A list of constitutional rights.
+
     """
-    sheet_title: str
-    meta_data: Dict[str, str]
-    data: List[List[str]]
+    column_names = sheet_data.data[0]
+    rights = [
+        {
+            "index": i,
+            "sigla_answers": [
+                {"name": column_name, "sigla_answer": row[j]}
+                for j, column_name in enumerate(column_names)
+            ],
+        }
+        for i, row in enumerate(sheet_data.data[1:])
+    ]
+    return rights
 
 
-class FormattedSheetData(NamedTuple):
+def _get_institution_by_rows(
+    sheet_data: SheetData,
+) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
     """
-    The formatted data from a Google Sheet.
+    Get the list of institutions and their variables from a sheet.
 
-    Attributes:
-        sheet_title: str
-            The title of the sheet.
-        meta_data: Dict[str, str]
-            The meta data of the sheet, found in the first two rows.
-        formatted_data: List
-            The formatted data of the sheet.
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The data of a sheet.
+
+    Returns
+    ----------
+    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
+        The list of institutions and their variables
     """
-    sheet_title: str
-    meta_data: Dict[str, str]
-    formatted_data: List
+    # Get the variable names in the 2nd row of data,
+    # exclulde 'Source' columns and the first column (the institution name in Spanish)
+    variable_names = [name for name in sheet_data.data[1][1:] if name != "Source"]
+
+    institutions = [
+        {
+            "name": institution_row[0],
+            "category": sheet_data.meta_data.get("category"),
+            "childs": [
+                {
+                    # The headings are found in the 1st row of data
+                    # The indices of institution_row are 1-more than the indices of variable_names
+                    "type": "standard",
+                    "heading": sheet_data.data[0][j * 2 + 1],
+                    "name": variable_name,
+                    "sigla_answer": institution_row[j * 2 + 1],
+                    "source": institution_row[j * 2 + 2],
+                    "index": j,
+                }
+                for j, variable_name in enumerate(variable_names)
+            ],
+        }
+        # The institutions starts in the 3rd row of data
+        for institution_row in sheet_data.data[2:]
+    ]
+
+    log.info(
+        f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
+    )
+    return institutions
+
+
+def _get_institution_by_triples(
+    sheet_data: SheetData,
+) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
+    """
+    Get the list of institutions and their variables from a sheet.
+
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The data of the sheet.
+
+    Returns
+    ----------
+    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
+        The list of institutions and their variables.
+    """
+
+    # Get the institution names from the first row of data
+    institution_names = [
+        institution_name for institution_name in sheet_data.data[0] if institution_name
+    ]
+    institutions = [
+        {
+            "name": institution_name,
+            "category": sheet_data.meta_data.get("category"),
+            "country": sheet_data.meta_data.get("country"),
+            "childs": [
+                {
+                    "heading": variable_row[0],
+                    "name": variable_row[1],
+                    "sigla_answer": variable_row[2 + i * 3],
+                    "orig_text": variable_row[2 + i * 3 + 1],
+                    "source": variable_row[2 + i * 3 + 2],
+                    "index": j,
+                }
+                # The variables starts in the 3rd row of data
+                for j, variable_row in enumerate(sheet_data.data[2:])
+            ],
+        }
+        for i, institution_name in enumerate(institution_names)
+    ]
+    for institution in institutions:
+        for variable in institution.get("childs"):
+            if variable.get("heading").strip() in COMPOSITE_VARIABLE_HEADINGS:
+                variable["type"] = VariableType.composite
+                variable["hyperlink"] = COMPOSITE_VARIABLE_HEADINGS.get(
+                    variable.get("heading").strip()
+                )
+            else:
+                variable["type"] = VariableType.standard
+
+    log.info(
+        f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
+    )
+    return institutions
 
 
 class A1Notation(NamedTuple):
@@ -71,6 +185,7 @@ class A1Notation(NamedTuple):
         end_column: Optional[str] = None
             The right column boundary of a group of cells
     """
+
     sheet_title: str
     start_row: int
     end_row: int
@@ -88,11 +203,19 @@ class A1Notation(NamedTuple):
 
 
 class GoogleSheetsInstitutionExtracter:
+    google_sheets_format_to_function_dict = {
+        gs_format.institution_by_triples: _get_institution_by_triples,
+        gs_format.institution_by_rows: _get_institution_by_rows,
+        gs_format.institution_and_composite_variable: _get_composite_variable,
+        gs_format.composite_variable: _get_composite_variable,
+    }
+
     def __init__(self, credentials_path: str):
-        self._credentials_path = credentials_path
+        credentials_path = Path(credentials_path).resolve(strict=True)
+        self._credentials_path = str(credentials_path)
         # Creates a Credentials instance from a service account json file.
         credentials = service_account.Credentials.from_service_account_file(
-            credentials_path, scopes=GOOGLE_API_SCOPES
+            self._credentials_path, scopes=GOOGLE_API_SCOPES
         )
         # Construct a Resource for interacting with Google Sheets API
         service = build("sheets", "v4", credentials=credentials, cache_discovery=False)
@@ -212,144 +335,6 @@ class GoogleSheetsInstitutionExtracter:
             for sheet in spreadsheet_response.get("sheets")
         ]
 
-    @staticmethod
-    def _get_constitutional_rights(sheet_data: SheetData) -> List:
-        institution = {
-            "name": sheet_data.meta_data.get("name"),
-            "category": sheet_data.meta_data.get("category"),
-            "country": sheet_data.meta_data.get("country"),
-            "variables": [
-                {
-                    "heading": row[0],
-                    "beneficiaries": row[1],
-                    "name": row[2],
-                    "orig_text": row[3],
-                    "source": row[4],
-                }
-                for row in sheet_data.data[1:]
-            ],
-        }
-        return [institution]
-
-    @staticmethod
-    def _get_constitutional_amendments(sheet_data: SheetData) -> List:
-        institution = {
-            "name": sheet_data.meta_data.get("name"),
-            "category": sheet_data.meta_data.get("category"),
-            "country": sheet_data.meta_data.get("country"),
-            "variables": [
-                {
-                    "heading": row[0],
-                    "name_and_number": row[1],
-                    "date_in_force": row[2],
-                    "portions_of_constitutional_text_modified": row[3],
-                    "sigla_answer": row[4],
-                    "orig_text": row[5],
-                    "source": row[6],
-                }
-                for row in sheet_data.data[1:]
-            ],
-        }
-        return [institution]
-
-    @staticmethod
-    def _get_institution_by_rows(
-        sheet_data: SheetData,
-    ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
-        """
-        Get the list of institutions and their variables from a sheet.
-
-        Parameters
-        ----------
-        sheet_data: SheetData
-            The data of a sheet.
-
-        Returns
-        ----------
-        institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
-            The list of institutions and their variables
-        """
-        # Get the variable names in the 2nd row of data,
-        # exclulde 'Source' columns and the first column (the institution name in Spanish)
-        variable_names = [name for name in sheet_data.data[1][1:] if name != "Source"]
-
-        institutions = [
-            {
-                "name": institution_row[0],
-                "category": sheet_data.meta_data.get("category"),
-                "variables": [
-                    {
-                        # The headings are found in the 1st row of data
-                        # The indices of institution_row are 1-more than the indices of variable_names
-                        "heading": sheet_data.data[0][j * 2 + 1],
-                        "name": variable_name,
-                        "sigla_answer": institution_row[j * 2 + 1],
-                        "source": institution_row[j * 2 + 2],
-                    }
-                    for j, variable_name in enumerate(variable_names)
-                ],
-            }
-            # The institutions starts in the 3rd row of data
-            for institution_row in sheet_data.data[2:]
-        ]
-
-        log.info(
-            f"Found {len(institutions)} institutionss from sheet {sheet_data.sheet_title}"
-        )
-        return institutions
-
-    @staticmethod
-    def _get_institution_by_triples(
-        sheet_data: SheetData,
-    ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
-        """
-        Get the list of institutions and their variables from a sheet.
-
-        Parameters
-        ----------
-        sheet_data: SheetData
-            The data of the sheet.
-
-        Returns
-        ----------
-        institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
-            The list of institutions and their variables.
-        """
-        # print(sheet_title)
-
-        # Get the institution names from the first row of data
-        institution_names = [
-            institution_name
-            for institution_name in sheet_data.data[0]
-            if institution_name
-        ]
-        # log.info(institution_names)
-        institutions = [
-            {
-                "name": institution_name,
-                "category": sheet_data.meta_data.get("category"),
-                "country": sheet_data.meta_data.get("country"),
-                "variables": [
-                    {
-                        "heading": variable_row[0],
-                        "name": variable_row[1],
-                        "index": j,
-                        "sigla_answer": variable_row[2 + i * 3],
-                        "orig_text": variable_row[2 + i * 3 + 1],
-                        "source": variable_row[2 + i * 3 + 2],
-                    }
-                    # The variables starts in the 3rd row of data
-                    for j, variable_row in enumerate(sheet_data.data[2:])
-                ],
-            }
-            for i, institution_name in enumerate(institution_names)
-        ]
-
-        log.info(
-            f"Found {len(institutions)} institutionss from sheet {sheet_data.sheet_title}"
-        )
-        return institutions
-
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
         """
         Get the spreadsheet data given a spreadsheet id.
@@ -366,6 +351,11 @@ class GoogleSheetsInstitutionExtracter:
         """
         # Get an A1Notation for each sheet's meta data
         meta_data_a1_notations = self._get_meta_data_a1_notations(spreadsheet_id)
+        # Get the spreadsheet title
+        spreadsheet_response = self.spreadsheets.get(
+            spreadsheetId=spreadsheet_id
+        ).execute()
+        spreadsheet_title = spreadsheet_response.get("properties").get("title")
         # Get the meta data for each sheet
         meta_data_response = (
             self.spreadsheets.values()
@@ -416,8 +406,8 @@ class GoogleSheetsInstitutionExtracter:
             for value_range in data_response.get("valueRanges")
         ]
 
-        log.info(f"Finished extracting spreadsheet {spreadsheet_id}")
-        log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_id}")
+        log.info(f"Finished extracting spreadsheet {spreadsheet_title}")
+        log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
         return [
             SheetData(
                 sheet_title=a1_notation.sheet_title,
@@ -454,8 +444,7 @@ class GoogleSheetsInstitutionExtracter:
 
     @staticmethod
     def process_sheet_data(sheet_data: SheetData) -> FormattedSheetData:
-        """ 
-        TODO
+        """
         Process a sheet to get its data in a format ready to consumed by DB.
 
         Parameters
@@ -466,37 +455,31 @@ class GoogleSheetsInstitutionExtracter:
         Returns
         ----------
         formatted_sheet_data: FormattedSheetData
-            The data in reqired format. TODO
+            The data in reqired format.
         """
-        google_sheets_format = sheet_data.meta_data.get("format")
+        formatted_data = None
+        get_institution_key = sheet_data.meta_data.get("format")
+
         if (
-            google_sheets_format
-            == institution_extracters_constants.GoogleSheetsFormat.institution_by_triples
+            get_institution_key
+            in GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict
         ):
-            formatted_data = GoogleSheetsInstitutionExtracter._get_institution_by_triples(
-                sheet_data
-            )
-            return FormattedSheetData(
-                sheet_title=sheet_data.sheet_title,
-                meta_data=sheet_data.meta_data,
-                formatted_data=formatted_data,
-            )
-        elif (
-            google_sheets_format
-            == institution_extracters_constants.GoogleSheetsFormat.institution_by_rows
-        ):
-            formatted_data = GoogleSheetsInstitutionExtracter._get_institution_by_rows(
-                sheet_data
-            )
-            return FormattedSheetData(
-                sheet_title=sheet_data.sheet_title,
-                meta_data=sheet_data.meta_data,
-                formatted_data=formatted_data,
-            )
+            get_institution_key_function = GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict[
+                get_institution_key
+            ]
+            formatted_data = get_institution_key_function(sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
-                sheet_data.sheet_title, google_sheets_format
+                sheet_data.sheet_title,
+                sheet_data.meta_data.get("format"),
+                sheet_data.meta_data.get("data_type"),
             )
+
+        return FormattedSheetData(
+            sheet_title=sheet_data.sheet_title,
+            meta_data=sheet_data.meta_data,
+            formatted_data=formatted_data,
+        )
 
     def __str__(self):
         return f"<GoogleSheetsInstitutionExtracter [{self._credentials_path}]>"
