@@ -9,6 +9,7 @@ Tools to extract SIGLA data from Google Sheets and load into MongoDB.
 
 ## Features
 * Bin script to run SIGLA ETL pipeline
+* GitHub workflows to run pipeline semi/automatically on GitHub Actions.
 
 ## Quick Start
 ```
