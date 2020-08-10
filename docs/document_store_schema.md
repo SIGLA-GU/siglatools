@@ -7,15 +7,13 @@ _Schema_
 institution_id: {
     name: str
     category: str
-    sub_category: optional[str]
-    country: optional[str]
-    child_collection: str
+    sub_category: Optional[str]
+    country: Optional[str]
 }
 ```
 
 _Notes_
 
-`child_collection` is used specifiy which collection the institution has a one-to-many relation with.
 `country` is optional for International Institutions.
 `sub_category` is for institutions that has another level of categorization.
 
@@ -28,21 +26,20 @@ variable_id: {
     institution_id: str
     heading: str
     name: str
-    index: int
-    sigla_answer: str
-    orig_text: optional[str]
-    source: str
-    type: "standard" || "composite"
-    hyperlink: optional["rights" || "amendments" || "legal_framework"]
+    variable_index: int
+    sigla_answer_index: int
+    sigla_answer: str || List[List[Dict]]
+    orig_text: Optional[str]
+    source: Optional[str]
+    type: "standard" || "composite" || "aggregate"
+    hyperlink: Optional["rights" || "amendments" || "legal_framework"]
 }
 ```
 
 _Notes_
 
-`variable_id` is used to capture a many-to-one relationship with an institution.
-`orig_text` is optional for International Institutions' variables.
-`type` specify whether the variable will link to another collection. standard variables don't link to another collection (thus,`hyperlink` will be ommitted), while composite variable will have a `hyperlink`. For example, the Constitutional Rights variable will
-have a hyperlink to the rights collection.
+`institution_id` is used to capture a many-to-one relationship with an institution.
+`type` specifies the variable type. standard variable has the sigla triple: `sigla_answer`, `orig_text`, `source` as str, with `orig_text` being optional for International Institutions. composite variable also has a sigla triple, but has an additional `hyperlink` field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn't have a sigla triple, since it is missing `orig_text` and `source`. Instead its `sigla_answer` is a list of list of dict.
 
 
 ## Rights
@@ -50,7 +47,6 @@ have a hyperlink to the rights collection.
 _Schema_
 ```
 right_id: {
-    institution_id: str
     variable_id: str
     index: int
     sigla_answers: [
@@ -65,7 +61,6 @@ right_id: {
 _Notes_
 
 `variable_id` is used to capture a many-to-one relationship with the Constitutional Rights variable.
-`institution_id` is used to capture a many-to-one-relationship with the special Constitutional Rights institution.
 
 
 ## Amendments
