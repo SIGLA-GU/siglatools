@@ -43,7 +43,7 @@ def _get_composite_variable(
         The sheet data containing the composite variable.
 
     Returns
-    ----------
+    -------
     composite_variable: List[Dict[str, Union[int, List[Dict[str, str]]]]]
         A list of individual variables of a composite varible.
     """
@@ -58,6 +58,11 @@ def _get_composite_variable(
         }
         for i, row in enumerate(sheet_data.data[1:])
     ]
+
+    log.info(
+        f"Found composite variable: {sheet_data.meta_data.get('variable_heading')} of length {len(composite_variable)} "
+        f"from sheet: {sheet_data.sheet_title}"
+    )
     return composite_variable
 
 
@@ -73,7 +78,7 @@ def _get_institution_by_rows(
         The data of a sheet.
 
     Returns
-    ----------
+    -------
     institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
         The list of institutions and their variables
     """
@@ -85,7 +90,6 @@ def _get_institution_by_rows(
         {
             "name": institution_row[0],
             "category": sheet_data.meta_data.get("category"),
-            "child_collection": DatabaseCollection.variables,
             "childs": [
                 {
                     # The headings are found in the 1st row of data
@@ -95,7 +99,8 @@ def _get_institution_by_rows(
                     "name": variable_name,
                     "sigla_answer": institution_row[j * 2 + 1],
                     "source": institution_row[j * 2 + 2],
-                    "index": j,
+                    "variable_index": j,
+                    "sigla_answer_index": 0,
                 }
                 for j, variable_name in enumerate(variable_names)
             ],
@@ -110,7 +115,47 @@ def _get_institution_by_rows(
     return institutions
 
 
-def _get_institution_by_triples(
+def _get_multilple_sigla_answer_variable(
+    sheet_data: SheetData,
+) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
+    """
+    Get the list of institutions and their variables from a sheet.
+
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The data of a sheet.
+
+    Returns
+    -------
+    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
+        The list of institutions and their variables
+    """
+    institution = {
+        "name": sheet_data.meta_data.get("name"),
+        "country": sheet_data.meta_data.get("country"),
+        "category": sheet_data.meta_data.get("category"),
+        "sub_category": sheet_data.meta_data.get("sub_category"),
+        "childs": [
+            {
+                "heading": variable_row[0],
+                "name": variable_row[1],
+                "sigla_answer": variable_row[3 + j * 3],
+                "orig_text": variable_row[3 + j * 3 + 1],
+                "source": variable_row[3 + j * 3 + 2],
+                "variable_index": i,
+                "sigla_answer_index": j,
+            }
+            for i, variable_row in enumerate(sheet_data.data[1:])
+            # The number of sigla triples is in the 3rd column
+            for j in range(int(variable_row[2]))
+        ],
+    }
+
+    return [institution]
+
+
+def _get_standard_institution(
     sheet_data: SheetData,
 ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
     """
@@ -122,7 +167,7 @@ def _get_institution_by_triples(
         The data of the sheet.
 
     Returns
-    ----------
+    -------
     institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
         The list of institutions and their variables.
     """
@@ -136,7 +181,6 @@ def _get_institution_by_triples(
             "name": institution_name,
             "category": sheet_data.meta_data.get("category"),
             "country": sheet_data.meta_data.get("country"),
-            "child_collection": DatabaseCollection.variables,
             "childs": [
                 {
                     "heading": variable_row[0],
@@ -144,7 +188,8 @@ def _get_institution_by_triples(
                     "sigla_answer": variable_row[2 + i * 3],
                     "orig_text": variable_row[2 + i * 3 + 1],
                     "source": variable_row[2 + i * 3 + 2],
-                    "index": j,
+                    "variable_index": j,
+                    "sigla_answer_index": 0,
                 }
                 # The variables starts in the 3rd row of data
                 for j, variable_row in enumerate(sheet_data.data[2:])
@@ -205,10 +250,11 @@ class A1Notation(NamedTuple):
 
 class GoogleSheetsInstitutionExtracter:
     google_sheets_format_to_function_dict = {
-        gs_format.institution_by_triples: _get_institution_by_triples,
+        gs_format.standard_institution: _get_standard_institution,
         gs_format.institution_by_rows: _get_institution_by_rows,
         gs_format.institution_and_composite_variable: _get_composite_variable,
         gs_format.composite_variable: _get_composite_variable,
+        gs_format.multiple_sigla_answer_variable: _get_multilple_sigla_answer_variable,
     }
 
     def __init__(self, credentials_path: str):
@@ -320,7 +366,7 @@ class GoogleSheetsInstitutionExtracter:
             The id of a spreadsheet
 
         Returns
-        ----------
+        -------
         a1_notations: List[A1Notatoin]
             The list of A1Notations, one for each sheet.
         """
@@ -346,7 +392,7 @@ class GoogleSheetsInstitutionExtracter:
             The id of the spreadsheet.
 
         Returns
-        ----------
+        -------
         spreadsheet_data: List[SheetData]
             The spreadsheet data. Please the SheetData class to view its attributes.
         """
@@ -428,7 +474,7 @@ class GoogleSheetsInstitutionExtracter:
             The id of the master spreadsheet.
 
         Returns
-        ----------
+        -------
         spreadsheet_ids: List[str]
             The list of spreadsheet ids.
         """
@@ -454,21 +500,21 @@ class GoogleSheetsInstitutionExtracter:
             The data of the sheet.
 
         Returns
-        ----------
+        -------
         formatted_sheet_data: FormattedSheetData
             The data in reqired format.
         """
         formatted_data = None
-        get_institution_key = sheet_data.meta_data.get("format")
+        get_data_key = sheet_data.meta_data.get("format")
 
         if (
-            get_institution_key
+            get_data_key
             in GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict
         ):
-            get_institution_key_function = GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict[
-                get_institution_key
+            get_data_function = GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict[
+                get_data_key
             ]
-            formatted_data = get_institution_key_function(sheet_data)
+            formatted_data = get_data_function(sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
                 sheet_data.sheet_title,
