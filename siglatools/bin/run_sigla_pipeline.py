@@ -38,6 +38,22 @@ log = logging.getLogger()
 
 @task
 def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[SheetData]:
+    """
+    Prefect Task to extract data from a spreadsheet.
+
+    Parameters
+    ----------
+    spreadsheet_id: str
+        The spreadsheet_id.
+    google_api_credentials_path: str
+        The path to Google API credentials file needed to read Google Sheets.
+
+    Returns
+    -------
+    spreadsheet_data: List[SheetData]
+        The list of SheetData, one for each sheet in the spreadsheet. Please see the SheetData class
+        to view its attributes.
+    """
     # Get the spreadsheet data.
     extracter = GoogleSheetsInstitutionExtracter(google_api_credentials_path)
     return extracter.get_spreadsheet_data(spreadsheet_id)
@@ -45,36 +61,85 @@ def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[Shee
 
 @task
 def _flatten_list(outer_list: List[List]) -> List:
+    """
+    Prefect Task to flatten a 2D list.
+
+    Parameters
+    ----------
+    outer_list: List[List]
+        The list of list.
+
+    Returns
+    -------
+    flattened_list: List
+        The flattened list.
+    """
     # Flatten a list of list.
     return [element for inner_list in outer_list for element in inner_list]
 
 
 @task
 def _transform(sheet_data: SheetData) -> FormattedSheetData:
-    # Transform the sheet data into formatted sheet data, in order to load it into the database.
+    """
+    Prefect Task to transform the sheet data into formatted sheet data, in order to load it into the DB.
+
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The sheet's data.
+
+    Returns
+    -------
+    formatted_sheet_data: FormattedSheetData
+        The sheet's formatted data, ready to be consumed by DB.
+    """
     return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
 
 
 @task
-def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str) -> List:
-    # Load the formatted sheet data into the database.
+def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str):
+    """
+    Prefect Task to load the formatted sheet data into the DB.
+
+    Parameters
+    ----------
+    formatted_sheet_data: FormattedSheetData
+        The sheet's formatted data.
+    """
+
     database = MongoDBDatabase(db_connection_url)
-    loaded_document_ids = database.load(formatted_sheet_data)
+    database.load(formatted_sheet_data)
     database.close_connection()
-    return loaded_document_ids
 
 
 @task
-def clean_up(db_connection_url: str, document_ids: List[List]):
-    # Delete any documents from the database that are not in the list of inserted/updated document of ids.
+def _clean_up(db_connection_url: str):
+    """
+    Prefect Task to delete all documents from db.
+
+    Parameters
+    ----------
+    db_connection_url: str
+        The DB's connection url str.
+    """
     database = MongoDBDatabase(db_connection_url)
-    database.clean_up([doc for doc_list in document_ids for doc in doc_list])
+    database.clean_up()
     database.close_connection()
 
 
 def run_sigla_pipeline(
     master_spreadsheet_id: str, google_api_credentials_path: str, db_connection_url: str
 ):
+    """
+    Run the SIGLA ETL pipeline
+
+    Parameters
+    ----------
+    google_api_credentials_path: str
+        The path to Google API credentials file needed to read Google Sheets.
+    db_connection_url: str
+        The DB's connection url str.
+    """
     # Create a connection to the google sheets reader
     google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
         google_api_credentials_path
@@ -92,19 +157,24 @@ def run_sigla_pipeline(
     # Setup workflow
     with Flow("ETL Pipeline") as flow:
         # Extract sheets data.
-        # Get back list of List of SheetData
+        # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
             spreadsheets_id, unmapped(google_api_credentials_path),
         )
+
         # Flatten the list of list of SheetData
         flattened_spreadsheets_data = _flatten_list(spreadsheets_data)
+
         # Transform list of SheetData into FormattedSheetData
         formatted_sheets_data = _transform.map(flattened_spreadsheets_data)
+
+        # Delete all documents from db
+        _clean_up(db_connection_url)
+
         # Load list of FormattedSheetData into the database.
-        # Get back List of List of doc ids
-        document_ids = _load.map(formatted_sheets_data, unmapped(db_connection_url))
-        # Deleted any documents that wasn't inserted/updated document from previous step.
-        clean_up(db_connection_url, document_ids)
+        # Get back list of list of doc ids
+        _load.map(formatted_sheets_data, unmapped(db_connection_url))
+
     # Run the flow
     flow.run(executor=DaskExecutor(cluster.scheduler_address))
 
