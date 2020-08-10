@@ -65,32 +65,6 @@ class MongoDBDatabase:
         )
         return db_document
 
-    def _find_one_and_replace(
-        self, collection: str, primary_keys: Dict[str, str], document: Dict[str, str]
-    ) -> Dict[str, str]:
-        """
-        Insert a document into the collection. If the document already exist, replace it with the new document.
-
-        Parameters
-        ----------
-        collection: str
-            The the collection the document should be added to.
-        primary_keys: Dict[str, str]
-            The primary keys and their values to specify a unique document in the collection.
-        document: Dict[str, str]
-            The inserted document or replacement document.
-
-        Returns
-        -------
-        document: Dict[str, str]
-            The inserted document or replacement document.
-        """
-        document = self._db.get_collection(collection).find_one_and_replace(
-            primary_keys, document, return_document=ReturnDocument.AFTER, upsert=True,
-        )
-        log.debug(f"Uploaded {str(document)} to collection {collection}")
-        return document
-
     def _load_institution_and_composite_variable(
         self, formatted_sheet_data: FormattedSheetData
     ):
