@@ -13,3 +13,4 @@ class DatabaseCollection:
 class VariableType:
     standard = "standard"
     composite = "composite"
+    aggregate = "aggregate"
