@@ -7,7 +7,7 @@ _Schema_
 institution_id: {
     name: str
     category: str
-    sub_category: Optional[str]
+    sub_category: Optional[List[str]]
     country: Optional[str]
 }
 ```
@@ -23,7 +23,10 @@ _Notes_
 _Schema_
 ```
 variable_id: {
-    institution_id: str
+    institution: {
+        type: ObjectId,
+        ref: institutions._id
+    }
     heading: str
     name: str
     variable_index: int
@@ -38,8 +41,19 @@ variable_id: {
 
 _Notes_
 
-`institution_id` is used to capture a many-to-one relationship with an institution.
-`type` specifies the variable type. standard variable has the sigla triple: `sigla_answer`, `orig_text`, `source` as str, with `orig_text` being optional for International Institutions. composite variable also has a sigla triple, but has an additional `hyperlink` field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn't have a sigla triple, since it is missing `orig_text` and `source`. Instead its `sigla_answer` is a list of list of dict.
+`institution` is used to capture a many-to-one relationship with an institution.
+`variable_index` specifies the order of the variable. `sigla_answer_index` specifies the order of the sigla's answer, in cases where there are multiple sigla triples for a variable.
+`type` specifies the variable type. standard variable has the sigla triple: `sigla_answer`, `orig_text`, `source` as str, with `orig_text` being optional for International Institutions. composite variable also has a sigla triple, but has an additional `hyperlink` field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn't have a sigla triple, since it is missing `orig_text` and `source`. Instead its `sigla_answer` is a list of list of dict with the format:
+```
+sigla_answer: [
+    [
+        {
+            name: str
+            answer: str
+        },
+    ],
+]
+```
 
 
 ## Rights
@@ -47,12 +61,15 @@ _Notes_
 _Schema_
 ```
 right_id: {
-    variable_id: str
+    variable: {
+        type: ObjectId,
+        ref: variables._id
+    }
     index: int
     sigla_answers: [
         {
             name: str
-            sigla_answer: str
+            answer: str
         }
     ]
 }
@@ -60,7 +77,7 @@ right_id: {
 
 _Notes_
 
-`variable_id` is used to capture a many-to-one relationship with the Constitutional Rights variable.
+`variable` is used to capture a many-to-one relationship with the Constitutional Rights variable.
 
 
 ## Amendments
@@ -68,12 +85,15 @@ _Notes_
 _Schema_
 ```
 amendment_id: {
-    variable_id: str
+    variable: {
+        type: ObjectId,
+        ref: variables._id
+    }
     index: int
     sigla_answers: [
         {
             name: str
-            sigla_answer: str
+            answer: str
         }
     ]
 }
@@ -81,19 +101,24 @@ amendment_id: {
 
 _Notes_
 
-`variable_id` is used to capture a many-to-one relationship with the Constitutional Amendments variable.
+`variable` is used to capture a many-to-one relationship with the Constitutional Amendments variable.
 
 ## Legal Framework
 
 _Schema_
 ```
 legal_framework_id: {
-    variable_id: str
+    variables: [
+        {
+            type: ObjectId,
+            ref: variables._id
+        },
+    ]
     index: int
     sigla_answers: [
         {
             name: str
-            sigla_answer: str
+            answer: str
         }
     ]
 }
@@ -101,4 +126,4 @@ legal_framework_id: {
 
 _Notes_
 
-`variable_id` is used to capture a many-to-one relationship with the Legal Framework variable.
+`variables` is used to capture a many-to-many relationship with the Legal Framework variable. A legal framework(in total) can be a legal framework for many variables.

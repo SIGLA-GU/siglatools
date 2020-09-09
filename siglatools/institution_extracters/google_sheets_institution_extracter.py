@@ -52,7 +52,7 @@ def _get_composite_variable(
         {
             "index": i,
             "sigla_answers": [
-                {"name": column_name, "sigla_answer": row[j]}
+                {"name": column_name, "answer": row[j]}
                 for j, column_name in enumerate(column_names)
             ],
         }
@@ -66,6 +66,7 @@ def _get_composite_variable(
     return composite_variable
 
 
+# can delete
 def _get_institution_by_rows(
     sheet_data: SheetData,
 ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
@@ -131,28 +132,38 @@ def _get_multilple_sigla_answer_variable(
     institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
         The list of institutions and their variables
     """
-    institution = {
-        "name": sheet_data.meta_data.get("name"),
-        "country": sheet_data.meta_data.get("country"),
-        "category": sheet_data.meta_data.get("category"),
-        "sub_category": sheet_data.meta_data.get("sub_category"),
-        "childs": [
-            {
-                "heading": variable_row[0],
-                "name": variable_row[1],
-                "sigla_answer": variable_row[3 + j * 3],
-                "orig_text": variable_row[3 + j * 3 + 1],
-                "source": variable_row[3 + j * 3 + 2],
-                "variable_index": i,
-                "sigla_answer_index": j,
-            }
-            for i, variable_row in enumerate(sheet_data.data[1:])
-            # The number of sigla triples is in the 3rd column
-            for j in range(int(variable_row[2]))
-        ],
-    }
+    try:
+        institution = {
+            "name": sheet_data.meta_data.get("name"),
+            "country": sheet_data.meta_data.get("country"),
+            "category": sheet_data.meta_data.get("category"),
+            "sub_category": [
+                sub_cat.strip()
+                for sub_cat in sheet_data.meta_data.get("sub_category")
+                .strip()
+                .split(";")
+            ],
+            "childs": [
+                {
+                    "heading": variable_row[0],
+                    "name": variable_row[1],
+                    "sigla_answer": variable_row[3 + j * 3],
+                    "orig_text": variable_row[3 + j * 3 + 1],
+                    "source": variable_row[3 + j * 3 + 2],
+                    "variable_index": i,
+                    "sigla_answer_index": j,
+                    "type": VariableType.standard,
+                }
+                for i, variable_row in enumerate(sheet_data.data[1:])
+                # The number of sigla triples is in the 3rd column, dont need this anymore
+                for j in range(int(variable_row[2]))
+            ],
+        }
 
-    return [institution]
+        return [institution]
+    except IndexError:
+        log.info("=*80")
+        log.error(sheet_data.sheet_title)
 
 
 def _get_standard_institution(
@@ -180,7 +191,6 @@ def _get_standard_institution(
         {
             "name": institution_name,
             "category": sheet_data.meta_data.get("category"),
-            "country": sheet_data.meta_data.get("country"),
             "childs": [
                 {
                     "heading": variable_row[0],
@@ -197,7 +207,11 @@ def _get_standard_institution(
         }
         for i, institution_name in enumerate(institution_names)
     ]
+
+    has_country = "country" in sheet_data.meta_data
     for institution in institutions:
+        if has_country:
+            institution["country"] = sheet_data.meta_data.get("country")
         for variable in institution.get("childs"):
             if variable.get("heading").strip() in COMPOSITE_VARIABLE_HEADINGS:
                 variable["type"] = VariableType.composite

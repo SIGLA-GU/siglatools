@@ -11,6 +11,7 @@ from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..institution_extracters.utils import FormattedSheetData
 from .constants import DatabaseCollection as db_collection
 from .constants import VariableType
+from .exceptions import UnableToFindDocument
 
 ###############################################################################
 
@@ -36,6 +37,38 @@ class MongoDBDatabase:
             gs_format.multiple_sigla_answer_variable: self._load_institutions,
         }
 
+    def _create_variable_reference(self, sheet_title: str, meta_data: Dict[str, str]):
+        institution_names = [name.strip() for name in meta_data.get("name").split(";")]
+
+        institution = {
+            "name": {"$in": institution_names},
+            "country": meta_data.get("country"),
+            "category": meta_data.get("category"),
+        }
+        institution_cursor = self._db.get_collection(db_collection.institutions).find(
+            institution
+        )
+        institution_docs_id = [doc.get("_id") for doc in institution_cursor]
+
+        variable = {
+            "institution": {"$in": institution_docs_id},
+            "heading": meta_data.get("variable_heading"),
+            "name": meta_data.get("variable_name"),
+            "type": VariableType.composite,
+        }
+        variable_cursor = self._db.get_collection(db_collection.variables).find(
+            variable
+        )
+        variable_docs_id = [doc.get("_id") for doc in variable_cursor]
+
+        if len(variable_docs_id) != len(institution_names):
+            raise UnableToFindDocument(sheet_title, db_collection.variables, variable)
+
+        if meta_data.get("data_type") == db_collection.legal_framework:
+            return {"variables": variable_docs_id}
+        else:
+            return {"variable": variable_docs_id[0]}
+
     def _find_one(
         self, collection: str, primary_keys: Dict[str, str]
     ) -> Dict[str, str]:
@@ -57,13 +90,13 @@ class MongoDBDatabase:
 
         """
         # Find the document
-        db_document = self._db.get_collection(collection).find_one_and_update(
+        document = self._db.get_collection(collection).find_one_and_update(
             primary_keys,
             {"$set": primary_keys},
             return_document=ReturnDocument.AFTER,
             upsert=True,
         )
-        return db_document
+        return document
 
     def _load_institution_and_composite_variable(
         self, formatted_sheet_data: FormattedSheetData
@@ -99,13 +132,16 @@ class MongoDBDatabase:
         }
         # Find the specific institution
         institution_doc = self._find_one(db_collection.institutions, institution)
-
+        log.info(
+            f"Loaded 1 {db_collection.institutions} "
+            f"from sheet: {formatted_sheet_data.sheet_title}"
+        )
         # Create a dict with variable heading(category of rights) as keys and the list of rights as the values
         variable_heading_dict = {}
         variable_heading_list = []
         for datum in formatted_sheet_data.formatted_data:
             # Category of a right is the first element in sigla_answers field of datum
-            variable_heading = datum.get("sigla_answers")[0].get("name")
+            variable_heading = datum.get("sigla_answers")[0].get("answer")
             sigla_answers = datum.get("sigla_answers")[1:]
             if variable_heading in variable_heading_dict:
                 variable_heading_dict.get(variable_heading).append(sigla_answers)
@@ -115,7 +151,7 @@ class MongoDBDatabase:
         # Create the list of variables
         variables = [
             {
-                "institution_id": institution_doc.get("_id"),
+                "institution": institution_doc.get("_id"),
                 "name": variable_heading,
                 "heading": variable_heading,
                 "sigla_answer": variable_heading_dict.get(variable_heading),
@@ -129,12 +165,12 @@ class MongoDBDatabase:
         update_requests = [
             UpdateOne(
                 {
-                    "instiution_id": variable.get("institution_id"),
+                    "institution": variable.get("institution"),
                     "name": variable.get("name"),
                     "variable_index": variable.get("variable_index"),
                     "sigla_answer_index": variable.get("sigla_answer_index"),
                 },
-                variable,
+                {"$set": variable},
                 upsert=True,
             )
             for i, variable in enumerate(variables)
@@ -145,7 +181,8 @@ class MongoDBDatabase:
         ).bulk_write(update_requests)
 
         log.info(
-            f"Loaded {len(update_requests_results.upserted_ids.keys())} {db_collection.variables}"
+            f"Loaded {update_requests_results.upserted_count} {db_collection.variables} "
+            f"from sheet: {formatted_sheet_data.sheet_title}"
         )
 
     def _load_composite_variable(self, formatted_sheet_data: FormattedSheetData):
@@ -158,28 +195,15 @@ class MongoDBDatabase:
             The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.
         """
         data_type = formatted_sheet_data.meta_data.get("data_type")
-        # Create the institution primary keys
-        institution = {
-            "name": formatted_sheet_data.meta_data.get("name"),
-            "country": formatted_sheet_data.meta_data.get("country"),
-            "category": formatted_sheet_data.meta_data.get("category"),
-        }
-        # Find the institution where the composite variable resides
-        institution_doc = self._find_one(db_collection.institutions, institution,)
-
-        # Create the composite variable primary keys
-        variable = {
-            "institution_id": institution_doc.get("_id"),
-            "heading": formatted_sheet_data.meta_data.get("variable_heading"),
-            "name": formatted_sheet_data.meta_data.get("variable_name"),
-        }
-        # Find the composite variable
-        variable_doc = self._find_one(db_collection.variables, variable)
+        # Get the composite variable reference
+        variable_reference = self._create_variable_reference(
+            formatted_sheet_data.sheet_title, formatted_sheet_data.meta_data
+        )
         # Create the list of update requests into the db, one for each row of the composite variable
         update_requests = [
             UpdateOne(
-                {"variable_id": variable_doc.get("_id"), "index": datum.get("index")},
-                {"variable_id": variable_doc.get("_id"), **datum},
+                {**variable_reference, "index": datum.get("index")},
+                {"$set": {**variable_reference, **datum}},
                 upsert=True,
             )
             for datum in formatted_sheet_data.formatted_data
@@ -188,9 +212,9 @@ class MongoDBDatabase:
         update_requests_results = self._db.get_collection(data_type).bulk_write(
             update_requests
         )
-
         log.info(
-            f"Loaded {len(update_requests_results.upserted_ids.keys())} {data_type}"
+            f"Loaded {update_requests_results.upserted_count} {data_type} "
+            f"from sheet: {formatted_sheet_data.sheet_title}"
         )
 
     def _load_institutions(
@@ -205,19 +229,18 @@ class MongoDBDatabase:
             The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.
         """
         institution_primary_keys = ["name", "category"]
-        if (
-            formatted_sheet_data.meta_data.get("format")
-            == gs_format.standard_institution
-        ):
+        if "country" in formatted_sheet_data.meta_data:
             institution_primary_keys.append("country")
         # Create the list of update requests into the db, one for each institution
         institution_requests = [
             UpdateOne(
                 {pk: institution.get(pk) for pk in institution_primary_keys},
                 {
-                    key: institution.get(key)
-                    for key in institution.keys()
-                    if key != "childs"
+                    "$set": {
+                        key: institution.get(key)
+                        for key in institution.keys()
+                        if key != "childs"
+                    }
                 },
                 upsert=True,
             )
@@ -227,20 +250,35 @@ class MongoDBDatabase:
         institution_requests_results = self._db.get_collection(
             db_collection.institutions
         ).bulk_write(institution_requests)
+        log.info(
+            f"Loaded {institution_requests_results.upserted_count} {db_collection.institutions} "
+            f"from sheet: {formatted_sheet_data.sheet_title}"
+        )
+        # Get doc id for each institution
+        institution_doc_id_dict = {}
+        for i, institution in enumerate(formatted_sheet_data.formatted_data):
+            upserted_id = institution_requests_results.upserted_ids.get(i)
+            if upserted_id is None:
+                # The institution wasn't upserted
+                # Find the doc
+                institution_doc = self._db.get_collection(
+                    db_collection.institutions
+                ).find_one({pk: institution.get(pk) for pk in institution_primary_keys})
+                institution_doc_id_dict[i] = institution_doc.get("_id")
+            else:
+                institution_doc_id_dict[i] = upserted_id
+
         # Create the list of update requests into the db, one for each variable
-        variable_reqquests = [
+        variable_requests = [
             UpdateOne(
                 {
-                    "institution_id": institution_requests_results.upserted_ids.get(i),
+                    "institution": institution_doc_id_dict.get(i),
                     "heading": child.get("heading"),
                     "name": child.get("name"),
                     "variable_index": child.get("variable_index"),
                     "sigla_answer_index": child.get("sigla_answer_index"),
                 },
-                {
-                    "institution_id": institution_requests_results.upserted_ids.get(i),
-                    **child,
-                },
+                {"$set": {"institution": institution_doc_id_dict.get(i), **child}},
                 upsert=True,
             )
             for i, institution in enumerate(formatted_sheet_data.formatted_data)
@@ -249,13 +287,10 @@ class MongoDBDatabase:
         # Bulk write the variables in the db
         variable_requests_results = self._db.get_collection(
             db_collection.variables
-        ).bulk_write(variable_reqquests)
-
+        ).bulk_write(variable_requests)
         log.info(
-            f"Loaded {len(institution_requests_results.upserted_ids.keys())} {db_collection.institutions}"
-        )
-        log.info(
-            f"Loaded {len(variable_requests_results.upserted_ids.keys())} {db_collection.variables}"
+            f"Loaded {variable_requests_results.upserted_count} {db_collection.variables} "
+            f"from sheet: {formatted_sheet_data.sheet_title}"
         )
 
     def close_connection(self):

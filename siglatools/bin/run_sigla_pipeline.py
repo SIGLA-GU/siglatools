@@ -19,6 +19,7 @@ from prefect.engine.executors import DaskExecutor
 from siglatools import get_module_version
 
 from ..databases import MongoDBDatabase
+from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..institution_extracters.google_sheets_institution_extracter import (
     GoogleSheetsInstitutionExtracter,
 )
@@ -96,6 +97,16 @@ def _transform(sheet_data: SheetData) -> FormattedSheetData:
     return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
 
 
+def _filter_formatted_sheet_data(
+    formatted_sheets_data: List[FormattedSheetData], google_sheets_formats: List[str]
+) -> List[List[FormattedSheetData]]:
+    return [
+        formatted_sheet_data
+        for formatted_sheet_data in formatted_sheets_data
+        if formatted_sheet_data.meta_data.get("format") in google_sheets_formats
+    ]
+
+
 @task
 def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str):
     """
@@ -106,13 +117,11 @@ def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str):
     formatted_sheet_data: FormattedSheetData
         The sheet's formatted data.
     """
-
     database = MongoDBDatabase(db_connection_url)
     database.load(formatted_sheet_data)
     database.close_connection()
 
 
-@task
 def _clean_up(db_connection_url: str):
     """
     Prefect Task to delete all documents from db.
@@ -140,6 +149,8 @@ def run_sigla_pipeline(
     db_connection_url: str
         The DB's connection url str.
     """
+    # Delete all documents from db
+    _clean_up(db_connection_url)
     # Create a connection to the google sheets reader
     google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
         google_api_credentials_path
@@ -155,7 +166,7 @@ def run_sigla_pipeline(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("ETL Pipeline") as flow:
+    with Flow("Extract and transform") as flow:
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
@@ -166,17 +177,35 @@ def run_sigla_pipeline(
         flattened_spreadsheets_data = _flatten_list(spreadsheets_data)
 
         # Transform list of SheetData into FormattedSheetData
-        formatted_sheets_data = _transform.map(flattened_spreadsheets_data)
+        _transform.map(flattened_spreadsheets_data)
 
-        # Delete all documents from db
-        _clean_up(db_connection_url)
+    # Run the extract and transform flow
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    formatted_sheets_data = state.result[flow.get_tasks(name="_transform")[0]].result
+    log.info("=" * 80)
+    # Partion into institutions and non-institutions sheets
+    institutions = _filter_formatted_sheet_data(
+        formatted_sheets_data,
+        [
+            gs_format.standard_institution,
+            # gs_format.institution_by_rows,
+            gs_format.multiple_sigla_answer_variable,
+        ],
+    )
+    non_institutions = _filter_formatted_sheet_data(
+        formatted_sheets_data,
+        [gs_format.institution_and_composite_variable, gs_format.composite_variable],
+    )
+    # Run load institutions flow
+    with Flow("Load institutions") as load_institutions_flow:
+        _load.map(institutions, unmapped(db_connection_url))
 
-        # Load list of FormattedSheetData into the database.
-        # Get back list of list of doc ids
-        _load.map(formatted_sheets_data, unmapped(db_connection_url))
-
-    # Run the flow
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    load_institutions_flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    log.info("=" * 80)
+    # Run load non institutions flow
+    with Flow("Load non institutions") as load_non_institutions_flow:
+        _load.map(non_institutions, unmapped(db_connection_url))
+    load_non_institutions_flow.run(executor=DaskExecutor(cluster.scheduler_address))
 
 
 ###############################################################################
