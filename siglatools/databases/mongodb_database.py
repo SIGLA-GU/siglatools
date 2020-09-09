@@ -149,6 +149,7 @@ class MongoDBDatabase:
                 variable_heading_list.append(variable_heading)
                 variable_heading_dict[variable_heading] = [sigla_answers]
         # Create the list of variables
+        variable_heading_list.sort()
         variables = [
             {
                 "institution": institution_doc.get("_id"),
