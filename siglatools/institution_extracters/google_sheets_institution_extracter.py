@@ -525,9 +525,11 @@ class GoogleSheetsInstitutionExtracter:
             get_data_key
             in GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict
         ):
-            get_data_function = GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict[
-                get_data_key
-            ]
+            get_data_function = (
+                GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict[
+                    get_data_key
+                ]
+            )
             formatted_data = get_data_function(sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(

@@ -170,7 +170,8 @@ def run_sigla_pipeline(
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
-            spreadsheets_id, unmapped(google_api_credentials_path),
+            spreadsheets_id,
+            unmapped(google_api_credentials_path),
         )
 
         # Flatten the list of list of SheetData

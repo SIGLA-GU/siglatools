@@ -219,7 +219,8 @@ class MongoDBDatabase:
         )
 
     def _load_institutions(
-        self, formatted_sheet_data: FormattedSheetData,
+        self,
+        formatted_sheet_data: FormattedSheetData,
     ):
         """
         Load institutions and their variables in to the database.
