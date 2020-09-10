@@ -30,7 +30,6 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -88,6 +87,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -111,7 +118,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Math notation example</a></li>
 </ul>
 
             
@@ -184,7 +190,16 @@
 
 <div class="viewcode-block" id="DatabaseCollection"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.DatabaseCollection">[docs]</a><span class="k">class</span> <span class="nc">DatabaseCollection</span><span class="p">:</span>
     <span class="n">institutions</span> <span class="o">=</span> <span class="s2">&quot;institutions&quot;</span>
-    <span class="n">variables</span> <span class="o">=</span> <span class="s2">&quot;variables&quot;</span></div>
+    <span class="n">variables</span> <span class="o">=</span> <span class="s2">&quot;variables&quot;</span>
+    <span class="n">rights</span> <span class="o">=</span> <span class="s2">&quot;rights&quot;</span>
+    <span class="n">amendments</span> <span class="o">=</span> <span class="s2">&quot;amendments&quot;</span>
+    <span class="n">legal_framework</span> <span class="o">=</span> <span class="s2">&quot;legal_framework&quot;</span></div>
+
+
+<div class="viewcode-block" id="VariableType"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.VariableType">[docs]</a><span class="k">class</span> <span class="nc">VariableType</span><span class="p">:</span>
+    <span class="n">standard</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span>
+    <span class="n">composite</span> <span class="o">=</span> <span class="s2">&quot;composite&quot;</span>
+    <span class="n">aggregate</span> <span class="o">=</span> <span class="s2">&quot;aggregate&quot;</span></div>
 </pre></div>
 
            </div>

@@ -12,6 +12,14 @@ siglatools.databases.constants module
    :undoc-members:
    :show-inheritance:
 
+siglatools.databases.exceptions module
+--------------------------------------
+
+.. automodule:: siglatools.databases.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.databases.mongodb\_database module
 ---------------------------------------------
 

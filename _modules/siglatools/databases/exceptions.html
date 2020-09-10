@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>siglatools.institution_extracters.constants &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>siglatools.databases.exceptions &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -168,7 +168,7 @@
         
           <li><a href="../../siglatools.html">siglatools</a> &raquo;</li>
         
-      <li>siglatools.institution_extracters.constants</li>
+      <li>siglatools.databases.exceptions</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,17 +183,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for siglatools.institution_extracters.constants</h1><div class="highlight"><pre>
+  <h1>Source code for siglatools.databases.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
 
-<div class="viewcode-block" id="GoogleSheetsFormat"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheetsFormat</span><span class="p">:</span>
-    <span class="n">standard_institution</span> <span class="o">=</span> <span class="s2">&quot;standard-institution&quot;</span>
-    <span class="n">institution_by_rows</span> <span class="o">=</span> <span class="s2">&quot;institution-by-rows&quot;</span>
-    <span class="n">institution_and_composite_variable</span> <span class="o">=</span> <span class="s2">&quot;institution-and-composite-variable&quot;</span>
-    <span class="n">composite_variable</span> <span class="o">=</span> <span class="s2">&quot;composite-variable&quot;</span>
-    <span class="n">multiple_sigla_answer_variable</span> <span class="o">=</span> <span class="s2">&quot;multiple-sigla-answer-variable&quot;</span></div>
+
+<div class="viewcode-block" id="UnableToFindDocument"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.exceptions.UnableToFindDocument">[docs]</a><span class="k">class</span> <span class="nc">UnableToFindDocument</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">primary_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span> <span class="o">=</span> <span class="n">sheet_title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary_keys</span> <span class="o">=</span> <span class="n">primary_keys</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, unable to find correct documents of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with primary keys </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span></div>
 </pre></div>
 
            </div>

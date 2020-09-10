@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Document Store Schema &mdash; SIGLA Tools 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to SIGLA Tools’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SIGLA Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="siglatools.html">siglatools package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.bin.html">siglatools.bin package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SIGLA Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Document Store Schema</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/document_store_schema.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to SIGLA Tools’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="document-store-schema">
+<h1>Document Store Schema<a class="headerlink" href="#document-store-schema" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="institutions">
+<h2>Institutions<a class="headerlink" href="#institutions" title="Permalink to this headline">¶</a></h2>
+<p><em>Schema</em></p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>institution_id: {
+    name: str
+    category: str
+    sub_category: Optional[List[str]]
+    country: Optional[str]
+}
+</pre></div>
+</div>
+<p><em>Notes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">country</span></code> is optional for International Institutions.
+<code class="docutils literal notranslate"><span class="pre">sub_category</span></code> is for institutions that has another level of categorization.</p>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p><em>Schema</em></p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>variable_id: {
+    institution: {
+        type: ObjectId,
+        ref: institutions._id
+    }
+    heading: str
+    name: str
+    variable_index: int
+    sigla_answer_index: int
+    sigla_answer: str || List[List[Dict]]
+    orig_text: Optional[str]
+    source: Optional[str]
+    type: &quot;standard&quot; || &quot;composite&quot; || &quot;aggregate&quot;
+    hyperlink: Optional[&quot;rights&quot; || &quot;amendments&quot; || &quot;legal_framework&quot;]
+}
+</pre></div>
+</div>
+<p><em>Notes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">institution</span></code> is used to capture a many-to-one relationship with an institution.
+<code class="docutils literal notranslate"><span class="pre">variable_index</span></code> specifies the order of the variable. <code class="docutils literal notranslate"><span class="pre">sigla_answer_index</span></code> specifies the order of the sigla’s answer, in cases where there are multiple sigla triples for a variable.
+<code class="docutils literal notranslate"><span class="pre">type</span></code> specifies the variable type. standard variable has the sigla triple: <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code>, <code class="docutils literal notranslate"><span class="pre">orig_text</span></code>, <code class="docutils literal notranslate"><span class="pre">source</span></code> as str, with <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> being optional for International Institutions. composite variable also has a sigla triple, but has an additional <code class="docutils literal notranslate"><span class="pre">hyperlink</span></code> field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn’t have a sigla triple, since it is missing <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code>. Instead its <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code> is a list of list of dict with the format:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>sigla_answer: [
+    [
+        {
+            name: str
+            answer: str
+        },
+    ],
+]
+</pre></div>
+</div>
+</div>
+<div class="section" id="rights">
+<h2>Rights<a class="headerlink" href="#rights" title="Permalink to this headline">¶</a></h2>
+<p><em>Schema</em></p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>right_id: {
+    variable: {
+        type: ObjectId,
+        ref: variables._id
+    }
+    index: int
+    sigla_answers: [
+        {
+            name: str
+            answer: str
+        }
+    ]
+}
+</pre></div>
+</div>
+<p><em>Notes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">variable</span></code> is used to capture a many-to-one relationship with the Constitutional Rights variable.</p>
+</div>
+<div class="section" id="amendments">
+<h2>Amendments<a class="headerlink" href="#amendments" title="Permalink to this headline">¶</a></h2>
+<p><em>Schema</em></p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>amendment_id: {
+    variable: {
+        type: ObjectId,
+        ref: variables._id
+    }
+    index: int
+    sigla_answers: [
+        {
+            name: str
+            answer: str
+        }
+    ]
+}
+</pre></div>
+</div>
+<p><em>Notes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">variable</span></code> is used to capture a many-to-one relationship with the Constitutional Amendments variable.</p>
+</div>
+<div class="section" id="legal-framework">
+<h2>Legal Framework<a class="headerlink" href="#legal-framework" title="Permalink to this headline">¶</a></h2>
+<p><em>Schema</em></p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>legal_framework_id: {
+    variables: [
+        {
+            type: ObjectId,
+            ref: variables._id
+        },
+    ]
+    index: int
+    sigla_answers: [
+        {
+            name: str
+            answer: str
+        }
+    ]
+}
+</pre></div>
+</div>
+<p><em>Notes</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">variables</span></code> is used to capture a many-to-many relationship with the Legal Framework variable. A legal framework(in total) can be a legal framework for many variables.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, To Huynh
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

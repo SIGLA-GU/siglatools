@@ -7,10 +7,10 @@ Welcome to SIGLA Tools's documentation!
    :caption: Contents:
 
    Overview <self>
+   document_store_schema
    installation
    Package modules <modules>
    contributing
-   math
 
 .. mdinclude:: ../README.md
 

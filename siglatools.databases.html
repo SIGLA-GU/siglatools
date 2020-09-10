@@ -30,7 +30,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -90,6 +89,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -113,7 +120,6 @@
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="math.html">Math notation example</a></li>
 </ul>
 
             
@@ -204,8 +210,23 @@
 <em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">DatabaseCollection</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#DatabaseCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
+<dt id="siglatools.databases.constants.DatabaseCollection.amendments">
+<code class="sig-name descname">amendments</code><em class="property"> = 'amendments'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.amendments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="siglatools.databases.constants.DatabaseCollection.institutions">
 <code class="sig-name descname">institutions</code><em class="property"> = 'institutions'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.institutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.DatabaseCollection.legal_framework">
+<code class="sig-name descname">legal_framework</code><em class="property"> = 'legal_framework'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.legal_framework" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.DatabaseCollection.rights">
+<code class="sig-name descname">rights</code><em class="property"> = 'rights'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.rights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -213,6 +234,36 @@
 <code class="sig-name descname">variables</code><em class="property"> = 'variables'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.variables" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.databases.constants.VariableType">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">VariableType</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#VariableType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.VariableType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.databases.constants.VariableType.aggregate">
+<code class="sig-name descname">aggregate</code><em class="property"> = 'aggregate'</em><a class="headerlink" href="#siglatools.databases.constants.VariableType.aggregate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.VariableType.composite">
+<code class="sig-name descname">composite</code><em class="property"> = 'composite'</em><a class="headerlink" href="#siglatools.databases.constants.VariableType.composite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.VariableType.standard">
+<code class="sig-name descname">standard</code><em class="property"> = 'standard'</em><a class="headerlink" href="#siglatools.databases.constants.VariableType.standard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-siglatools.databases.exceptions">
+<span id="siglatools-databases-exceptions-module"></span><h2>siglatools.databases.exceptions module<a class="headerlink" href="#module-siglatools.databases.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="siglatools.databases.exceptions.UnableToFindDocument">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.databases.exceptions.</code><code class="sig-name descname">UnableToFindDocument</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str, collection: str, primary_keys: List[Dict[str, Union[int, str]]], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/exceptions.html#UnableToFindDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.exceptions.UnableToFindDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 </div>
@@ -224,13 +275,8 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="siglatools.databases.mongodb_database.MongoDBDatabase.clean_up">
-<code class="sig-name descname">clean_up</code><span class="sig-paren">(</span><em class="sig-param">document_ids: List[Dict]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.clean_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.clean_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete documents from the database that are not in the list of document_ids.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>document_ids</strong> (<em>List[Dict]</em>) – The list of document ids and their collections.</p>
-</dd>
-</dl>
+<code class="sig-name descname">clean_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.clean_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.clean_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all documents from the database.</p>
 </dd></dl>
 
 <dl class="method">
@@ -241,17 +287,11 @@
 
 <dl class="method">
 <dt id="siglatools.databases.mongodb_database.MongoDBDatabase.load">
-<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">formatted_sheet_data: siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData</em><span class="sig-paren">)</span> &#x2192; List[Dict]<a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">formatted_sheet_data: siglatools.institution_extracters.utils.FormattedSheetData</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the formatted sheet data into the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>formatted_sheet_data</strong> (<em>FormattedSheetData</em>) – The formatted sheet data. Please see the class FormattedSheetData to view its attributes.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>document_ids</strong> – The list of inserted/updated document ids and their collections.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">A1Notation</a>]</p>
 </dd>
 </dl>
 </dd></dl>

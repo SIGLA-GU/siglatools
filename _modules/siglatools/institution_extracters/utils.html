@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>siglatools.institution_extracters.constants &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>siglatools.institution_extracters.utils &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -168,7 +168,7 @@
         
           <li><a href="../../siglatools.html">siglatools</a> &raquo;</li>
         
-      <li>siglatools.institution_extracters.constants</li>
+      <li>siglatools.institution_extracters.utils</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,17 +183,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for siglatools.institution_extracters.constants</h1><div class="highlight"><pre>
+  <h1>Source code for siglatools.institution_extracters.utils</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span>
 
-<div class="viewcode-block" id="GoogleSheetsFormat"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheetsFormat</span><span class="p">:</span>
-    <span class="n">standard_institution</span> <span class="o">=</span> <span class="s2">&quot;standard-institution&quot;</span>
-    <span class="n">institution_by_rows</span> <span class="o">=</span> <span class="s2">&quot;institution-by-rows&quot;</span>
-    <span class="n">institution_and_composite_variable</span> <span class="o">=</span> <span class="s2">&quot;institution-and-composite-variable&quot;</span>
-    <span class="n">composite_variable</span> <span class="o">=</span> <span class="s2">&quot;composite-variable&quot;</span>
-    <span class="n">multiple_sigla_answer_variable</span> <span class="o">=</span> <span class="s2">&quot;multiple-sigla-answer-variable&quot;</span></div>
+
+<div class="viewcode-block" id="SheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.SheetData">[docs]</a><span class="k">class</span> <span class="nc">SheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The extracted data from a Google Sheet.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sheet_title: str</span>
+<span class="sd">            The title of the sheet.</span>
+<span class="sd">        meta_data: Dict[str, str]</span>
+<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
+<span class="sd">        data: List[List[str]]</span>
+<span class="sd">            The data of the sheet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="FormattedSheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData">[docs]</a><span class="k">class</span> <span class="nc">FormattedSheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The formatted data from a Google Sheet.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sheet_title: str</span>
+<span class="sd">            The title of the sheet.</span>
+<span class="sd">        meta_data: Dict[str, str]</span>
+<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
+<span class="sd">        formatted_data: List</span>
+<span class="sd">            The formatted data of the sheet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="n">formatted_data</span><span class="p">:</span> <span class="n">List</span></div>
 </pre></div>
 
            </div>

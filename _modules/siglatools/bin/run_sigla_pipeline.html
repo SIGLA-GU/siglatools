@@ -30,7 +30,6 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -88,6 +87,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -111,7 +118,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Math notation example</a></li>
 </ul>
 
             
@@ -199,19 +205,18 @@
 <span class="kn">from</span> <span class="nn">siglatools</span> <span class="kn">import</span> <span class="n">get_module_version</span>
 
 <span class="kn">from</span> <span class="nn">..databases</span> <span class="kn">import</span> <span class="n">MongoDBDatabase</span>
-<span class="kn">from</span> <span class="nn">..institution_extracters</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.google_sheets_institution_extracter</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">FormattedSheetData</span><span class="p">,</span>
     <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">,</span>
-    <span class="n">SheetData</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span>
 
 <span class="c1">###############################################################################</span>
 
-<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(levelname)4s</span><span class="s2">:</span><span class="si">%(lineno)4s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
 <span class="p">)</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -220,6 +225,22 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to extract data from a spreadsheet.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spreadsheet_id: str</span>
+<span class="sd">        The spreadsheet_id.</span>
+<span class="sd">    google_api_credentials_path: str</span>
+<span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spreadsheet_data: List[SheetData]</span>
+<span class="sd">        The list of SheetData, one for each sheet in the spreadsheet. Please see the SheetData class</span>
+<span class="sd">        to view its attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get the spreadsheet data.</span>
     <span class="n">extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">extracter</span><span class="o">.</span><span class="n">get_spreadsheet_data</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">)</span>
@@ -227,48 +248,95 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_flatten_list</span><span class="p">(</span><span class="n">outer_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to flatten a 2D list.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    outer_list: List[List]</span>
+<span class="sd">        The list of list.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flattened_list: List</span>
+<span class="sd">        The flattened list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Flatten a list of list.</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">element</span> <span class="k">for</span> <span class="n">inner_list</span> <span class="ow">in</span> <span class="n">outer_list</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">inner_list</span><span class="p">]</span>
 
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
-    <span class="c1"># Transform the sheet data into formatted sheet data, in order to load it into the database.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unable to read </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;because of unknown google sheets format </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to transform the sheet data into formatted sheet data, in order to load it into the DB.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sheet_data: SheetData</span>
+<span class="sd">        The sheet&#39;s data.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    formatted_sheet_data: FormattedSheetData</span>
+<span class="sd">        The sheet&#39;s formatted data, ready to be consumed by DB.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_filter_formatted_sheet_data</span><span class="p">(</span>
+    <span class="n">formatted_sheets_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FormattedSheetData</span><span class="p">],</span> <span class="n">google_sheets_formats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FormattedSheetData</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">formatted_sheet_data</span>
+        <span class="k">for</span> <span class="n">formatted_sheet_data</span> <span class="ow">in</span> <span class="n">formatted_sheets_data</span>
+        <span class="k">if</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">google_sheets_formats</span>
+    <span class="p">]</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="p">:</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="c1"># Load the formatted sheet data into the database.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">database</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
-        <span class="n">loaded_document_ids</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="p">)</span>
-        <span class="n">database</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">loaded_document_ids</span>
-    <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unable to load </span><span class="si">{</span><span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;because of unknown google sheets format </span><span class="si">{</span><span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+<span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="p">:</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to load the formatted sheet data into the DB.</span>
 
-
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">clean_up</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">document_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]):</span>
-    <span class="c1"># Delete any documents from the database that are not in the list of inserted/updated document of ids.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    formatted_sheet_data: FormattedSheetData</span>
+<span class="sd">        The sheet&#39;s formatted data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">database</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
-    <span class="n">database</span><span class="o">.</span><span class="n">clean_up</span><span class="p">([</span><span class="n">doc</span> <span class="k">for</span> <span class="n">doc_list</span> <span class="ow">in</span> <span class="n">document_ids</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">doc_list</span><span class="p">])</span>
+    <span class="n">database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="p">)</span>
+    <span class="n">database</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_clean_up</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to delete all documents from db.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    db_connection_url: str</span>
+<span class="sd">        The DB&#39;s connection url str.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">database</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
+    <span class="n">database</span><span class="o">.</span><span class="n">clean_up</span><span class="p">()</span>
     <span class="n">database</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="run_sigla_pipeline"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_sigla_pipeline.run_sigla_pipeline">[docs]</a><span class="k">def</span> <span class="nf">run_sigla_pipeline</span><span class="p">(</span>
     <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the SIGLA ETL pipeline</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    google_api_credentials_path: str</span>
+<span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
+<span class="sd">    db_connection_url: str</span>
+<span class="sd">        The DB&#39;s connection url str.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Delete all documents from db</span>
+    <span class="n">_clean_up</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
     <span class="c1"># Create a connection to the google sheets reader</span>
     <span class="n">google_sheets_institution_extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span>
         <span class="n">google_api_credentials_path</span>
@@ -284,23 +352,47 @@
     <span class="c1"># Log the dashboard link</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dashboard available at: </span><span class="si">{</span><span class="n">cluster</span><span class="o">.</span><span class="n">dashboard_link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Setup workflow</span>
-    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ETL Pipeline&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Extract and transform&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
         <span class="c1"># Extract sheets data.</span>
-        <span class="c1"># Get back list of List of SheetData</span>
+        <span class="c1"># Get back list of list of SheetData</span>
         <span class="n">spreadsheets_data</span> <span class="o">=</span> <span class="n">_extract</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="n">spreadsheets_id</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">),</span>
+            <span class="n">spreadsheets_id</span><span class="p">,</span>
+            <span class="n">unmapped</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">),</span>
         <span class="p">)</span>
+
         <span class="c1"># Flatten the list of list of SheetData</span>
         <span class="n">flattened_spreadsheets_data</span> <span class="o">=</span> <span class="n">_flatten_list</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">)</span>
+
         <span class="c1"># Transform list of SheetData into FormattedSheetData</span>
-        <span class="n">formatted_sheets_data</span> <span class="o">=</span> <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flattened_spreadsheets_data</span><span class="p">)</span>
-        <span class="c1"># Load list of FormattedSheetData into the database.</span>
-        <span class="c1"># Get back List of List of doc ids</span>
-        <span class="n">document_ids</span> <span class="o">=</span> <span class="n">_load</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">formatted_sheets_data</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">))</span>
-        <span class="c1"># Deleted any documents that wasn&#39;t inserted/updated document from previous step.</span>
-        <span class="n">clean_up</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">,</span> <span class="n">document_ids</span><span class="p">)</span>
-    <span class="c1"># Run the flow</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span></div>
+        <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flattened_spreadsheets_data</span><span class="p">)</span>
+
+    <span class="c1"># Run the extract and transform flow</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
+    <span class="n">formatted_sheets_data</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">flow</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;_transform&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">result</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="c1"># Partion into institutions and non-institutions sheets</span>
+    <span class="n">institutions</span> <span class="o">=</span> <span class="n">_filter_formatted_sheet_data</span><span class="p">(</span>
+        <span class="n">formatted_sheets_data</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="n">gs_format</span><span class="o">.</span><span class="n">standard_institution</span><span class="p">,</span>
+            <span class="c1"># gs_format.institution_by_rows,</span>
+            <span class="n">gs_format</span><span class="o">.</span><span class="n">multiple_sigla_answer_variable</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">non_institutions</span> <span class="o">=</span> <span class="n">_filter_formatted_sheet_data</span><span class="p">(</span>
+        <span class="n">formatted_sheets_data</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">gs_format</span><span class="o">.</span><span class="n">institution_and_composite_variable</span><span class="p">,</span> <span class="n">gs_format</span><span class="o">.</span><span class="n">composite_variable</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="c1"># Run load institutions flow</span>
+    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Load institutions&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">load_institutions_flow</span><span class="p">:</span>
+        <span class="n">_load</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">institutions</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">))</span>
+
+    <span class="n">load_institutions_flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="c1"># Run load non institutions flow</span>
+    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Load non institutions&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">load_non_institutions_flow</span><span class="p">:</span>
+        <span class="n">_load</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">non_institutions</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">))</span>
+    <span class="n">load_non_institutions_flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span></div>
 
 
 <span class="c1">###############################################################################</span>

@@ -30,7 +30,6 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -88,6 +87,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -111,7 +118,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Math notation example</a></li>
 </ul>
 
             
@@ -182,55 +188,229 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>
 <span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">institution_extracters_constants</span>
+<span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="n">DatabaseCollection</span><span class="p">,</span> <span class="n">VariableType</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span>
 
 <span class="c1">###############################################################################</span>
 
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(levelname)4s</span><span class="s2">: </span><span class="si">%(module)s</span><span class="s2">:</span><span class="si">%(lineno)4s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">GOOGLE_API_SCOPES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://www.googleapis.com/auth/spreadsheets&quot;</span><span class="p">]</span>
+<span class="n">COMPOSITE_VARIABLE_HEADINGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Constitutional Rights&quot;</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">rights</span><span class="p">,</span>
+    <span class="s2">&quot;Constitutional Amendments&quot;</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">amendments</span><span class="p">,</span>
+    <span class="s2">&quot;Legal Framework&quot;</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">legal_framework</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="c1">###############################################################################</span>
 
 
-<div class="viewcode-block" id="SheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.SheetData">[docs]</a><span class="k">class</span> <span class="nc">SheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_composite_variable</span><span class="p">(</span>
+    <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The extracted data from a Google Sheet.</span>
+<span class="sd">    Get the composite variable from a SheetData.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        sheet_title: str</span>
-<span class="sd">            The title of the sheet.</span>
-<span class="sd">        meta_data: Dict[str, str]</span>
-<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
-<span class="sd">        data: List[List[str]]</span>
-<span class="sd">            The data of the sheet.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sheet_data: SheetData</span>
+<span class="sd">        The sheet data containing the composite variable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    composite_variable: List[Dict[str, Union[int, List[Dict[str, str]]]]]</span>
+<span class="sd">        A list of individual variables of a composite varible.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">composite_variable</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+            <span class="s2">&quot;sigla_answers&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">column_name</span><span class="p">,</span> <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">j</span><span class="p">]}</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">column_names</span><span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="p">]</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Found composite variable: </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;variable_heading&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> of length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">composite_variable</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;from sheet: </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">composite_variable</span>
 
 
-<div class="viewcode-block" id="FormattedSheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.FormattedSheetData">[docs]</a><span class="k">class</span> <span class="nc">FormattedSheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="c1"># can delete</span>
+<span class="k">def</span> <span class="nf">_get_institution_by_rows</span><span class="p">(</span>
+    <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The formatted data from a Google Sheet.</span>
+<span class="sd">    Get the list of institutions and their variables from a sheet.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        sheet_title: str</span>
-<span class="sd">            The title of the sheet.</span>
-<span class="sd">        meta_data: Dict[str, str]</span>
-<span class="sd">            The meta data of the sheet, found in the first two rows.</span>
-<span class="sd">        formatted_data: List</span>
-<span class="sd">            The formatted data of the sheet.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sheet_data: SheetData</span>
+<span class="sd">        The data of a sheet.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]</span>
+<span class="sd">        The list of institutions and their variables</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="n">formatted_data</span><span class="p">:</span> <span class="n">List</span></div>
+    <span class="c1"># Get the variable names in the 2nd row of data,</span>
+    <span class="c1"># exclulde &#39;Source&#39; columns and the first column (the institution name in Spanish)</span>
+    <span class="n">variable_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;Source&quot;</span><span class="p">]</span>
+
+    <span class="n">institutions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="c1"># The headings are found in the 1st row of data</span>
+                    <span class="c1"># The indices of institution_row are 1-more than the indices of variable_names</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_name</span><span class="p">,</span>
+                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variable_names</span><span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+        <span class="c1"># The institutions starts in the 3rd row of data</span>
+        <span class="k">for</span> <span class="n">institution_row</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="p">]</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutions from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">institutions</span>
+
+
+<span class="k">def</span> <span class="nf">_get_multilple_sigla_answer_variable</span><span class="p">(</span>
+    <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the list of institutions and their variables from a sheet.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sheet_data: SheetData</span>
+<span class="sd">        The data of a sheet.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]</span>
+<span class="sd">        The list of institutions and their variables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;sub_category&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">sub_cat</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">sub_cat</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub_category&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
+                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="c1"># The number of sigla triples is in the 3rd column, dont need this anymore</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">institution</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=*80&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_standard_institution</span><span class="p">(</span>
+    <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the list of institutions and their variables from a sheet.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sheet_data: SheetData</span>
+<span class="sd">        The data of the sheet.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]</span>
+<span class="sd">        The list of institutions and their variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the institution names from the first row of data</span>
+    <span class="n">institution_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">institution_name</span> <span class="k">for</span> <span class="n">institution_name</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">institution_name</span>
+    <span class="p">]</span>
+    <span class="n">institutions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_name</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
+                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="c1"># The variables starts in the 3rd row of data</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">institution_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">institution_names</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">has_country</span> <span class="o">=</span> <span class="s2">&quot;country&quot;</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span>
+    <span class="k">for</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">institutions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">has_country</span><span class="p">:</span>
+            <span class="n">institution</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">COMPOSITE_VARIABLE_HEADINGS</span><span class="p">:</span>
+                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span>
+                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COMPOSITE_VARIABLE_HEADINGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutions from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">institutions</span>
 
 
 <div class="viewcode-block" id="A1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">[docs]</a><span class="k">class</span> <span class="nc">A1Notation</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
@@ -251,6 +431,7 @@
 <span class="sd">        end_column: Optional[str] = None</span>
 <span class="sd">            The right column boundary of a group of cells</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">start_row</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">end_row</span><span class="p">:</span> <span class="nb">int</span>
@@ -268,11 +449,20 @@
 
 
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheetsInstitutionExtracter</span><span class="p">:</span>
+    <span class="n">google_sheets_format_to_function_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">gs_format</span><span class="o">.</span><span class="n">standard_institution</span><span class="p">:</span> <span class="n">_get_standard_institution</span><span class="p">,</span>
+        <span class="n">gs_format</span><span class="o">.</span><span class="n">institution_by_rows</span><span class="p">:</span> <span class="n">_get_institution_by_rows</span><span class="p">,</span>
+        <span class="n">gs_format</span><span class="o">.</span><span class="n">institution_and_composite_variable</span><span class="p">:</span> <span class="n">_get_composite_variable</span><span class="p">,</span>
+        <span class="n">gs_format</span><span class="o">.</span><span class="n">composite_variable</span><span class="p">:</span> <span class="n">_get_composite_variable</span><span class="p">,</span>
+        <span class="n">gs_format</span><span class="o">.</span><span class="n">multiple_sigla_answer_variable</span><span class="p">:</span> <span class="n">_get_multilple_sigla_answer_variable</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_path</span> <span class="o">=</span> <span class="n">credentials_path</span>
+        <span class="n">credentials_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">credentials_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">credentials_path</span><span class="p">)</span>
         <span class="c1"># Creates a Credentials instance from a service account json file.</span>
         <span class="n">credentials</span> <span class="o">=</span> <span class="n">service_account</span><span class="o">.</span><span class="n">Credentials</span><span class="o">.</span><span class="n">from_service_account_file</span><span class="p">(</span>
-            <span class="n">credentials_path</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">GOOGLE_API_SCOPES</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_path</span><span class="p">,</span> <span class="n">scopes</span><span class="o">=</span><span class="n">GOOGLE_API_SCOPES</span>
         <span class="p">)</span>
         <span class="c1"># Construct a Resource for interacting with Google Sheets API</span>
         <span class="n">service</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s2">&quot;sheets&quot;</span><span class="p">,</span> <span class="s2">&quot;v4&quot;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="n">cache_discovery</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -376,7 +566,7 @@
 <span class="sd">            The id of a spreadsheet</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
+<span class="sd">        -------</span>
 <span class="sd">        a1_notations: List[A1Notatoin]</span>
 <span class="sd">            The list of A1Notations, one for each sheet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -392,144 +582,6 @@
             <span class="k">for</span> <span class="n">sheet</span> <span class="ow">in</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sheets&quot;</span><span class="p">)</span>
         <span class="p">]</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_constitutional_rights</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-        <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">&quot;beneficiaries&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-                <span class="p">}</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="p">],</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">institution</span><span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_constitutional_amendments</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-        <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">&quot;name_and_number&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;date_in_force&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                    <span class="s2">&quot;portions_of_constitutional_text_modified&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
-                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
-                <span class="p">}</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="p">],</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">institution</span><span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_institution_by_rows</span><span class="p">(</span>
-        <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the list of institutions and their variables from a sheet.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        sheet_data: SheetData</span>
-<span class="sd">            The data of a sheet.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
-<span class="sd">        institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]</span>
-<span class="sd">            The list of institutions and their variables</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get the variable names in the 2nd row of data,</span>
-        <span class="c1"># exclulde &#39;Source&#39; columns and the first column (the institution name in Spanish)</span>
-        <span class="n">variable_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;Source&quot;</span><span class="p">]</span>
-
-        <span class="n">institutions</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="c1"># The headings are found in the 1st row of data</span>
-                        <span class="c1"># The indices of institution_row are 1-more than the indices of variable_names</span>
-                        <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_name</span><span class="p">,</span>
-                        <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
-                    <span class="p">}</span>
-                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variable_names</span><span class="p">)</span>
-                <span class="p">],</span>
-            <span class="p">}</span>
-            <span class="c1"># The institutions starts in the 3rd row of data</span>
-            <span class="k">for</span> <span class="n">institution_row</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
-        <span class="p">]</span>
-
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutionss from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">institutions</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_institution_by_triples</span><span class="p">(</span>
-        <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the list of institutions and their variables from a sheet.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        sheet_data: SheetData</span>
-<span class="sd">            The data of the sheet.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
-<span class="sd">        institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]</span>
-<span class="sd">            The list of institutions and their variables.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># print(sheet_title)</span>
-
-        <span class="c1"># Get the institution names from the first row of data</span>
-        <span class="n">institution_names</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">institution_name</span>
-            <span class="k">for</span> <span class="n">institution_name</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">institution_name</span>
-        <span class="p">]</span>
-        <span class="c1"># log.info(institution_names)</span>
-        <span class="n">institutions</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_name</span><span class="p">,</span>
-                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span>
-                        <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                        <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
-                        <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
-                        <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
-                    <span class="p">}</span>
-                    <span class="c1"># The variables starts in the 3rd row of data</span>
-                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
-                <span class="p">],</span>
-            <span class="p">}</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">institution_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">institution_names</span><span class="p">)</span>
-        <span class="p">]</span>
-
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutionss from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">institutions</span>
-
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_spreadsheet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spreadsheet data given a spreadsheet id.</span>
@@ -540,12 +592,17 @@
 <span class="sd">            The id of the spreadsheet.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
+<span class="sd">        -------</span>
 <span class="sd">        spreadsheet_data: List[SheetData]</span>
 <span class="sd">            The spreadsheet data. Please the SheetData class to view its attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get an A1Notation for each sheet&#39;s meta data</span>
         <span class="n">meta_data_a1_notations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_meta_data_a1_notations</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">)</span>
+        <span class="c1"># Get the spreadsheet title</span>
+        <span class="n">spreadsheet_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">spreadsheet_title</span> <span class="o">=</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
         <span class="c1"># Get the meta data for each sheet</span>
         <span class="n">meta_data_response</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
@@ -596,8 +653,8 @@
             <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
         <span class="p">]</span>
 
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished extracting spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> sheets in spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished extracting spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> sheets in spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">SheetData</span><span class="p">(</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
@@ -617,7 +674,7 @@
 <span class="sd">            The id of the master spreadsheet.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
+<span class="sd">        -------</span>
 <span class="sd">        spreadsheet_ids: List[str]</span>
 <span class="sd">            The list of spreadsheet ids.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -634,8 +691,7 @@
 
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.process_sheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">        TODO</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process a sheet to get its data in a format ready to consumed by DB.</span>
 
 <span class="sd">        Parameters</span>
@@ -644,39 +700,35 @@
 <span class="sd">            The data of the sheet.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
+<span class="sd">        -------</span>
 <span class="sd">        formatted_sheet_data: FormattedSheetData</span>
-<span class="sd">            The data in reqired format. TODO</span>
+<span class="sd">            The data in reqired format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">google_sheets_format</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span>
+        <span class="n">formatted_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">get_data_key</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">google_sheets_format</span>
-            <span class="o">==</span> <span class="n">institution_extracters_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_triples</span>
+            <span class="n">get_data_key</span>
+            <span class="ow">in</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">google_sheets_format_to_function_dict</span>
         <span class="p">):</span>
-            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">_get_institution_by_triples</span><span class="p">(</span>
-                <span class="n">sheet_data</span>
+            <span class="n">get_data_function</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">google_sheets_format_to_function_dict</span><span class="p">[</span>
+                    <span class="n">get_data_key</span>
+                <span class="p">]</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
-                <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>
-                <span class="n">formatted_data</span><span class="o">=</span><span class="n">formatted_data</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">google_sheets_format</span>
-            <span class="o">==</span> <span class="n">institution_extracters_constants</span><span class="o">.</span><span class="n">GoogleSheetsFormat</span><span class="o">.</span><span class="n">institution_by_rows</span>
-        <span class="p">):</span>
-            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="o">.</span><span class="n">_get_institution_by_rows</span><span class="p">(</span>
-                <span class="n">sheet_data</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
-                <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>
-                <span class="n">formatted_data</span><span class="o">=</span><span class="n">formatted_data</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">get_data_function</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span> <span class="n">google_sheets_format</span>
-            <span class="p">)</span></div>
+                <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">),</span>
+                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
+            <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+            <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>
+            <span class="n">formatted_data</span><span class="o">=</span><span class="n">formatted_data</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;GoogleSheetsInstitutionExtracter [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_credentials_path</span><span class="si">}</span><span class="s2">]&gt;&quot;</span>

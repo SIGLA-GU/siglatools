@@ -30,14 +30,13 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" /> 
+    <link rel="next" title="Document Store Schema" href="document_store_schema.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,6 +88,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -112,7 +119,6 @@
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="math.html">Math notation example</a></li>
 </ul>
 
             
@@ -175,7 +181,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="document_store_schema.html" class="btn btn-neutral float-right" title="Document Store Schema" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
   </div>
@@ -192,14 +198,15 @@
 </div>
 <div class="section" id="sigla-tools">
 <h1>SIGLA Tools<a class="headerlink" href="#sigla-tools" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://github.com/tohuynh/siglatools/actions"><img alt="Build Status" src="https://github.com/tohuynh/siglatools/workflows/Build%20Master/badge.svg" /></a>
-<a class="reference external image-reference" href="https://tohuynh.github.io/siglatools"><img alt="Documentation" src="https://github.com/tohuynh/siglatools/workflows/Documentation/badge.svg" /></a>
+<a class="reference external image-reference" href="https://github.com/sigla-gu/siglatools/actions"><img alt="Build Status" src="https://github.com/sigla-gu/siglatools/workflows/Build%20Master/badge.svg" /></a>
+<a class="reference external image-reference" href="https://sigla-gu.github.io/siglatools"><img alt="Documentation" src="https://github.com/sigla-gu/siglatools/workflows/Documentation/badge.svg" /></a>
 <p>Tools to extract SIGLA data from Google Sheets and load into MongoDB.</p>
 <hr class="docutils" />
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Bin script to run SIGLA ETL pipeline</p></li>
+<li><p>GitHub workflows to run pipeline semi/automatically on GitHub Actions.</p></li>
 </ul>
 </div>
 <div class="section" id="quick-start">
@@ -211,11 +218,11 @@
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p><strong>Stable Release:</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">siglatools</span></code><span class="raw-html-m2r"><br></span>
-<strong>Development Head:</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/tohuynh/siglatools.git</span></code></p>
+<strong>Development Head:</strong> <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+https://github.com/sigla-gu/siglatools.git</span></code></p>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>For full package documentation please visit <a class="reference external" href="https://tohuynh.github.io/siglatools">tohuynh.github.io/siglatools</a>.</p>
+<p>For full package documentation please visit <a class="reference external" href="https://sigla-gu.github.io/siglatools">sigla-gu.github.io/siglatools</a>.</p>
 </div>
 <div class="section" id="development">
 <h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>

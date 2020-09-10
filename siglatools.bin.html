@@ -30,7 +30,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -90,6 +89,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#legal-framework">Legal Framework</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -113,7 +120,6 @@
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="math.html">Math notation example</a></li>
 </ul>
 
             
@@ -215,7 +221,16 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dl class="function">
 <dt id="siglatools.bin.run_sigla_pipeline.run_sigla_pipeline">
 <code class="sig-prename descclassname">siglatools.bin.run_sigla_pipeline.</code><code class="sig-name descname">run_sigla_pipeline</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">db_connection_url: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_sigla_pipeline.html#run_sigla_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_sigla_pipeline.run_sigla_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run the SIGLA ETL pipeline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-siglatools.bin">

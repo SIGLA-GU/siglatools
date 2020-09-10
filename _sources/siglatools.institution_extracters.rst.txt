@@ -28,6 +28,14 @@ siglatools.institution\_extracters.google\_sheets\_institution\_extracter module
    :undoc-members:
    :show-inheritance:
 
+siglatools.institution\_extracters.utils module
+-----------------------------------------------
+
+.. automodule:: siglatools.institution_extracters.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------
