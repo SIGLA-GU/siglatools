@@ -96,7 +96,7 @@ setup(
     test_suite="siglatools/tests",
     tests_require=test_requirements,
     extras_require=extra_requirements,
-    url="https://github.com/tohuynh/siglatools",
+    url="https://github.com/sigla-gu/siglatools",
     # Do not edit this string manually, always use bumpversion
     # Details in CONTRIBUTING.rst
     version="0.1.0",
