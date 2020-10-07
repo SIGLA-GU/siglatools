@@ -8,6 +8,7 @@ Welcome to SIGLA Tools's documentation!
 
    Overview <self>
    document_store_schema
+   run_data_pipeline
    installation
    Package modules <modules>
    contributing
