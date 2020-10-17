@@ -158,7 +158,6 @@ class MongoDBDatabase:
                 "sigla_answer": variable_heading_dict.get(variable_heading),
                 "type": VariableType.aggregate,
                 "variable_index": i,
-                "sigla_answer_index": 0,
             }
             for i, variable_heading in enumerate(variable_heading_list)
         ]
@@ -169,7 +168,6 @@ class MongoDBDatabase:
                     "institution": variable.get("institution"),
                     "name": variable.get("name"),
                     "variable_index": variable.get("variable_index"),
-                    "sigla_answer_index": variable.get("sigla_answer_index"),
                 },
                 {"$set": variable},
                 upsert=True,
@@ -278,7 +276,6 @@ class MongoDBDatabase:
                     "heading": child.get("heading"),
                     "name": child.get("name"),
                     "variable_index": child.get("variable_index"),
-                    "sigla_answer_index": child.get("sigla_answer_index"),
                 },
                 {"$set": {"institution": institution_doc_id_dict.get(i), **child}},
                 upsert=True,

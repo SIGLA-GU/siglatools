@@ -101,7 +101,6 @@ def _get_institution_by_rows(
                     "sigla_answer": institution_row[j * 2 + 1],
                     "source": institution_row[j * 2 + 2],
                     "variable_index": j,
-                    "sigla_answer_index": 0,
                 }
                 for j, variable_name in enumerate(variable_names)
             ],
@@ -147,16 +146,13 @@ def _get_multilple_sigla_answer_variable(
                 {
                     "heading": variable_row[0],
                     "name": variable_row[1],
-                    "sigla_answer": variable_row[3 + j * 3],
-                    "orig_text": variable_row[3 + j * 3 + 1],
-                    "source": variable_row[3 + j * 3 + 2],
+                    "sigla_answer": variable_row[2],
+                    "orig_text": variable_row[3],
+                    "source": variable_row[4],
                     "variable_index": i,
-                    "sigla_answer_index": j,
                     "type": VariableType.standard,
                 }
                 for i, variable_row in enumerate(sheet_data.data[1:])
-                # The number of sigla triples is in the 3rd column, dont need this anymore
-                for j in range(int(variable_row[2]))
             ],
         }
 
@@ -199,7 +195,6 @@ def _get_standard_institution(
                     "orig_text": variable_row[2 + i * 3 + 1],
                     "source": variable_row[2 + i * 3 + 2],
                     "variable_index": j,
-                    "sigla_answer_index": 0,
                 }
                 # The variables starts in the 3rd row of data
                 for j, variable_row in enumerate(sheet_data.data[2:])
