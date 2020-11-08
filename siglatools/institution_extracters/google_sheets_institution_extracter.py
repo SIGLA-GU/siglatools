@@ -137,7 +137,7 @@ def _get_multilple_sigla_answer_variable(
             "country": sheet_data.meta_data.get("country"),
             "category": sheet_data.meta_data.get("category"),
             "sub_category": [
-                sub_cat.strip()
+                " ".join(sub_cat.strip().split())
                 for sub_cat in sheet_data.meta_data.get("sub_category")
                 .strip()
                 .split(";")
