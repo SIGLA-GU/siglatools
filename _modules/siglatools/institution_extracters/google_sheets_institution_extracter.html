@@ -292,7 +292,6 @@
                     <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
                     <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">institution_row</span><span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
                     <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
-                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variable_names</span><span class="p">)</span>
             <span class="p">],</span>
@@ -329,7 +328,7 @@
             <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
             <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
             <span class="s2">&quot;sub_category&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="n">sub_cat</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_cat</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
                 <span class="k">for</span> <span class="n">sub_cat</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub_category&quot;</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
@@ -338,16 +337,13 @@
                 <span class="p">{</span>
                     <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
-                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
                     <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
-                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
                     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                <span class="c1"># The number of sigla triples is in the 3rd column, dont need this anymore</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
             <span class="p">],</span>
         <span class="p">}</span>
 
@@ -390,7 +386,6 @@
                     <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
                     <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
                     <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
-                    <span class="s2">&quot;sigla_answer_index&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="c1"># The variables starts in the 3rd row of data</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>

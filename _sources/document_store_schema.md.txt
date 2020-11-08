@@ -30,7 +30,6 @@ variable_id: {
     heading: str
     name: str
     variable_index: int
-    sigla_answer_index: int
     sigla_answer: str || List[List[Dict]]
     orig_text: Optional[str]
     source: Optional[str]
@@ -42,7 +41,7 @@ variable_id: {
 _Notes_
 
 `institution` is used to capture a many-to-one relationship with an institution.
-`variable_index` specifies the order of the variable. `sigla_answer_index` specifies the order of the sigla's answer, in cases where there are multiple sigla triples for a variable.
+`variable_index` specifies the order of the variable.
 `type` specifies the variable type. standard variable has the sigla triple: `sigla_answer`, `orig_text`, `source` as str, with `orig_text` being optional for International Institutions. composite variable also has a sigla triple, but has an additional `hyperlink` field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn't have a sigla triple, since it is missing `orig_text` and `source`. Instead its `sigla_answer` is a list of list of dict with the format:
 ```
 sigla_answer: [

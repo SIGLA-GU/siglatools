@@ -227,7 +227,6 @@
     heading: str
     name: str
     variable_index: int
-    sigla_answer_index: int
     sigla_answer: str || List[List[Dict]]
     orig_text: Optional[str]
     source: Optional[str]
@@ -238,7 +237,7 @@
 </div>
 <p><em>Notes</em></p>
 <p><code class="docutils literal notranslate"><span class="pre">institution</span></code> is used to capture a many-to-one relationship with an institution.
-<code class="docutils literal notranslate"><span class="pre">variable_index</span></code> specifies the order of the variable. <code class="docutils literal notranslate"><span class="pre">sigla_answer_index</span></code> specifies the order of the sigla’s answer, in cases where there are multiple sigla triples for a variable.
+<code class="docutils literal notranslate"><span class="pre">variable_index</span></code> specifies the order of the variable.
 <code class="docutils literal notranslate"><span class="pre">type</span></code> specifies the variable type. standard variable has the sigla triple: <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code>, <code class="docutils literal notranslate"><span class="pre">orig_text</span></code>, <code class="docutils literal notranslate"><span class="pre">source</span></code> as str, with <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> being optional for International Institutions. composite variable also has a sigla triple, but has an additional <code class="docutils literal notranslate"><span class="pre">hyperlink</span></code> field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn’t have a sigla triple, since it is missing <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code>. Instead its <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code> is a list of list of dict with the format:</p>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>sigla_answer: [
     [
