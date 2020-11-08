@@ -10,6 +10,7 @@ import argparse
 import logging
 import sys
 import traceback
+from datetime import timedelta
 from typing import List
 
 from distributed import LocalCluster
@@ -20,9 +21,8 @@ from siglatools import get_module_version
 
 from ..databases import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
-from ..institution_extracters.google_sheets_institution_extracter import (
-    GoogleSheetsInstitutionExtracter,
-)
+from ..institution_extracters.google_sheets_institution_extracter import \
+    GoogleSheetsInstitutionExtracter
 from ..institution_extracters.utils import FormattedSheetData, SheetData
 
 ###############################################################################
@@ -37,7 +37,7 @@ log = logging.getLogger()
 # Tasks
 
 
-@task
+@task(max_retries=100, retry_delay=timedelta(seconds=100))
 def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[SheetData]:
     """
     Prefect Task to extract data from a spreadsheet.
