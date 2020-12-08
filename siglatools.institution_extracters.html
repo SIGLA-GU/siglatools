@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -222,11 +223,6 @@
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable">
 <code class="sig-name descname">institution_and_composite_variable</code><em class="property"> = 'institution-and-composite-variable'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_rows">
-<code class="sig-name descname">institution_by_rows</code><em class="property"> = 'institution-by-rows'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_by_rows" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -360,7 +356,7 @@ but they don’t have to be.</p>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict">
-<code class="sig-name descname">google_sheets_format_to_function_dict</code><em class="property"> = {'composite-variable': &lt;function _get_composite_variable&gt;, 'institution-and-composite-variable': &lt;function _get_composite_variable&gt;, 'institution-by-rows': &lt;function _get_institution_by_rows&gt;, 'multiple-sigla-answer-variable': &lt;function _get_multilple_sigla_answer_variable&gt;, 'standard-institution': &lt;function _get_standard_institution&gt;}</em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">google_sheets_format_to_function_dict</code><em class="property"> = {'composite-variable': &lt;function _get_composite_variable&gt;, 'institution-and-composite-variable': &lt;function _get_composite_variable&gt;, 'multiple-sigla-answer-variable': &lt;function _get_multilple_sigla_answer_variable&gt;, 'standard-institution': &lt;function _get_standard_institution&gt;}</em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

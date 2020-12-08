@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
@@ -212,8 +213,9 @@
 
 <span class="kn">from</span> <span class="nn">..databases</span> <span class="kn">import</span> <span class="n">MongoDBDatabase</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
-<span class="kn">from</span> <span class="nn">..institution_extracters.google_sheets_institution_extracter</span> <span class="kn">import</span> \
-    <span class="n">GoogleSheetsInstitutionExtracter</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters.google_sheets_institution_extracter</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span>
 
 <span class="c1">###############################################################################</span>
@@ -228,7 +230,7 @@
 <span class="c1"># Tasks</span>
 
 
-<span class="nd">@task</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">retry_delay</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+<span class="nd">@task</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">retry_delay</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect Task to extract data from a spreadsheet.</span>
@@ -380,7 +382,6 @@
         <span class="n">formatted_sheets_data</span><span class="p">,</span>
         <span class="p">[</span>
             <span class="n">gs_format</span><span class="o">.</span><span class="n">standard_institution</span><span class="p">,</span>
-            <span class="c1"># gs_format.institution_by_rows,</span>
             <span class="n">gs_format</span><span class="o">.</span><span class="n">multiple_sigla_answer_variable</span><span class="p">,</span>
         <span class="p">],</span>
     <span class="p">)</span>

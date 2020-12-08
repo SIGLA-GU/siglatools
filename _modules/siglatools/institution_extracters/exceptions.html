@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
@@ -206,7 +207,7 @@
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, mising either the start_column value or end_column value. </span><span class="se">\</span>
 <span class="s2">                Both values must be present or not present together. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Received start_row: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="si">}</span><span class="s2">, end_row: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received start_column: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="si">}</span><span class="s2">, end_column: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
 
 

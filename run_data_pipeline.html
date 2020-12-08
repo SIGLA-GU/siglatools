@@ -100,6 +100,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Run Data Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -223,8 +224,29 @@
 <li><p>Get started with Run Staging Pipeline to run the staging pipeline, or with Run Production Pipeline to run the production pipeline</p></li>
 <li><p>Add an appropriate title and in the body of the issue write about the key changes to the data</p></li>
 <li><p>Click Submit New Issue</p></li>
-<li><p>Go to the Actions tab and see the pipeline in progress</p></li>
+<li><p>Go to the <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">Actions</a> tab and see the pipeline in progress. You can narrow down the workflows by choosing the type of workflows on the left side, either Manual Run Staging Pipepline or Manual Run Production Pipeline. Then find the specific workflow by finding the GitHub issue title in step 3. Click on the workflow to view its details. On the left side, you should see a check beside <code class="docutils literal notranslate"><span class="pre">authorization_and_correct_label</span></code>. And if the pipeline ran succesfully then you should also see a check next to <code class="docutils literal notranslate"><span class="pre">pipeline</span></code>.</p></li>
 </ol>
+</div>
+<div class="section" id="debugging-data-pipeline-logs">
+<h2>Debugging Data Pipeline Logs<a class="headerlink" href="#debugging-data-pipeline-logs" title="Permalink to this headline">¶</a></h2>
+<p>Access the pipeline’s logs by opening a specific workflow (follow similar instructions in the above step 5) and then on the right side click <code class="docutils literal notranslate"><span class="pre">...</span></code> and select <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">raw</span> <span class="pre">logs</span></code>. A successful run of the pipeline is indicated by <code class="docutils literal notranslate"><span class="pre">Flow</span> <span class="pre">run</span> <span class="pre">SUCCESS:</span> <span class="pre">all</span> <span class="pre">reference</span> <span class="pre">tasks</span> <span class="pre">succeeded</span></code> near the end of the logs.</p>
+<p>In cases where the pipeline failed, here are potential errors and how to change the PROD Google Sheets to fix them. Search <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> in the logs to find them.</p>
+<ul class="simple">
+<li><p>TypeError (missing 3 required positional arguments: sheet_title, start_row, and end_row): In the metadata section of a Google Sheet, make sure start_row and end_row have values.</p></li>
+<li><p>IncompleteColumnRangeInA1Notation: In the metadata section of a Google Sheet, make sure start_column and end_column have values.</p></li>
+<li><p>InvalidRangeInA1Notation: In the metadata section of a Google Sheet, make sure start_column is less than end_column and start_row is less than end_row.</p></li>
+<li><p>UnrecognizedGoogleSheetsFormat: In the metadata section of a Google Sheet, make sure the format is one of the accepted Google Sheets Format.</p>
+<ul>
+<li><p>standard-institution</p></li>
+<li><p>institution-and-composite-variable</p></li>
+<li><p>composite-variable</p></li>
+<li><p>multiple-sigla-answer-variable</p></li>
+</ul>
+</li>
+<li><p>UnableToFindDocument: In the metadata section of a Google Sheet, make sure the variable_heading and variable_name exactly matches the variable heading and variable name of the corresponding Google Sheet’s variable row. For example, in the Constitutional Rights sheet’s metadata section, the variable_heading and variable_name must match the variable heading and variable name of the accompanying Google Sheet’s rights variable row.</p></li>
+<li><p>IndexError: There’s probably an illegal non-empty cell in the data section of a Google Sheet.</p></li>
+<li><p>HttpError 429: The number of Google Sheets read operations has been exhausted. Maybe wait 15-30 minutes and re-run the pipeline by using the re-run workflow button.</p></li>
+</ul>
 </div>
 </div>
 
