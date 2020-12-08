@@ -15,7 +15,7 @@ class IncompleteColumnRangeInA1Notation(Exception):
         return (
             f"In {self.sheet_title}, mising either the start_column value or end_column value. \
                 Both values must be present or not present together. "
-            f"Received start_row: {self.start_column}, end_row: {self.end_column}"
+            f"Received start_column: {self.start_column}, end_column: {self.end_column}"
         )
 
 

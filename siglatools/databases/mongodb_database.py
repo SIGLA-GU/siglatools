@@ -31,7 +31,6 @@ class MongoDBDatabase:
         self._db = self._client.get_default_database()
         self._load_function_dict = {
             gs_format.standard_institution: self._load_institutions,
-            gs_format.institution_by_rows: self._load_institutions,
             gs_format.institution_and_composite_variable: self._load_institution_and_composite_variable,
             gs_format.composite_variable: self._load_composite_variable,
             gs_format.multiple_sigla_answer_variable: self._load_institutions,
