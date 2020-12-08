@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/sigla-gu/siglatools/workflows/Build%20Master/badge.svg)](https://github.com/sigla-gu/siglatools/actions)
 [![Documentation](https://github.com/sigla-gu/siglatools/workflows/Documentation/badge.svg)](https://sigla-gu.github.io/siglatools)
 
-Tools to extract SIGLA data from Google Sheets and load into MongoDB.
+Tools to extract SIGLA data from Google Sheets and load into MongoDB. Please see the SIGLA_Data_PROD folder on Google Drive to find documentations on acceptable Google Sheets formats.
 
 ---
 
