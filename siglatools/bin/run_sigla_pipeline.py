@@ -190,7 +190,6 @@ def run_sigla_pipeline(
         formatted_sheets_data,
         [
             gs_format.standard_institution,
-            # gs_format.institution_by_rows,
             gs_format.multiple_sigla_answer_variable,
         ],
     )

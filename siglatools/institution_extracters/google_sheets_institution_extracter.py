@@ -66,55 +66,6 @@ def _get_composite_variable(
     return composite_variable
 
 
-# can delete
-def _get_institution_by_rows(
-    sheet_data: SheetData,
-) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
-    """
-    Get the list of institutions and their variables from a sheet.
-
-    Parameters
-    ----------
-    sheet_data: SheetData
-        The data of a sheet.
-
-    Returns
-    -------
-    institutions: List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]
-        The list of institutions and their variables
-    """
-    # Get the variable names in the 2nd row of data,
-    # exclulde 'Source' columns and the first column (the institution name in Spanish)
-    variable_names = [name for name in sheet_data.data[1][1:] if name != "Source"]
-
-    institutions = [
-        {
-            "name": institution_row[0],
-            "category": sheet_data.meta_data.get("category"),
-            "childs": [
-                {
-                    # The headings are found in the 1st row of data
-                    # The indices of institution_row are 1-more than the indices of variable_names
-                    "type": "standard",
-                    "heading": sheet_data.data[0][j * 2 + 1],
-                    "name": variable_name,
-                    "sigla_answer": institution_row[j * 2 + 1],
-                    "source": institution_row[j * 2 + 2],
-                    "variable_index": j,
-                }
-                for j, variable_name in enumerate(variable_names)
-            ],
-        }
-        # The institutions starts in the 3rd row of data
-        for institution_row in sheet_data.data[2:]
-    ]
-
-    log.info(
-        f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
-    )
-    return institutions
-
-
 def _get_multilple_sigla_answer_variable(
     sheet_data: SheetData,
 ) -> List[Dict[str, Union[str, List[Dict[str, Union[int, str]]]]]]:
@@ -260,7 +211,6 @@ class A1Notation(NamedTuple):
 class GoogleSheetsInstitutionExtracter:
     google_sheets_format_to_function_dict = {
         gs_format.standard_institution: _get_standard_institution,
-        gs_format.institution_by_rows: _get_institution_by_rows,
         gs_format.institution_and_composite_variable: _get_composite_variable,
         gs_format.composite_variable: _get_composite_variable,
         gs_format.multiple_sigla_answer_variable: _get_multilple_sigla_answer_variable,
