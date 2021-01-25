@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Document Store Schema &mdash; SIGLA Tools 0.1.0 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -51,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> SIGLA Tools
+            <a href="index.html" class="icon icon-home"> SIGLA Tools
           
 
           
@@ -94,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#variables">Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rights">Rights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#legal-framework">Legal Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#body-of-laws">Body of Laws</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
@@ -166,6 +169,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -177,7 +182,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/document_store_schema.md.txt" rel="nofollow"> View page source</a>
           
         
@@ -188,10 +193,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="run_data_pipeline.html" class="btn btn-neutral float-right" title="Run Data Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="run_data_pipeline.html" class="btn btn-neutral float-right" title="Run Data Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to SIGLA Tools’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to SIGLA Tools’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -232,7 +237,7 @@
     orig_text: Optional[str]
     source: Optional[str]
     type: &quot;standard&quot; || &quot;composite&quot; || &quot;aggregate&quot;
-    hyperlink: Optional[&quot;rights&quot; || &quot;amendments&quot; || &quot;legal_framework&quot;]
+    hyperlink: Optional[&quot;rights&quot; || &quot;amendments&quot; || &quot;body_of_law&quot;]
 }
 </pre></div>
 </div>
@@ -293,10 +298,10 @@
 <p><em>Notes</em></p>
 <p><code class="docutils literal notranslate"><span class="pre">variable</span></code> is used to capture a many-to-one relationship with the Constitutional Amendments variable.</p>
 </div>
-<div class="section" id="legal-framework">
-<h2>Legal Framework<a class="headerlink" href="#legal-framework" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="body-of-laws">
+<h2>Body of Laws<a class="headerlink" href="#body-of-laws" title="Permalink to this headline">¶</a></h2>
 <p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>legal_framework_id: {
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>law_id: {
     variables: [
         {
             type: ObjectId,
@@ -314,7 +319,7 @@
 </pre></div>
 </div>
 <p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">variables</span></code> is used to capture a many-to-many relationship with the Legal Framework variable. A legal framework(in total) can be a legal framework for many variables.</p>
+<p><code class="docutils literal notranslate"><span class="pre">variables</span></code> is used to capture a many-to-many relationship with the Body of Law variable. A Body of Law variable is associated with many laws. A single law can be a law for many Body of Law variables.</p>
 </div>
 </div>
 
@@ -323,28 +328,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, To Huynh
+        &#169; Copyright 2020, To Huynh.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
