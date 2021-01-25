@@ -7,7 +7,7 @@ class DatabaseCollection:
     variables = "variables"
     rights = "rights"
     amendments = "amendments"
-    legal_framework = "legal_framework"
+    body_of_law = "body_of_law"
 
 
 class VariableType:

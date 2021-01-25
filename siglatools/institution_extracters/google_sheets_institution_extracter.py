@@ -22,10 +22,13 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+CONSTITUTIONAL_RIGHTS = "Constitutional Rights"
+CONSTITUTIONAL_AMENDMENTS = "Constitutional Amendments"
+BODY_OF_LAW = "Body of Law"
 COMPOSITE_VARIABLE_HEADINGS = {
-    "Constitutional Rights": DatabaseCollection.rights,
-    "Constitutional Amendments": DatabaseCollection.amendments,
-    "Legal Framework": DatabaseCollection.legal_framework,
+    CONSTITUTIONAL_RIGHTS: DatabaseCollection.rights,
+    CONSTITUTIONAL_AMENDMENTS: DatabaseCollection.amendments,
+    BODY_OF_LAW: DatabaseCollection.body_of_law,
 }
 
 ###############################################################################
@@ -159,11 +162,17 @@ def _get_standard_institution(
         if has_country:
             institution["country"] = sheet_data.meta_data.get("country")
         for variable in institution.get("childs"):
-            if variable.get("heading").strip() in COMPOSITE_VARIABLE_HEADINGS:
+            if variable.get("heading").strip() in [
+                CONSTITUTIONAL_AMENDMENTS,
+                CONSTITUTIONAL_RIGHTS,
+            ]:
                 variable["type"] = VariableType.composite
                 variable["hyperlink"] = COMPOSITE_VARIABLE_HEADINGS.get(
                     variable.get("heading").strip()
                 )
+            elif BODY_OF_LAW in variable.get("heading").strip():
+                variable["type"] = VariableType.composite
+                variable["hyperlink"] = COMPOSITE_VARIABLE_HEADINGS.get(BODY_OF_LAW)
             else:
                 variable["type"] = VariableType.standard
 
