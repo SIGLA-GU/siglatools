@@ -34,7 +34,7 @@ variable_id: {
     orig_text: Optional[str]
     source: Optional[str]
     type: "standard" || "composite" || "aggregate"
-    hyperlink: Optional["rights" || "amendments" || "legal_framework"]
+    hyperlink: Optional["rights" || "amendments" || "body_of_law"]
 }
 ```
 
@@ -102,11 +102,11 @@ _Notes_
 
 `variable` is used to capture a many-to-one relationship with the Constitutional Amendments variable.
 
-## Legal Framework
+## Body of Laws
 
 _Schema_
 ```
-legal_framework_id: {
+law_id: {
     variables: [
         {
             type: ObjectId,
@@ -125,4 +125,4 @@ legal_framework_id: {
 
 _Notes_
 
-`variables` is used to capture a many-to-many relationship with the Legal Framework variable. A legal framework(in total) can be a legal framework for many variables.
+`variables` is used to capture a many-to-many relationship with the Body of Law variable. A Body of Law variable is associated with many laws. A single law can be a law for many Body of Law variables.
