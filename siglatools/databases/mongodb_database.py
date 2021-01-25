@@ -63,7 +63,7 @@ class MongoDBDatabase:
         if len(variable_docs_id) != len(institution_names):
             raise UnableToFindDocument(sheet_title, db_collection.variables, variable)
 
-        if meta_data.get("data_type") == db_collection.legal_framework:
+        if meta_data.get("data_type") == db_collection.body_of_law:
             return {"variables": variable_docs_id}
         else:
             return {"variable": variable_docs_id[0]}
