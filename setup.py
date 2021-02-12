@@ -79,7 +79,8 @@ setup(
     description="Tools to extract SIGLA data from Google Sheets and load into MongoDB",
     entry_points={
         "console_scripts": [
-            "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main"
+            "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main",
+            "run_external_link_checker=siglatools.bin.run_external_link_checker:main"
         ],
     },
     install_requires=requirements,
