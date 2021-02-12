@@ -4,6 +4,14 @@ siglatools.bin package
 Submodules
 ----------
 
+siglatools.bin.run\_external\_link\_checker module
+--------------------------------------------------
+
+.. automodule:: siglatools.bin.run_external_link_checker
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.bin.run\_sigla\_pipeline module
 ------------------------------------------
 
