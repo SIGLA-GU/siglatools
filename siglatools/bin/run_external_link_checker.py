@@ -8,10 +8,23 @@ users' virtualenv when the parent module is installed using pip.
 
 import argparse
 import logging
+import re
 import sys
 import traceback
+import urllib
+
+from distributed import LocalCluster
+from prefect import Flow, unmapped
+from prefect.engine.executors import DaskExecutor
 
 from siglatools import get_module_version
+
+from ..institution_extracters.google_sheets_institution_extracter import (
+    GoogleSheetsInstitutionExtracter,
+)
+from ..institution_extracters.utils import SheetData, convert_rowcol_to_A1_name
+from .run_sigla_pipeline import _extract
+from .utils import _flatten_list
 
 ###############################################################################
 
@@ -22,14 +35,82 @@ log = logging.getLogger()
 
 ###############################################################################
 
+URL_REGEX = r"(https?://\S+)"
+
+
+def _check_external_links(sheet_data: SheetData):
+    """
+    Check for broken external links in a sheet
+
+    Parameters
+    ----------
+    sheet_data: SheetData
+        The sheet's data.
+    """
+    for row, i in enumerate(sheet_data.data):
+        for cell, j in enumerate(sheet_data.data[i]):
+            urls = re.findall(URL_REGEX, cell)
+            for url in urls:
+                try:
+                    urllib.request.urlopen(url)
+                except Exception:
+                    row_index = int(sheet_data.meta_data.get("start_row")) + i - 1
+                    # Assume always bounding box starts in first column
+                    col_index = j
+                    log.info(
+                        f"BROKEN Link: {sheet_data.spreadsheet_title}",
+                        f" | {sheet_data.sheet_title}",
+                        f" | {convert_rowcol_to_A1_name(row_index, col_index)}",
+                        f" | {url}",
+                    )
+
 
 def run_external_link_checker(
     master_spreadsheet_id: str,
     google_api_credentials_path: str,
 ):
-    print(
-        f"Running link checker for {master_spreadsheet_id} {google_api_credentials_path}"
+    """
+    Run the the external link checker
+
+    Parameters
+    ----------
+    master_spreadsheet_id: str
+        The master spreadsheet id
+    google_api_credentials_path: str
+        The path to Google API credentials file needed to read Google Sheets.
+    """
+    # Create a connection to the google sheets reader
+    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
+        google_api_credentials_path
     )
+    # Get the list of spreadsheets ids from the master spreadsheet
+    spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
+        master_spreadsheet_id
+    )
+    log.info("Finished external link checker set up, start external link checking")
+    log.info("=" * 80)
+    # Spawn local dask cluster
+    cluster = LocalCluster()
+    # Log the dashboard link
+    log.info(f"Dashboard available at: {cluster.dashboard_link}")
+    # Setup workflow
+    with Flow("Extract") as flow:
+        # Extract sheets data.
+        # Get back list of list of SheetData
+        spreadsheets_data = _extract.map(
+            spreadsheets_id,
+            unmapped(google_api_credentials_path),
+        )
+
+        # Flatten the list of list of SheetData
+        _flatten_list(spreadsheets_data)
+
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    sheets_data = state.result[flow.get_tasks(name="_flatten_list")[0]].result
+    log.info("=" * 80)
+    # Check external links for each sheet
+    for sheet_data in sheets_data:
+        _check_external_links(sheet_data)
 
 
 ###############################################################################
