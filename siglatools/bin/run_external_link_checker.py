@@ -53,7 +53,7 @@ def _check_external_links(sheet_data: SheetData):
             for url in urls:
                 try:
                     urllib.request.urlopen(url)
-                except Exception:
+                except urllib.error.HTTPError:
                     row_index = int(sheet_data.meta_data.get("start_row")) + i - 1
                     # Assume always bounding box starts in first column
                     col_index = j
