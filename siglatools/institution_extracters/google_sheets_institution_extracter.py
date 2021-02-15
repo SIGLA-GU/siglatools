@@ -425,6 +425,7 @@ class GoogleSheetsInstitutionExtracter:
         log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
         return [
             SheetData(
+                spreadsheet_title=spreadsheet_title,
                 sheet_title=a1_notation.sheet_title,
                 meta_data=meta_data[i],
                 data=data[i],
@@ -493,6 +494,7 @@ class GoogleSheetsInstitutionExtracter:
             )
 
         return FormattedSheetData(
+            spreadsheet_title=sheet_data.spreadsheet_title,
             sheet_title=sheet_data.sheet_title,
             meta_data=sheet_data.meta_data,
             formatted_data=formatted_data,
