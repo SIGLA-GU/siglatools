@@ -8,7 +8,9 @@ users' virtualenv when the parent module is installed using pip.
 
 import argparse
 import logging
+import os
 import re
+import ssl
 import sys
 import traceback
 import urllib
@@ -36,6 +38,11 @@ log = logging.getLogger()
 ###############################################################################
 
 URL_REGEX = r"(https?://\S+)"
+
+if not os.environ.get("PYTHONHTTPSVERIFY", "") and getattr(
+    ssl, "_create_unverified_context", None
+):
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def _check_external_links(sheet_data: SheetData):
