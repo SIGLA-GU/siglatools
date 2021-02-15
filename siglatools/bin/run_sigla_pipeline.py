@@ -25,6 +25,7 @@ from ..institution_extracters.google_sheets_institution_extracter import (
     GoogleSheetsInstitutionExtracter,
 )
 from ..institution_extracters.utils import FormattedSheetData, SheetData
+from .utils import _flatten_list
 
 ###############################################################################
 
@@ -59,25 +60,6 @@ def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[Shee
     # Get the spreadsheet data.
     extracter = GoogleSheetsInstitutionExtracter(google_api_credentials_path)
     return extracter.get_spreadsheet_data(spreadsheet_id)
-
-
-@task
-def _flatten_list(outer_list: List[List]) -> List:
-    """
-    Prefect Task to flatten a 2D list.
-
-    Parameters
-    ----------
-    outer_list: List[List]
-        The list of list.
-
-    Returns
-    -------
-    flattened_list: List
-        The flattened list.
-    """
-    # Flatten a list of list.
-    return [element for inner_list in outer_list for element in inner_list]
 
 
 @task
@@ -145,6 +127,8 @@ def run_sigla_pipeline(
 
     Parameters
     ----------
+    master_spreadsheet_id:
+        The master spreadsheet id.
     google_api_credentials_path: str
         The path to Google API credentials file needed to read Google Sheets.
     db_connection_url: str
