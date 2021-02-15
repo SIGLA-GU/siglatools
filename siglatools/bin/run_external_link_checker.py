@@ -47,8 +47,8 @@ def _check_external_links(sheet_data: SheetData):
     sheet_data: SheetData
         The sheet's data.
     """
-    for row, i in enumerate(sheet_data.data):
-        for cell, j in enumerate(sheet_data.data[i]):
+    for i, row in enumerate(sheet_data.data):
+        for j, cell in enumerate(sheet_data.data[i]):
             urls = re.findall(URL_REGEX, cell)
             for url in urls:
                 try:
