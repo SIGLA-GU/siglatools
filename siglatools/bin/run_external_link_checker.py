@@ -58,10 +58,12 @@ def _check_external_links(sheet_data: SheetData):
                     # Assume always bounding box starts in first column
                     col_index = j
                     log.info(
-                        f"BROKEN Link: {sheet_data.spreadsheet_title}",
-                        f" | {sheet_data.sheet_title}",
-                        f" | {convert_rowcol_to_A1_name(row_index, col_index)}",
-                        f" | {url}",
+                        (
+                            f"BROKEN LINK: {sheet_data.spreadsheet_title}"
+                            f" | {sheet_data.sheet_title}"
+                            f" | {convert_rowcol_to_A1_name(row_index, col_index)}"
+                            f" | {url}"
+                        )
                     )
 
 
