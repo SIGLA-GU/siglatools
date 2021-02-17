@@ -81,7 +81,8 @@ setup(
     entry_points={
         "console_scripts": [
             "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main",
-            "run_external_link_checker=siglatools.bin.run_external_link_checker:main"
+            "run_external_link_checker=siglatools.bin.run_external_link_checker:main",
+            "identify_uv_variable=siglatools.bin.identify_uv_variable:main",
         ],
     },
     install_requires=requirements,
