@@ -9,14 +9,16 @@ users' virtualenv when the parent module is installed using pip.
 import argparse
 import logging
 import re
-import ssl
 import sys
 import traceback
-import urllib
+from typing import List, NamedTuple, Optional
 
+import requests
 from distributed import LocalCluster
-from prefect import Flow, unmapped
+from prefect import Flow, flatten, task, unmapped
 from prefect.engine.executors import DaskExecutor
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from siglatools import get_module_version
 
@@ -25,7 +27,6 @@ from ..institution_extracters.google_sheets_institution_extracter import (
 )
 from ..institution_extracters.utils import SheetData, convert_rowcol_to_A1_name
 from .run_sigla_pipeline import _extract
-from .utils import _flatten_list
 
 ###############################################################################
 
@@ -39,33 +40,137 @@ log = logging.getLogger()
 URL_REGEX = r"(https?://\S+)"
 
 
-def _check_external_links(sheet_data: SheetData):
+class URLData(NamedTuple):
     """
-    Check for broken external links in a sheet
+    The URL and its context.
+
+    Attributes:
+        spreadsheet_title: str
+            The title of the spreadsheet the contains the URL.
+        sheet_title: str
+            The title of the sheet that contains the URL.
+        row_index: int
+            The row location of the URL in the sheet.
+        col_index: int
+            The column location of the URL in the sheet.
+        url: string
+            The URL.
+    """
+
+    spreadsheet_title: str
+    sheet_title: str
+    row_index: int
+    col_index: int
+    url: str
+
+
+class CheckedURL(NamedTuple):
+    """
+    The status of an URL after checking.
+
+    Attributes:
+        has_error: bool
+            Whether the URL is broken.
+        url_data: URLData
+            The URL and its context. See URLData class.
+        msg: Optional[str] = None
+            The status of the URL aftering checking. None if has_error is False.
+    """
+
+    has_error: bool
+    url_data: URLData
+    msg: Optional[str] = None
+
+
+@task
+def _extract_external_links(sheet_data: SheetData) -> List[URLData]:
+    """
+    Prefect Task to extract external links from a sheet.
 
     Parameters
     ----------
     sheet_data: SheetData
         The sheet's data.
+
+    Returns
+    -------
+    urls_data: List[URLData]
+        The list of URLs and their context. See URLData class.
     """
+    urls_data = []
     for i, row in enumerate(sheet_data.data):
-        for j, cell in enumerate(sheet_data.data[i]):
+        for j, cell in enumerate(row):
             urls = re.findall(URL_REGEX, cell)
+            row_index = int(sheet_data.meta_data.get("start_row")) + i - 1
+            # Assume bounding box always starts in the first column of a sheet
+            col_index = j
             for url in urls:
-                try:
-                    urllib.request.urlopen(url)
-                except urllib.error.HTTPError:
-                    row_index = int(sheet_data.meta_data.get("start_row")) + i - 1
-                    # Assume always bounding box starts in first column
-                    col_index = j
-                    log.info(
-                        (
-                            f"BROKEN LINK: {sheet_data.spreadsheet_title}"
-                            f" | {sheet_data.sheet_title}"
-                            f" | {convert_rowcol_to_A1_name(row_index, col_index)}"
-                            f" | {url}"
-                        )
+                urls_data.append(
+                    URLData(
+                        spreadsheet_title=sheet_data.spreadsheet_title,
+                        sheet_title=sheet_data.sheet_title,
+                        row_index=row_index,
+                        col_index=col_index,
+                        url=url,
                     )
+                )
+    return urls_data
+
+
+@task
+def _check_external_link(url_data: URLData) -> CheckedURL:
+    """
+    Prefect Task to check the status of the URL.
+
+    Parameters
+    ----------
+    url_data: URLData
+        The URL and its context. See URLData class.
+
+    Returns
+    -------
+        checked_url: CheckedURL
+        The status of the URL aftering checking. See CheckedURL class.
+    """
+    has_error = False
+    error_msg = None
+    response = None
+    try:
+        http = requests.Session()
+        retry_strategy = Retry(
+            total=1,
+            connect=1,
+            backoff_factor=1,
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        http.mount("https://", adapter)
+        http.mount("http://", adapter)
+        http.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0",
+            }
+        )
+        response = http.get(
+            url_data.url,
+            allow_redirects=True,
+            timeout=20.0,
+            verify=True,
+        )
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        has_error = True
+        error_msg = f"{response.status_code} - {response.reason}"
+    except requests.exceptions.SSLError:
+        has_error = True
+        error_msg = "Untrusted SSL Certificate"
+    except requests.exceptions.ConnectionError as error:
+        has_error = True
+        error_msg = f"Error connecting: {error}"
+    except requests.exceptions.RequestException as error:
+        has_error = True
+        error_msg = f"Unknown error: {error}"
+    log.info(f"Finished checking {url_data.url}")
+    return CheckedURL(has_error=has_error, url_data=url_data, msg=error_msg)
 
 
 def run_external_link_checker(
@@ -90,7 +195,7 @@ def run_external_link_checker(
     spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
         master_spreadsheet_id
     )
-    log.info("Finished external link checker set up, start external link checking")
+    log.info("Finished external link checker set up, start checking external linl.")
     log.info("=" * 80)
     # Spawn local dask cluster
     cluster = LocalCluster()
@@ -104,16 +209,41 @@ def run_external_link_checker(
             spreadsheets_id,
             unmapped(google_api_credentials_path),
         )
+        # Extract links from list of SheetData
+        # Get back list of list of URLData
+        links_data = _extract_external_links.map(flatten(spreadsheets_data))
+        # Check external links
+        _check_external_link.map(flatten(links_data))
 
-        # Flatten the list of list of SheetData
-        _flatten_list(spreadsheets_data)
-
+    # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
-    sheets_data = state.result[flow.get_tasks(name="_flatten_list")[0]].result
+    # Get the list of CheckedURL
+    checked_links = state.result[flow.get_tasks(name="_check_external_link")[0]].result
     log.info("=" * 80)
-    # Check external links for each sheet
-    for sheet_data in sheets_data:
-        _check_external_links(sheet_data)
+    # Get error links
+    broken_links = [link for link in checked_links if link.has_error]
+    sorted_broken_links = sorted(
+        broken_links,
+        key=lambda x: (
+            x.url_data.spreadsheet_title,
+            x.url_data.sheet_title,
+            x.url_data.row_index,
+            x.url_data.col_index,
+            x.url_data.url,
+        ),
+    )
+    # Log the error links
+    for link in sorted_broken_links:
+        url_data = link.url_data
+        log.info(
+            (
+                f"BROKEN LINK: {url_data.spreadsheet_title}"
+                f" | {url_data.sheet_title}"
+                f" | {convert_rowcol_to_A1_name(url_data.row_index, url_data.col_index)}"
+                f" | {url_data.url}"
+                f" | {link.msg}"
+            )
+        )
 
 
 ###############################################################################
@@ -167,7 +297,7 @@ def main():
     try:
         args = Args()
         dbg = args.debug
-        ssl._create_default_https_context = ssl._create_unverified_context
+        # ssl._create_default_https_context = ssl._create_unverified_context
         run_external_link_checker(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
