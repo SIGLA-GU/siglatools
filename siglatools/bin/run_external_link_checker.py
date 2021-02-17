@@ -54,7 +54,7 @@ class URLData(NamedTuple):
             The row location of the URL in the sheet.
         col_index: int
             The column location of the URL in the sheet.
-        url: string
+        url: str
             The URL.
     """
 
@@ -71,11 +71,11 @@ class CheckedURL(NamedTuple):
 
     Attributes:
         has_error: bool
-            Whether the URL is broken.
+            Whether the URL has an error.
         url_data: URLData
             The URL and its context. See URLData class.
         msg: Optional[str] = None
-            The status of the URL aftering checking. None if has_error is False.
+            The status of the URL after checking. None if has_error is False.
     """
 
     has_error: bool
@@ -196,14 +196,14 @@ def run_external_link_checker(
     spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
         master_spreadsheet_id
     )
-    log.info("Finished external link checker set up, start checking external linl.")
+    log.info("Finished external link checker set up, start checking external link.")
     log.info("=" * 80)
     # Spawn local dask cluster
     cluster = LocalCluster()
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("Extract") as flow:
+    with Flow("Check external links") as flow:
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
@@ -222,9 +222,9 @@ def run_external_link_checker(
     checked_links = state.result[flow.get_tasks(name="_check_external_link")[0]].result
     log.info("=" * 80)
     # Get error links
-    broken_links = [link for link in checked_links if link.has_error]
-    sorted_broken_links = sorted(
-        broken_links,
+    error_links = [link for link in checked_links if link.has_error]
+    sorted_error_links = sorted(
+        error_links,
         key=lambda x: (
             x.url_data.spreadsheet_title,
             x.url_data.sheet_title,
@@ -233,12 +233,12 @@ def run_external_link_checker(
             x.url_data.url,
         ),
     )
-    # Write broken links to a csv file
+    # Write error links to a csv file
     with open("external_links.csv", mode="w") as csv_file:
         fieldnames = ["spreadsheet_title", "sheet_title", "cell", "url", "reason"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter="\t")
         writer.writeheader()
-        for link in sorted_broken_links:
+        for link in sorted_error_links:
             url_data = link.url_data
             writer.writerow(
                 {
