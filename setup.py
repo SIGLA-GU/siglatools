@@ -50,7 +50,8 @@ requirements = [
     "dnspython",
     "dask[bag]",
     "distributed",
-    "prefect"
+    "prefect",
+    "requests",
 ]
 
 extra_requirements = {

@@ -34,4 +34,9 @@ jobs:
     - name: Run External Link Checker
       run: |
         run_external_link_checker -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json
-
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: external-link-artifact
+        path: external_links.csv
+  
