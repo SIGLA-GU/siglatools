@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Search &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>Run External Link Checker &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -23,7 +23,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -38,10 +37,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Run Data Pipeline" href="run_data_pipeline.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -72,7 +71,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -91,7 +90,7 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
@@ -125,10 +124,10 @@
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -184,33 +183,75 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Run External Link Checker</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/run_external_link_checker.md.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
   </ul>
 
   
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      
+      
+        <a href="run_data_pipeline.html" class="btn btn-neutral float-left" title="Run Data Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+  </div>
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="run-external-link-checker">
+<h1>Run External Link Checker<a class="headerlink" href="#run-external-link-checker" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="command-line">
+<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Install the package with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install siglatools
+</pre></div>
+</div>
+</li>
+<li><p>Run the following command with the correct configurations.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_external_link_checker -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="github-actions-for-collaborators-only">
+<h2>GitHub Actions (for collaborators+ only)<a class="headerlink" href="#github-actions-for-collaborators-only" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">https://github.com/SIGLA-GU/siglatools/actions</a>.</p></li>
+<li><p>From the list of workflows, select <code class="docutils literal notranslate"><span class="pre">Manual</span> <span class="pre">Run</span> <span class="pre">External</span> <span class="pre">Link</span> <span class="pre">Checker</span></code>.</p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> dropdown button.</p></li>
+<li><p>Click on the green <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> button to run the external link checker.</p></li>
+<li><p>Wait until a new workflow run result shows up and click on it see its details.</p></li>
+<li><p>On workflow details page, once the run is finished click on the <code class="docutils literal notranslate"><span class="pre">external-link-artifact</span></code> to download a csv file of bad external URLs.</p></li>
+</ol>
+</div>
+<div class="section" id="external-links-reasons">
+<h2>External Links Reasons<a class="headerlink" href="#external-links-reasons" title="Permalink to this headline">¶</a></h2>
+<p>The tab delimited csv file has a <code class="docutils literal notranslate"><span class="pre">reason</span></code> fieldname as to why the URL is included for further inspection. Here are the relevant reasons:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span> <span class="pre">-</span> <span class="pre">Not</span> <span class="pre">found</span></code> means the webpage doesn’t exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">-</span> <span class="pre">Forbidden</span></code> means the webpage required authentication or the webpage doesn’t allow a script to visit the webpage. Either way, this webpage requires further inspection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Untrusted</span> <span class="pre">SSL</span> <span class="pre">Certificate</span></code> means the webpage doesn’t have an acceptable SSL Certificate and the browser may warn users of potential security risks when they visit the webpage.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">connecting</span></code> means the script was unable to visit the webpage and requires further inspection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Unknown</span> <span class="pre">error</span></code> means the script encountered an unknown error and requires further inspection.</p></li>
+</ul>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
@@ -252,14 +293,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

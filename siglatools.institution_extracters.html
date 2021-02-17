@@ -39,7 +39,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="next" title="Document Store Schema" href="document_store_schema.html" />
     <link rel="prev" title="siglatools.databases package" href="siglatools.databases.html" /> 
 </head>
 
@@ -92,20 +92,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -122,6 +108,26 @@
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -197,7 +203,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="document_store_schema.html" class="btn btn-neutral float-right" title="Document Store Schema" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="siglatools.databases.html" class="btn btn-neutral float-left" title="siglatools.databases package" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -393,6 +399,8 @@ but they don’t have to be.</p>
 <p>The formatted data from a Google Sheet.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet that contains the sheet.</p>
+</dd>
 <dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
 </dd>
 <dt>meta_data: Dict[str, str]</dt><dd><p>The meta data of the sheet, found in the first two rows.</p>
@@ -402,22 +410,28 @@ but they don’t have to be.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of FormattedSheetData(sheet_title, meta_data, formatted_data)</p>
+<p>Create new instance of FormattedSheetData(spreadsheet_title, sheet_title, meta_data, formatted_data)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.formatted_data">
 <code class="sig-name descname">formatted_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.formatted_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 3</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.meta_data">
 <code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.meta_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 2</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">
 <code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
@@ -430,6 +444,8 @@ but they don’t have to be.</p>
 <p>The extracted data from a Google Sheet.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The title of spreadsheet that contains the sheet.</p>
+</dd>
 <dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
 </dd>
 <dt>meta_data: Dict[str, str]</dt><dd><p>The meta data of the sheet, found in the first two rows.</p>
@@ -439,25 +455,68 @@ but they don’t have to be.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of SheetData(sheet_title, meta_data, data)</p>
+<p>Create new instance of SheetData(spreadsheet_title, sheet_title, meta_data, data)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.data">
 <code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 3</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.meta_data">
 <code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.meta_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 2</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.sheet_title">
 <code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.SheetData.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.institution_extracters.utils.convert_col_to_name">
+<code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">convert_col_to_name</code><span class="sig-paren">(</span><em class="sig-param">col: int</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_col_to_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_col_to_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a zero indexed column cell reference to a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>col</strong> (<em>int</em>) – The cell column.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>col_str</strong> – The column style string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.institution_extracters.utils.convert_rowcol_to_A1_name">
+<code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">convert_rowcol_to_A1_name</code><span class="sig-paren">(</span><em class="sig-param">row: int</em>, <em class="sig-param">col: int</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_rowcol_to_A1_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_rowcol_to_A1_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts row and col to an A1 name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – The row number.</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – The column number.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>A1_cell</strong> – The A1 cell str.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

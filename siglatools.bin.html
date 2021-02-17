@@ -92,20 +92,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -122,6 +108,26 @@
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -224,6 +230,96 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
 </dd></dl>
 
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">CheckedURL</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#CheckedURL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The status of an URL after checking.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>has_error: bool</dt><dd><p>Whether the URL has an error.</p>
+</dd>
+<dt>url_data: URLData</dt><dd><p>The URL and its context. See URLData class.</p>
+</dd>
+<dt>msg: Optional[str] = None</dt><dd><p>The status of the URL after checking. None if has_error is False.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of CheckedURL(has_error, url_data, msg)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.has_error">
+<code class="sig-name descname">has_error</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.has_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.msg">
+<code class="sig-name descname">msg</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.url_data">
+<code class="sig-name descname">url_data</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.url_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.URLData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">URLData</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The URL and its context.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet the contains the URL.</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the URL.</p>
+</dd>
+<dt>row_index: int</dt><dd><p>The row location of the URL in the sheet.</p>
+</dd>
+<dt>col_index: int</dt><dd><p>The column location of the URL in the sheet.</p>
+</dd>
+<dt>url: str</dt><dd><p>The URL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of URLData(spreadsheet_title, sheet_title, row_index, col_index, url)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.col_index">
+<code class="sig-name descname">col_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.col_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.row_index">
+<code class="sig-name descname">row_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.row_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.url">
+<code class="sig-name descname">url</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="siglatools.bin.run_external_link_checker.main">
 <code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.main" title="Permalink to this definition">¶</a></dt>
@@ -232,7 +328,16 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dl class="function">
 <dt id="siglatools.bin.run_external_link_checker.run_external_link_checker">
 <code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run the the external link checker</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-siglatools.bin.run_sigla_pipeline">
@@ -257,6 +362,7 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> – The master spreadsheet id.</p></li>
 <li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
 <li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
 </ul>

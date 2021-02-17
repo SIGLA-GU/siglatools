@@ -90,20 +90,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -120,6 +106,26 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -211,7 +217,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">distributed</span> <span class="kn">import</span> <span class="n">LocalCluster</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">unmapped</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">flatten</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">unmapped</span>
 <span class="kn">from</span> <span class="nn">prefect.engine.executors</span> <span class="kn">import</span> <span class="n">DaskExecutor</span>
 
 <span class="kn">from</span> <span class="nn">siglatools</span> <span class="kn">import</span> <span class="n">get_module_version</span>
@@ -256,25 +262,6 @@
     <span class="c1"># Get the spreadsheet data.</span>
     <span class="n">extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">extracter</span><span class="o">.</span><span class="n">get_spreadsheet_data</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">)</span>
-
-
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">_flatten_list</span><span class="p">(</span><span class="n">outer_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prefect Task to flatten a 2D list.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    outer_list: List[List]</span>
-<span class="sd">        The list of list.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    flattened_list: List</span>
-<span class="sd">        The flattened list.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Flatten a list of list.</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">element</span> <span class="k">for</span> <span class="n">inner_list</span> <span class="ow">in</span> <span class="n">outer_list</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">inner_list</span><span class="p">]</span>
 
 
 <span class="nd">@task</span>
@@ -342,6 +329,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    master_spreadsheet_id:</span>
+<span class="sd">        The master spreadsheet id.</span>
 <span class="sd">    google_api_credentials_path: str</span>
 <span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
 <span class="sd">    db_connection_url: str</span>
@@ -372,11 +361,8 @@
             <span class="n">unmapped</span><span class="p">(</span><span class="n">google_api_credentials_path</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="c1"># Flatten the list of list of SheetData</span>
-        <span class="n">flattened_spreadsheets_data</span> <span class="o">=</span> <span class="n">_flatten_list</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">)</span>
-
         <span class="c1"># Transform list of SheetData into FormattedSheetData</span>
-        <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flattened_spreadsheets_data</span><span class="p">)</span>
+        <span class="n">_transform</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">))</span>
 
     <span class="c1"># Run the extract and transform flow</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>

@@ -90,20 +90,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -120,6 +106,26 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -622,6 +628,7 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> sheets in spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">SheetData</span><span class="p">(</span>
+                <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">spreadsheet_title</span><span class="p">,</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                 <span class="n">meta_data</span><span class="o">=</span><span class="n">meta_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
@@ -690,6 +697,7 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>
+            <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
             <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
             <span class="n">meta_data</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">,</span>
             <span class="n">formatted_data</span><span class="o">=</span><span class="n">formatted_data</span><span class="p">,</span>

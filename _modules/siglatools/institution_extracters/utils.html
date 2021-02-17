@@ -90,20 +90,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../installation.html#from-sources">From sources</a></li>
@@ -120,6 +106,26 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -206,6 +212,8 @@
 <span class="sd">    The extracted data from a Google Sheet.</span>
 
 <span class="sd">    Attributes:</span>
+<span class="sd">        spreadsheet_title: str</span>
+<span class="sd">            The title of spreadsheet that contains the sheet.</span>
 <span class="sd">        sheet_title: str</span>
 <span class="sd">            The title of the sheet.</span>
 <span class="sd">        meta_data: Dict[str, str]</span>
@@ -214,6 +222,7 @@
 <span class="sd">            The data of the sheet.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">spreadsheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
@@ -224,6 +233,8 @@
 <span class="sd">    The formatted data from a Google Sheet.</span>
 
 <span class="sd">    Attributes:</span>
+<span class="sd">        spreadsheet_title: str</span>
+<span class="sd">            The title of the spreadsheet that contains the sheet.</span>
 <span class="sd">        sheet_title: str</span>
 <span class="sd">            The title of the sheet.</span>
 <span class="sd">        meta_data: Dict[str, str]</span>
@@ -232,9 +243,69 @@
 <span class="sd">            The formatted data of the sheet.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">spreadsheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
     <span class="n">formatted_data</span><span class="p">:</span> <span class="n">List</span></div>
+
+
+<div class="viewcode-block" id="convert_rowcol_to_A1_name"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.convert_rowcol_to_A1_name">[docs]</a><span class="k">def</span> <span class="nf">convert_rowcol_to_A1_name</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts row and col to an A1 name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    row: int</span>
+<span class="sd">        The row number.</span>
+<span class="sd">    col: int</span>
+<span class="sd">        The column number.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A1_cell: str</span>
+<span class="sd">        The A1 cell str.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">col_str</span> <span class="o">=</span> <span class="n">convert_col_to_name</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">col_str</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="convert_col_to_name"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.convert_col_to_name">[docs]</a><span class="k">def</span> <span class="nf">convert_col_to_name</span><span class="p">(</span><span class="n">col</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a zero indexed column cell reference to a string.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    col: int</span>
+<span class="sd">        The cell column.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    col_str: str</span>
+<span class="sd">        The column style string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">col_num</span> <span class="o">=</span> <span class="n">col</span>
+
+    <span class="n">col_num</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Change to 1-index.</span>
+    <span class="n">col_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">while</span> <span class="n">col_num</span><span class="p">:</span>
+        <span class="c1"># Set remainder from 1 .. 26</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">col_num</span> <span class="o">%</span> <span class="mi">26</span>
+
+        <span class="k">if</span> <span class="n">remainder</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">remainder</span> <span class="o">=</span> <span class="mi">26</span>
+
+        <span class="c1"># Convert the remainder to a character.</span>
+        <span class="n">col_letter</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">remainder</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Accumulate the column letters, right to left.</span>
+        <span class="n">col_str</span> <span class="o">=</span> <span class="n">col_letter</span> <span class="o">+</span> <span class="n">col_str</span>
+
+        <span class="c1"># Get the next order of magnitude.</span>
+        <span class="n">col_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">col_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">26</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">col_str</span></div>
 </pre></div>
 
            </div>

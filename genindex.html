@@ -91,20 +91,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
@@ -121,6 +107,26 @@
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -204,6 +210,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -245,15 +252,23 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL">CheckedURL (class in siglatools.bin.run_external_link_checker)</a>
+</li>
       <li><a href="siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.clean_up">clean_up() (siglatools.databases.mongodb_database.MongoDBDatabase method)</a>
 </li>
       <li><a href="siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.close_connection">close_connection() (siglatools.databases.mongodb_database.MongoDBDatabase method)</a>
+</li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.col_index">col_index (siglatools.bin.run_external_link_checker.URLData attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.VariableType.composite">composite (siglatools.databases.constants.VariableType attribute)</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat.composite_variable">composite_variable (siglatools.institution_extracters.constants.GoogleSheetsFormat attribute)</a>
+</li>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.convert_col_to_name">convert_col_to_name() (in module siglatools.institution_extracters.utils)</a>
+</li>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.convert_rowcol_to_A1_name">convert_rowcol_to_A1_name() (in module siglatools.institution_extracters.utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -314,6 +329,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL.has_error">has_error (siglatools.bin.run_external_link_checker.CheckedURL attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -357,6 +380,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase">MongoDBDatabase (class in siglatools.databases.mongodb_database)</a>
 </li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL.msg">msg (siglatools.bin.run_external_link_checker.CheckedURL attribute)</a>
+</li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat.multiple_sigla_answer_variable">multiple_sigla_answer_variable (siglatools.institution_extracters.constants.GoogleSheetsFormat attribute)</a>
 </li>
   </ul></td>
@@ -375,6 +400,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseCollection.rights">rights (siglatools.databases.constants.DatabaseCollection attribute)</a>
 </li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.row_index">row_index (siglatools.bin.run_external_link_checker.URLData attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.run_external_link_checker">run_external_link_checker() (in module siglatools.bin.run_external_link_checker)</a>
@@ -387,9 +414,11 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">sheet_title (siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation attribute)</a>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.sheet_title">sheet_title (siglatools.bin.run_external_link_checker.URLData attribute)</a>
 
       <ul>
+        <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">(siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation attribute)</a>
+</li>
         <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">(siglatools.institution_extracters.utils.FormattedSheetData attribute)</a>
 </li>
         <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.SheetData.sheet_title">(siglatools.institution_extracters.utils.SheetData attribute)</a>
@@ -409,10 +438,10 @@
 </li>
       <li><a href="siglatools.databases.html#module-siglatools.databases.constants">siglatools.databases.constants (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#module-siglatools.databases.exceptions">siglatools.databases.exceptions (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#module-siglatools.databases.mongodb_database">siglatools.databases.mongodb_database (module)</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#module-siglatools.institution_extracters">siglatools.institution_extracters (module)</a>
@@ -425,6 +454,14 @@
 </li>
       <li><a href="siglatools.institution_extracters.html#module-siglatools.institution_extracters.utils">siglatools.institution_extracters.utils (module)</a>
 </li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.spreadsheet_title">spreadsheet_title (siglatools.bin.run_external_link_checker.URLData attribute)</a>
+
+      <ul>
+        <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">(siglatools.institution_extracters.utils.FormattedSheetData attribute)</a>
+</li>
+        <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.SheetData.spreadsheet_title">(siglatools.institution_extracters.utils.SheetData attribute)</a>
+</li>
+      </ul></li>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.VariableType.standard">standard (siglatools.databases.constants.VariableType attribute)</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat.standard_institution">standard_institution (siglatools.institution_extracters.constants.GoogleSheetsFormat attribute)</a>
@@ -441,9 +478,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.exceptions.UnableToFindDocument">UnableToFindDocument</a>
 </li>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">UnrecognizedGoogleSheetsFormat</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">UnrecognizedGoogleSheetsFormat</a>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.url">url (siglatools.bin.run_external_link_checker.URLData attribute)</a>
+</li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL.url_data">url_data (siglatools.bin.run_external_link_checker.CheckedURL attribute)</a>
+</li>
+      <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData">URLData (class in siglatools.bin.run_external_link_checker)</a>
 </li>
   </ul></td>
 </tr></table>
