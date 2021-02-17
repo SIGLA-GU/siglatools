@@ -4,6 +4,14 @@ siglatools.bin package
 Submodules
 ----------
 
+siglatools.bin.identify\_uv\_variable module
+--------------------------------------------
+
+.. automodule:: siglatools.bin.identify_uv_variable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.bin.run\_external\_link\_checker module
 --------------------------------------------------
 
