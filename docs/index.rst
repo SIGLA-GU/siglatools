@@ -9,6 +9,7 @@ Welcome to SIGLA Tools's documentation!
    Overview <self>
    document_store_schema
    run_data_pipeline
+   run_external_link_checker
    installation
    Package modules <modules>
    contributing
