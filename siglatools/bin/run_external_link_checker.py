@@ -131,7 +131,7 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
     Returns
     -------
         checked_url: CheckedURL
-        The status of the URL aftering checking. See CheckedURL class.
+        The status of the URL after checking. See CheckedURL class.
     """
     has_error = False
     error_msg = None
