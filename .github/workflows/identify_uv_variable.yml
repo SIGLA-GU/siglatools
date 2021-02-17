@@ -1,0 +1,50 @@
+name: Identify Update and Verify Variables
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_date:
+        description: Start Date (YYYY-MM-DD)
+        required: true
+      end_date:
+        description: End Date (YYYY-MM-DD)
+        required: true
+
+jobs:
+  authorization:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Authorization check
+      uses: octokit/request-action@v2.0.0
+      with:
+        route: GET /repos/:repository/collaborators/${{ github.actor }}
+        repository: ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  identify_uv_variable:
+    needs: [authorization]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install .[all]
+    - uses: actions/checkout@v2
+    - name: Decrypt Google API secret
+      run: ./.github/scripts/decrypt_google_api_secret.sh
+      env:
+        GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
+    - name: Identify Update and Verify Variables
+      run: |
+        identify_uv_variable -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json -sd ${{ github.event.inputs.start_date }} -ed ${{ github.event.inputs.end_date }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: identify-uv-variable-artifact
+        path: uv_variables.csv
+  
