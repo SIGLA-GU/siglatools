@@ -7,11 +7,11 @@ Welcome to SIGLA Tools's documentation!
    :caption: Contents:
 
    Overview <self>
-   document_store_schema
-   run_data_pipeline
-   run_external_link_checker
    installation
    Package modules <modules>
+   Document Store Schema <document_store_schema>
+   Run Data Pipeline <run_data_pipeline>
+   Run External Link Checker <run_external_link_checker>
    contributing
 
 .. mdinclude:: ../README.md
