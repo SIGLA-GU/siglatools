@@ -7,6 +7,7 @@ users' virtualenv when the parent module is installed using pip.
 """
 
 import argparse
+import csv
 import logging
 import re
 import sys
@@ -232,18 +233,25 @@ def run_external_link_checker(
             x.url_data.url,
         ),
     )
-    # Log the error links
-    for link in sorted_broken_links:
-        url_data = link.url_data
-        log.info(
-            (
-                f"BROKEN LINK: {url_data.spreadsheet_title}"
-                f" | {url_data.sheet_title}"
-                f" | {convert_rowcol_to_A1_name(url_data.row_index, url_data.col_index)}"
-                f" | {url_data.url}"
-                f" | {link.msg}"
+    # Write broken links to a csv file
+    with open("external_links.csv", mode="w") as csv_file:
+        fieldnames = ["spreadsheet_title", "sheet_title", "cell", "url", "reason"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter="\t")
+        writer.writeheader()
+        for link in sorted_broken_links:
+            url_data = link.url_data
+            writer.writerow(
+                {
+                    "spreadsheet_title": url_data.spreadsheet_title,
+                    "sheet_title": url_data.sheet_title,
+                    "cell": convert_rowcol_to_A1_name(
+                        url_data.row_index, url_data.col_index
+                    ),
+                    "url": url_data.url,
+                    "reason": f"{link.msg}",
+                }
             )
-        )
+    log.info("Finished writing external links csv file")
 
 
 ###############################################################################
