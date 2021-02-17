@@ -305,7 +305,6 @@ def main():
     try:
         args = Args()
         dbg = args.debug
-        # ssl._create_default_https_context = ssl._create_unverified_context
         run_external_link_checker(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
