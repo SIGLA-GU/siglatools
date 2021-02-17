@@ -14,7 +14,7 @@ from datetime import timedelta
 from typing import List
 
 from distributed import LocalCluster
-from prefect import Flow, task, unmapped
+from prefect import Flow, flatten, task, unmapped
 from prefect.engine.executors import DaskExecutor
 
 from siglatools import get_module_version
@@ -25,7 +25,6 @@ from ..institution_extracters.google_sheets_institution_extracter import (
     GoogleSheetsInstitutionExtracter,
 )
 from ..institution_extracters.utils import FormattedSheetData, SheetData
-from .utils import _flatten_list
 
 ###############################################################################
 
@@ -159,11 +158,8 @@ def run_sigla_pipeline(
             unmapped(google_api_credentials_path),
         )
 
-        # Flatten the list of list of SheetData
-        flattened_spreadsheets_data = _flatten_list(spreadsheets_data)
-
         # Transform list of SheetData into FormattedSheetData
-        _transform.map(flattened_spreadsheets_data)
+        _transform.map(flatten(spreadsheets_data))
 
     # Run the extract and transform flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
