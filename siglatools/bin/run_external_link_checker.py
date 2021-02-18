@@ -154,7 +154,7 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
         response = http.get(
             url_data.url,
             allow_redirects=True,
-            timeout=20.0,
+            timeout=5.0,
             verify=True,
         )
         response.raise_for_status()
