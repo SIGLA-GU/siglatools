@@ -139,9 +139,9 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
     try:
         http = requests.Session()
         retry_strategy = Retry(
-            total=1,
-            connect=1,
+            total=2,
             backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         http.mount("https://", adapter)
@@ -154,7 +154,7 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
         response = http.get(
             url_data.url,
             allow_redirects=True,
-            timeout=20.0,
+            timeout=5.0,
             verify=True,
         )
         response.raise_for_status()
@@ -164,6 +164,9 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
     except requests.exceptions.SSLError:
         has_error = True
         error_msg = "Untrusted SSL Certificate"
+    except requests.exceptions.Timeout as error:
+        has_error = True
+        error_msg = f"Request timed out: {error}"
     except requests.exceptions.ConnectionError as error:
         has_error = True
         error_msg = f"Error connecting: {error}"
