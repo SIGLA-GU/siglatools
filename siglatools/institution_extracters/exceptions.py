@@ -49,3 +49,13 @@ class UnrecognizedGoogleSheetsFormat(Exception):
             f"In {self.sheet_title}, the specified format is not a valid Google Sheets format. "
             f"Received format: {self.google_sheets_format}, data_type: {self.data_type}."
         )
+
+
+class InvalidDateRange(Exception):
+    def __init__(self, start_date: str, end_date: str, **kwargs):
+        super().__init__(**kwargs)
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def __str__(self):
+        return f"InvalidDateRange: The start date {self.start_date} is greater than the end date {self.end_date}."
