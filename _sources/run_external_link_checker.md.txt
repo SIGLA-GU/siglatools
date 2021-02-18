@@ -29,6 +29,6 @@ The tab delimited csv file has a `reason` fieldname as to why the URL is include
 - `404 - Not found` means the webpage doesn't exist.
 - `403 - Forbidden` means the webpage required authentication or the webpage doesn't allow a script to visit the webpage. Either way, this webpage requires further inspection.
 - `Untrusted SSL Certificate` means the webpage doesn't have an acceptable SSL Certificate and the browser may warn users of potential security risks when they visit the webpage.
+- `Request timed out` means it took too long to get a response from the webpage and requires further inspection.
 - `Error connecting` means the script was unable to visit the webpage and requires further inspection.
 - `Unknown error` means the script encountered an unknown error and requires further inspection.
-
