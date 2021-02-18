@@ -10,8 +10,11 @@ import argparse
 import logging
 import sys
 import traceback
+from datetime import date
 
 from siglatools import get_module_version
+
+from ..institution_extracters.exceptions import InvalidDateRange
 
 ###############################################################################
 
@@ -23,11 +26,33 @@ log = logging.getLogger()
 ###############################################################################
 
 
+def _get_date_range(start_date: str, end_date: str):
+    """
+    Get the date range as date objects.
+
+    Parameters
+    ----------
+    start_date: str
+        The start date.
+    end_date: str
+        The end date.
+    Returns
+    ------
+    date_range: List[date]
+        The date range.
+    """
+    s_date = date.fromisoformat(start_date)
+    e_date = date.fromisoformat(end_date)
+    if s_date > e_date:
+        raise InvalidDateRange(start_date, end_date)
+    return [s_date, e_date]
+
+
 def identify_uv_variable(
     master_spreadsheet_id: str,
     google_api_credentials_path: str,
-    start_date: str,
-    end_date: str,
+    start_date: date,
+    end_date: date,
 ):
     """
     Identify variables that needs updating and verifying or that variables
@@ -39,9 +64,9 @@ def identify_uv_variable(
         The master spreadsheet id
     google_api_credentials_path: str
         The path to Google API credentials file needed to read Google Sheets.
-    start_date: str
+    start_date: date
         The start date.
-    end_date: str
+    end_date: date
         The end date.
     """
 
@@ -115,11 +140,12 @@ def main():
     try:
         args = Args()
         dbg = args.debug
+        [start_date, end_date] = _get_date_range(args.start_date, args.end_date)
         identify_uv_variable(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
-            args.start_date,
-            args.end_date,
+            start_date,
+            end_date,
         )
     except Exception as e:
         log.error("=============================================")
