@@ -139,9 +139,9 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
     try:
         http = requests.Session()
         retry_strategy = Retry(
-            total=1,
-            connect=1,
+            total=2,
             backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         http.mount("https://", adapter)
