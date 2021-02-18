@@ -232,7 +232,7 @@ users’ virtualenv when the parent module is installed using pip.</p>
 
 <dl class="function">
 <dt id="siglatools.bin.identify_uv_variable.identify_uv_variable">
-<code class="sig-prename descclassname">siglatools.bin.identify_uv_variable.</code><code class="sig-name descname">identify_uv_variable</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">start_date: str</em>, <em class="sig-param">end_date: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/identify_uv_variable.html#identify_uv_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.identify_uv_variable.identify_uv_variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">siglatools.bin.identify_uv_variable.</code><code class="sig-name descname">identify_uv_variable</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">start_date: datetime.date</em>, <em class="sig-param">end_date: datetime.date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/identify_uv_variable.html#identify_uv_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.identify_uv_variable.identify_uv_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify variables that needs updating and verifying or that variables
 that falls within the date range.</p>
 <dl class="field-list simple">
@@ -240,8 +240,8 @@ that falls within the date range.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id</p></li>
 <li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
-<li><p><strong>start_date</strong> (<em>str</em>) – The start date.</p></li>
-<li><p><strong>end_date</strong> (<em>str</em>) – The end date.</p></li>
+<li><p><strong>start_date</strong> (<em>date</em>) – The start date.</p></li>
+<li><p><strong>end_date</strong> (<em>date</em>) – The end date.</p></li>
 </ul>
 </dd>
 </dl>

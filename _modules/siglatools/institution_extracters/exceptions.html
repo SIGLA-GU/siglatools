@@ -252,6 +252,16 @@
             <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, the specified format is not a valid Google Sheets format. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Received format: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">google_sheets_format</span><span class="si">}</span><span class="s2">, data_type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InvalidDateRange"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidDateRange">[docs]</a><span class="k">class</span> <span class="nc">InvalidDateRange</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;InvalidDateRange: The start date </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="si">}</span><span class="s2"> is greater than the end date </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="si">}</span><span class="s2">.&quot;</span></div>
 </pre></div>
 
            </div>

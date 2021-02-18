@@ -213,8 +213,11 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
 
 <span class="kn">from</span> <span class="nn">siglatools</span> <span class="kn">import</span> <span class="n">get_module_version</span>
+
+<span class="kn">from</span> <span class="nn">..institution_extracters.exceptions</span> <span class="kn">import</span> <span class="n">InvalidDateRange</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -226,11 +229,33 @@
 <span class="c1">###############################################################################</span>
 
 
+<span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the date range as date objects.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start_date: str</span>
+<span class="sd">        The start date.</span>
+<span class="sd">    end_date: str</span>
+<span class="sd">        The end date.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    date_range: List[date]</span>
+<span class="sd">        The date range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
+    <span class="n">e_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s_date</span> <span class="o">&gt;</span> <span class="n">e_date</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidDateRange</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">s_date</span><span class="p">,</span> <span class="n">e_date</span><span class="p">]</span>
+
+
 <div class="viewcode-block" id="identify_uv_variable"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.identify_uv_variable.identify_uv_variable">[docs]</a><span class="k">def</span> <span class="nf">identify_uv_variable</span><span class="p">(</span>
     <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identify variables that needs updating and verifying or that variables</span>
@@ -242,9 +267,9 @@
 <span class="sd">        The master spreadsheet id</span>
 <span class="sd">    google_api_credentials_path: str</span>
 <span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
-<span class="sd">    start_date: str</span>
+<span class="sd">    start_date: date</span>
 <span class="sd">        The start date.</span>
-<span class="sd">    end_date: str</span>
+<span class="sd">    end_date: date</span>
 <span class="sd">        The end date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -318,11 +343,12 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">()</span>
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
+        <span class="p">[</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_date_range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
         <span class="n">identify_uv_variable</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">google_api_credentials_path</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
+            <span class="n">start_date</span><span class="p">,</span>
+            <span class="n">end_date</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;=============================================&quot;</span><span class="p">)</span>
