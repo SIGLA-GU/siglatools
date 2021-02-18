@@ -164,6 +164,9 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
     except requests.exceptions.SSLError:
         has_error = True
         error_msg = "Untrusted SSL Certificate"
+    except requests.exceptions.Timeout as error:
+        has_error = True
+        error_msg = f"Request timed out: {error}"
     except requests.exceptions.ConnectionError as error:
         has_error = True
         error_msg = f"Error connecting: {error}"
