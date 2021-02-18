@@ -22,4 +22,4 @@
 4. Enter a start date and an end date. Make sure they are in YYYY-MM-DD format and start date is less than or equal to end date.
 5. Click on the green `Run workflow` button to run the workflow.
 6. Wait until a new workflow run result shows up and click on it see its details.
-7. On workflow details page, once the run is finished click on the `uv-variable-artifact` to download a csv file of variables that need updating and verifying.
+7. On workflow details page, once the run is finished click on the `identify-uv-variable-artifact` to download a csv file of variables that need updating and verifying.
