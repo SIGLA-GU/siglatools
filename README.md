@@ -10,6 +10,7 @@ Tools to extract SIGLA data from Google Sheets and load into MongoDB. Please see
 ## Features
 * Bin script to run SIGLA ETL pipeline.
 * Bin script to run external link checker.
+* Bin script to identify which data needs updating and verifying.
 * GitHub workflows to run bin script semi/automatically on GitHub Actions.
 
 ## Quick Start
@@ -20,6 +21,10 @@ run_sigla_pipeline -msi <master_spreadsheet_id> -dbcu <db_connection_url> -gacp 
 ### Run External Link Checker
 ```
 run_external_link_checker -msi <master_spreadsheet_id> -gacp /path/to/google-api-credentials.json
+```
+### Identify Update and Verify Variables
+```
+identify_uv_variable -msi <master_spreadsheet_id> -gacp /path/to/google-api-credentials.json -sd <start_date> -ed <end_date>
 ```
 
 ## Installation
