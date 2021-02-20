@@ -1,4 +1,4 @@
-name: Identify Update and Verify Variables
+name: Get next update and verify dates
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
         repository: ${{ github.repository }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  identify_uv_variable:
+  get_next_uv_dates:
     needs: [authorization]
     runs-on: ubuntu-latest
     steps:
@@ -39,12 +39,12 @@ jobs:
       run: ./.github/scripts/decrypt_google_api_secret.sh
       env:
         GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
-    - name: Identify Update and Verify Variables
+    - name: Get next uv dates
       run: |
-        identify_uv_variable -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json -sd ${{ github.event.inputs.start_date }} -ed ${{ github.event.inputs.end_date }}
+        get_next_uv_dates -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json -sd ${{ github.event.inputs.start_date }} -ed ${{ github.event.inputs.end_date }}
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: identify-uv-variable-artifact
-        path: uv_variables.csv
+        name: get-next-uv-dates-artifact
+        path: next_uv_dates.csv
   
