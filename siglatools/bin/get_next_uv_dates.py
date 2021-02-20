@@ -243,7 +243,7 @@ def get_next_uv_dates(
         key=lambda x: (
             x.next_uv_date_data.spreadsheet_title,
             x.next_uv_date_data.sheet_title,
-            x.next_uv_date_data.index,
+            x.next_uv_date_data.row_index,
         ),
     )
     # Write next uv dates to a csv file
@@ -257,7 +257,7 @@ def get_next_uv_dates(
                 {
                     "spreadsheet_title": next_uv_date_data.spreadsheet_title,
                     "sheet_title": next_uv_date_data.sheet_title,
-                    "cell": f"{next_uv_date_data.column_name}{next_uv_date_data.index}",
+                    "cell": f"{next_uv_date_data.column_name}{next_uv_date_data.row_index}",
                     "status": next_uv_date.status,
                 }
             )
