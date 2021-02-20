@@ -180,8 +180,7 @@ def get_next_uv_dates(
     end_date: date,
 ):
     """
-    Identify variables that needs updating and verifying or that variables
-    that falls within the date range.
+    Get next update and verify dates or uv dates that falls within the date range.
 
     Parameters
     ----------
