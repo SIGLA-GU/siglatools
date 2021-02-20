@@ -421,6 +421,35 @@ class GoogleSheetsInstitutionExtracter:
             for value_range in data_response.get("valueRanges")
         ]
 
+        # Create a1 notations to get next uv dates
+        next_uv_date_a1_notations = [
+            A1Notation(
+                sheet_title=meta_data_a1_notations[i].sheet_title,
+                start_row=int(meta_datum.get("start_row")),
+                end_row=int(meta_datum.get("end_row")),
+                start_column=meta_datum.get("date_of_next_uv_column"),
+                end_column=meta_datum.get("date_of_next_uv_column"),
+            )
+            for i, meta_datum in enumerate(meta_data)
+        ]
+        # Get the next uv dates
+        next_uv_date_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[
+                    self._construct_a1_notation(a1_notation)
+                    for a1_notation in next_uv_date_a1_notations
+                ],
+                majorDimension="COLUMNS",
+            )
+            .execute()
+        )
+        next_uv_date_data = [
+            value_range.get("values")
+            for value_range in next_uv_date_response.get("valueRanges")
+        ]
+
         log.info(f"Finished extracting spreadsheet {spreadsheet_title}")
         log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
         return [
@@ -429,6 +458,7 @@ class GoogleSheetsInstitutionExtracter:
                 sheet_title=a1_notation.sheet_title,
                 meta_data=meta_data[i],
                 data=data[i],
+                next_uv_dates=next_uv_date_data[i][0],
             )
             for i, a1_notation in enumerate(meta_data_a1_notations)
         ]
