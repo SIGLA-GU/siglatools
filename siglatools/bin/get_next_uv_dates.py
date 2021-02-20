@@ -7,14 +7,25 @@ users' virtualenv when the parent module is installed using pip.
 """
 
 import argparse
+import csv
 import logging
 import sys
 import traceback
 from datetime import date
+from typing import List, NamedTuple
+
+from distributed import LocalCluster
+from prefect import Flow, flatten, task, unmapped
+from prefect.engine.executors import DaskExecutor
 
 from siglatools import get_module_version
 
 from ..institution_extracters.exceptions import InvalidDateRange
+from ..institution_extracters.google_sheets_institution_extracter import (
+    GoogleSheetsInstitutionExtracter,
+)
+from ..institution_extracters.utils import SheetData
+from .run_sigla_pipeline import _extract
 
 ###############################################################################
 
@@ -41,8 +52,9 @@ class NextUVDateData(NamedTuple):
             The row location of the next uv date in the sheet.
         next_uv_date: str
             The next uv date.
-        
+
     """
+
     spreadsheet_title: str
     sheet_title: str
     column_name: str
@@ -54,6 +66,7 @@ class NextUVDateStatus:
     """
     Possible status of a next uv date.
     """
+
     requires_uv = "Requires update and verify"
     invalid_date = "Invalid date"
     irrelevant = "Irrelevant"
@@ -69,6 +82,7 @@ class CheckedNextUVDate(NamedTuple):
         next_uv_date_data: NextUVDateData
             The next uv date and its context. See NextUVDateData class.
     """
+
     status: NextUVDateStatus
     next_uv_date_data: NextUVDateData
 
@@ -195,17 +209,22 @@ def get_next_uv_dates(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("Identify next update and verify dates") as flow:
+    with Flow("Get next update and verify dates") as flow:
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
             spreadsheets_id,
             unmapped(google_api_credentials_path),
         )
+        log.info("Finished extracting the spreadsheet data.")
+        # Extract next uv dates
         next_uv_dates_data = _extract_next_uv_dates.map(flatten(spreadsheets_data))
+        log.info("Finished extracting the next uv dates.")
+        # Check next uv dates
         _check_next_uv_date.map(
             flatten(next_uv_dates_data), unmapped(start_date), unmapped(end_date)
         )
+        log.info("Finished checking next uv dates.")
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
