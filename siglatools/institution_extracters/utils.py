@@ -17,12 +17,15 @@ class SheetData(NamedTuple):
             The meta data of the sheet, found in the first two rows.
         data: List[List[str]]
             The data of the sheet.
+        next_uv_dates: List[str]
+            Dates of next update and verify.
     """
 
     spreadsheet_title: str
     sheet_title: str
     meta_data: Dict[str, str]
     data: List[List[str]]
+    next_uv_dates: List[str]
 
 
 class FormattedSheetData(NamedTuple):
