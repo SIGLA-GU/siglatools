@@ -129,9 +129,9 @@
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="identify_uv_variable.html">Identify Update and Verify Variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="identify_uv_variable.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="identify_uv_variable.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_next_uv_dates.html">Get next update and verify dates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -229,7 +229,7 @@
 <ul class="simple">
 <li><p>Bin script to run SIGLA ETL pipeline.</p></li>
 <li><p>Bin script to run external link checker.</p></li>
-<li><p>Bin script to identify which data needs updating and verifying.</p></li>
+<li><p>Bin script to get the next update and verify dates to determine what data needs updating and verifying.</p></li>
 <li><p>GitHub workflows to run bin script semi/automatically on GitHub Actions.</p></li>
 </ul>
 </div>
@@ -247,9 +247,9 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="identify-update-and-verify-variables">
-<h3>Identify Update and Verify Variables<a class="headerlink" href="#identify-update-and-verify-variables" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>identify_uv_variable -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json -sd &lt;start_date&gt; -ed &lt;end_date&gt;
+<div class="section" id="get-next-update-and-verify-dates">
+<h3>Get next update and verify dates<a class="headerlink" href="#get-next-update-and-verify-dates" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>get_next_uv_dates -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json -sd &lt;start_date&gt; -ed &lt;end_date&gt;
 </pre></div>
 </div>
 </div>

@@ -130,9 +130,9 @@
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="identify_uv_variable.html">Identify Update and Verify Variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="identify_uv_variable.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="identify_uv_variable.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_next_uv_dates.html">Get next update and verify dates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -463,10 +463,12 @@ but they don’t have to be.</p>
 </dd>
 <dt>data: List[List[str]]</dt><dd><p>The data of the sheet.</p>
 </dd>
+<dt>next_uv_dates: List[str]</dt><dd><p>Dates of next update and verify.</p>
+</dd>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of SheetData(spreadsheet_title, sheet_title, meta_data, data)</p>
+<p>Create new instance of SheetData(spreadsheet_title, sheet_title, meta_data, data, next_uv_dates)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.data">
 <code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.data" title="Permalink to this definition">¶</a></dt>
@@ -477,6 +479,12 @@ but they don’t have to be.</p>
 <dt id="siglatools.institution_extracters.utils.SheetData.meta_data">
 <code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.meta_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.SheetData.next_uv_dates">
+<code class="sig-name descname">next_uv_dates</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.next_uv_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
 </dd></dl>
 
 <dl class="attribute">

@@ -128,9 +128,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../identify_uv_variable.html">Identify Update and Verify Variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../identify_uv_variable.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../identify_uv_variable.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_next_uv_dates.html">Get next update and verify dates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../get_next_uv_dates.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -225,12 +225,15 @@
 <span class="sd">            The meta data of the sheet, found in the first two rows.</span>
 <span class="sd">        data: List[List[str]]</span>
 <span class="sd">            The data of the sheet.</span>
+<span class="sd">        next_uv_dates: List[str]</span>
+<span class="sd">            Dates of next update and verify.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">spreadsheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></div>
+    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+    <span class="n">next_uv_dates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="FormattedSheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData">[docs]</a><span class="k">class</span> <span class="nc">FormattedSheetData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>

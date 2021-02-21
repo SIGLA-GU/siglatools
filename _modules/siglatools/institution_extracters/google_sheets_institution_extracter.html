@@ -128,9 +128,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../identify_uv_variable.html">Identify Update and Verify Variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../identify_uv_variable.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../identify_uv_variable.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_next_uv_dates.html">Get next update and verify dates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../get_next_uv_dates.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
@@ -629,6 +629,35 @@
             <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
         <span class="p">]</span>
 
+        <span class="c1"># Create a1 notations to get next uv dates</span>
+        <span class="n">next_uv_date_a1_notations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">A1Notation</span><span class="p">(</span>
+                <span class="n">sheet_title</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_row&quot;</span><span class="p">)),</span>
+                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_row&quot;</span><span class="p">)),</span>
+                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">),</span>
+                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="c1"># Get the next uv dates</span>
+        <span class="n">next_uv_date_response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
+                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_construct_a1_notation</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">next_uv_date_a1_notations</span>
+                <span class="p">],</span>
+                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">next_uv_date_data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">next_uv_date_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished extracting spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> sheets in spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -637,6 +666,7 @@
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                 <span class="n">meta_data</span><span class="o">=</span><span class="n">meta_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">next_uv_dates</span><span class="o">=</span><span class="n">next_uv_date_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data_a1_notations</span><span class="p">)</span>
         <span class="p">]</span></div>

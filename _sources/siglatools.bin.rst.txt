@@ -4,10 +4,10 @@ siglatools.bin package
 Submodules
 ----------
 
-siglatools.bin.identify\_uv\_variable module
---------------------------------------------
+siglatools.bin.get\_next\_uv\_dates module
+------------------------------------------
 
-.. automodule:: siglatools.bin.identify_uv_variable
+.. automodule:: siglatools.bin.get_next_uv_dates
    :members:
    :undoc-members:
    :show-inheritance:
