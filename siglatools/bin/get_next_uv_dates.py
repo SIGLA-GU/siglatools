@@ -68,7 +68,7 @@ class NextUVDateStatus:
     """
 
     requires_uv = "Requires update and verify"
-    invalid_date = "Invalid date"
+    incorrect_date_format = "Incorrect date format"
     irrelevant = "Irrelevant"
 
 
@@ -169,7 +169,7 @@ def _check_next_uv_date(
         else:
             status = NextUVDateStatus.irrelevant
     except ValueError:
-        status = NextUVDateStatus.invalid_date
+        status = NextUVDateStatus.incorrect_date_format
     return CheckedNextUVDate(status=status, next_uv_date_data=next_uv_date_data)
 
 
