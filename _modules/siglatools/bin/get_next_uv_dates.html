@@ -276,7 +276,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">requires_uv</span> <span class="o">=</span> <span class="s2">&quot;Requires update and verify&quot;</span>
-    <span class="n">invalid_date</span> <span class="o">=</span> <span class="s2">&quot;Invalid date&quot;</span>
+    <span class="n">incorrect_date_format</span> <span class="o">=</span> <span class="s2">&quot;Incorrect date format&quot;</span>
     <span class="n">irrelevant</span> <span class="o">=</span> <span class="s2">&quot;Irrelevant&quot;</span></div>
 
 
@@ -377,7 +377,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="n">NextUVDateStatus</span><span class="o">.</span><span class="n">irrelevant</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">NextUVDateStatus</span><span class="o">.</span><span class="n">invalid_date</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">NextUVDateStatus</span><span class="o">.</span><span class="n">incorrect_date_format</span>
     <span class="k">return</span> <span class="n">CheckedNextUVDate</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">next_uv_date_data</span><span class="o">=</span><span class="n">next_uv_date_data</span><span class="p">)</span>
 
 
