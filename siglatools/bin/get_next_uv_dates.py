@@ -135,7 +135,8 @@ def _extract_next_uv_dates(sheet_data: SheetData) -> List[NextUVDateData]:
             next_uv_date=next_uv_date,
         )
         for i, next_uv_date in enumerate(sheet_data.next_uv_dates)
-        if next_uv_date.strip()
+        # Ignore empty and `Date of Next U&V` cells"
+        if next_uv_date.strip() and "date" not in next_uv_date.strip().lower()
     ]
     return next_uv_dates_data
 
