@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, NamedTuple
+from typing import Dict, List, NamedTuple, Optional
 
 
 class SheetData(NamedTuple):
@@ -17,7 +17,7 @@ class SheetData(NamedTuple):
             The meta data of the sheet, found in the first two rows.
         data: List[List[str]]
             The data of the sheet.
-        next_uv_dates: List[str]
+        next_uv_dates: Optional[List[str]]
             Dates of next update and verify.
     """
 
@@ -25,7 +25,7 @@ class SheetData(NamedTuple):
     sheet_title: str
     meta_data: Dict[str, str]
     data: List[List[str]]
-    next_uv_dates: List[str]
+    next_uv_dates: Optional[List[str]]
 
 
 class FormattedSheetData(NamedTuple):

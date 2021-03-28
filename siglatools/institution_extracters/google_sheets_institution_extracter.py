@@ -431,6 +431,7 @@ class GoogleSheetsInstitutionExtracter:
                 end_column=meta_datum.get("date_of_next_uv_column"),
             )
             for i, meta_datum in enumerate(meta_data)
+            if meta_datum.get("date_of_next_uv_column") is not None
         ]
         # Get the next uv dates
         next_uv_date_response = (
@@ -446,9 +447,10 @@ class GoogleSheetsInstitutionExtracter:
             .execute()
         )
         next_uv_date_data = [
-            value_range.get("values")
+            value_range.get("values")[0]
             for value_range in next_uv_date_response.get("valueRanges")
         ]
+        next_uv_date_data_iter = iter(next_uv_date_data)
 
         log.info(f"Finished extracting spreadsheet {spreadsheet_title}")
         log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
@@ -458,7 +460,11 @@ class GoogleSheetsInstitutionExtracter:
                 sheet_title=a1_notation.sheet_title,
                 meta_data=meta_data[i],
                 data=data[i],
-                next_uv_dates=next_uv_date_data[i][0],
+                next_uv_dates=(
+                    next(next_uv_date_data_iter)
+                    if meta_data[i].get("date_of_next_uv_column") is not None
+                    else None
+                ),
             )
             for i, a1_notation in enumerate(meta_data_a1_notations)
         ]
