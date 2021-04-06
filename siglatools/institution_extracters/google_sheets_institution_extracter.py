@@ -448,7 +448,7 @@ class GoogleSheetsInstitutionExtracter:
         )
         next_uv_date_data = [
             value_range.get("values")[0]
-            for value_range in next_uv_date_response.get("valueRanges")
+            for value_range in next_uv_date_response.get("valueRanges") or []
         ]
         next_uv_date_data_iter = iter(next_uv_date_data)
 
