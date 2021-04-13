@@ -54,7 +54,7 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
                 start_column="A",
                 end_column="B",
             ),
-            "Sheet1!A1:B2",
+            "'Sheet1'!A1:B2",
         ),
         (
             A1Notation(
@@ -65,7 +65,7 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
                 start_column="A",
                 end_column="AA",
             ),
-            "Sheet1!A1:AA2",
+            "'Sheet1'!A1:AA2",
         ),
         pytest.param(
             A1Notation(
@@ -82,7 +82,7 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
         ),
         (
             A1Notation(sheet_id="0", sheet_title="Sheet1", start_row=1, end_row=2),
-            "Sheet1!1:2",
+            "'Sheet1'!1:2",
         ),
     ],
 )

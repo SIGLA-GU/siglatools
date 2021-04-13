@@ -215,9 +215,9 @@ class A1Notation(NamedTuple):
         Returns str representation of the a1 notation.
         """
         if self.start_column is not None and self.end_column is not None:
-            return f"{self.sheet_title}!{self.start_column}{self.start_row}:{self.end_column}{self.end_row}"
+            return f"'{self.sheet_title}'!{self.start_column}{self.start_row}:{self.end_column}{self.end_row}"
         else:
-            return f"{self.sheet_title}!{self.start_row}:{self.end_row}"
+            return f"'{self.sheet_title}'!{self.start_row}:{self.end_row}"
 
 
 class GoogleSheetsInstitutionExtracter:
