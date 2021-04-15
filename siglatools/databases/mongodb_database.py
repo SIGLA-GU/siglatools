@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Dict
+from typing import Dict, List, Any, Optional
 
 from pymongo import MongoClient, ReturnDocument, UpdateOne
 
@@ -326,6 +326,13 @@ class MongoDBDatabase:
                 load_function_key,
                 formatted_sheet_data.meta_data.get("data_type"),
             )
+
+    def find(collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]]) -> List[Dict[str, Any]]:
+        """TODO"""
+        cursor =  self._db.get_collection(collection).find(filter)
+        if sort:
+            cursor.sort(sort)
+        return [doc for doc in cursor]
 
     def __str__(self):
         return f"<MongoDBDatabase [{self._db_connection_url}]>"

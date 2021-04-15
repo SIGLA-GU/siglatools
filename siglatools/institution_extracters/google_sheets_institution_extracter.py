@@ -359,7 +359,8 @@ class GoogleSheetsInstitutionExtracter:
         ]
 
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
-        """
+        """TODO modify to excep Optional list of sheet_id
+        if list is empty then get all, if not the sheet_id
         Get the spreadsheet data given a spreadsheet id.
 
         Parameters
@@ -466,6 +467,7 @@ class GoogleSheetsInstitutionExtracter:
         log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
         return [
             SheetData(
+                spreadsheet_id=spreadsheet_id,
                 spreadsheet_title=spreadsheet_title,
                 sheet_id=a1_notation.sheet_id,
                 sheet_title=a1_notation.sheet_title,
@@ -541,6 +543,7 @@ class GoogleSheetsInstitutionExtracter:
             )
 
         return FormattedSheetData(
+            spreadsheet_id=sheet_data.spreadsheet_id,
             spreadsheet_title=sheet_data.spreadsheet_title,
             sheet_id=sheet_data.sheet_id,
             sheet_title=sheet_data.sheet_title,
