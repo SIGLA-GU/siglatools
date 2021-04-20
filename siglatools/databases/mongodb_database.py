@@ -327,9 +327,11 @@ class MongoDBDatabase:
                 formatted_sheet_data.meta_data.get("data_type"),
             )
 
-    def find(collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]]) -> List[Dict[str, Any]]:
+    def find(
+        collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]]
+    ) -> List[Dict[str, Any]]:
         """TODO"""
-        cursor =  self._db.get_collection(collection).find(filter)
+        cursor = self._db.get_collection(collection).find(filter)
         if sort:
             cursor.sort(sort)
         return [doc for doc in cursor]

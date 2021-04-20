@@ -24,6 +24,7 @@ class SheetData(NamedTuple):
         next_uv_dates: Optional[List[str]]
             Dates of next update and verify.
     """
+
     spreadsheet_id: str
     spreadsheet_title: str
     sheet_id: str
