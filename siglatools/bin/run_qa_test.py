@@ -11,6 +11,7 @@ import logging
 import sys
 import traceback
 from typing import Any, Dict, List, NamedTuple, Optional, Tuple
+from zipfile import ZipFile
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
@@ -89,13 +90,38 @@ class Comparison(NamedTuple):
     spreadsheet_title: str
     sheet_title: str
     name: str
-    meta_data_comparison: ObjectComparison
     data_comparisons: List[ObjectComparison]
 
     def has_error(self) -> bool:
-        return self.meta_data_comparison.has_error() or any(
-            [comparison.has_error() for comparison in self.data_comparisons]
-        )
+        return any([comparison.has_error() for comparison in self.data_comparisons])
+
+    def get_gs_source(self):
+        return f"Spreadsheet: {self.spreadsheet_title}, Sheet: {self.sheet_title}"
+
+    def get_filename(self):
+        return f"/tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
+
+    def write(self) -> str:
+        if self.has_error():
+            with open(self.get_filename(), "w") as error_file:
+                # titles
+                error_file.write(f"{self.get_gs_source()}\n")
+                error_file.write(f"{self.name}\n")
+
+                # errors
+                error_comparisons = [
+                    comparison
+                    for comparison in self.data_comparisons
+                    if comparison.has_error()
+                ]
+                for comparison in error_comparisons:
+                    error_file.write("\n")
+                    error_file.write(f"{comparison.name}\n")
+                    for error_msg in comparison.get_error_msgs():
+                        error_file.write(f"{error_msg}\n")
+            return self.get_filename()
+        else:
+            return None
 
 
 @task
@@ -335,8 +361,7 @@ def _compare_gs_institution(
             spreadsheet_title=gs_institution.spreadsheet_title,
             sheet_title=gs_institution.sheet_title,
             name=gs_institution.get("name"),
-            meta_data_comparison=institution_comparison,
-            data_comparisons=variable_comparisons,
+            data_comparisons=[institution_comparison, *variable_comparisons],
         )
 
 
@@ -463,11 +488,13 @@ def _compare_gs_composite_variable(
                 spreadsheet_title=formatted_sheet_data.spreadsheet_title,
                 sheet_title=formatted_sheet_data.sheet_title,
                 name=f"{variable_name} for {institution_name}",
-                meta_data_comparison=ObjectComparison(
-                    name="Institution",
-                    field_comparisons=logic_field_comparisons,
-                ),
-                data_comparisons=row_comparisons,
+                data_comparisons=[
+                    ObjectComparison(
+                        name="Composite variable checks",
+                        field_comparisons=logic_field_comparisons,
+                    ),
+                    *row_comparisons,
+                ],
             )
         )
 
@@ -475,20 +502,45 @@ def _compare_gs_composite_variable(
 
 
 @task
-def _compare_db_institution(
-    db_institution: Dict[str, Any], gs_institutions_group: Dict[str, Any]
-) -> FieldComparison:
-    spreadsheet_id = institution.get("spreadsheet_id")
-    sheet_id = institution.get("sheet_id")
-    country = db_institution.get("country")
-    category = db_institution.get("category")
-    name = db_institution.get("name")
-    gs_institution = gs_institutions_group.get(f"{country}{category}{name}")
-    return FieldComparison(
-        "Institution exists in",
-        (Datasource.database, True),
-        (Datasource.googlesheet, True if gs_institution else False),
-    )
+def _write_comparison(
+    comparison: Comparison,
+) -> str:
+    return comparison.write()
+
+
+@task
+def _write_extra_db_institutions(
+    db_institutions: List[Dict[str, Any]], gs_institutions_group: Dict[str, Any]
+) -> str:
+    extra_db_institutions = [
+        db_institution
+        for db_institution in db_institutions
+        if gs_institutions_group.get(f"{country}{category}{name}")
+    ]
+    filename = "/tmp/extra-institutions.csv"
+    with open(filename, "w") as error_file:
+        fieldnames = [
+            "_id",
+            "spreadsheet_id",
+            "sheet_id",
+            "country",
+            "category",
+            "name",
+        ]
+        writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
+        writer.writeheader()
+        for db_institution in extra_db_institutions:
+            writer.writerow(
+                {
+                    "_id": db_institution.get("_id"),
+                    "spreadsheet_id": db_institution.get("spreadsheet_id"),
+                    "sheet_id": db_institution.get("sheet_id"),
+                    "country": db_institution.get("country"),
+                    "category": db_institution.get("category"),
+                    "name": db_institution.get("name"),
+                }
+            )
+    return filename
 
 
 def run_qa_test(
@@ -556,7 +608,7 @@ def run_qa_test(
         # group gs institutions
         gs_institutions_group = _group_gs_institutions(flatten(gs_institutions))
 
-        # compare gs institutions against db 
+        # compare gs institutions against db
         # get list of comparisons
         gs_institution_comparisons = _compare_gs_institution.map(
             flatten(gs_institutions), unmapped(db_institutions_group)
@@ -568,17 +620,38 @@ def run_qa_test(
         )
 
         # compare db institutions against gs institutions
-        # get list field comparison whether each db instituion has a corresponding 
+        # get list field comparison whether each db instituion has a corresponding
         # gs institution
         db_institution_comparisons = _compare_db_institution.map(
             db_institutions, unmapped(gs_institutions_group)
         )
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
 
-    # get gs_institution_comparisons, write each to a file
-    # get gs_composite_comparisons, write each to a file
-    # get db_institution_comparisons, write each field comp to file
-    # write files into zip
+        # write gs institution comparisons
+        _write_comparison.map(gs_institution_comparisons)
+        # write gs composite comparisons
+        _write_comparison.map(flatten(gs_composite_comparisons))
+        # write extra db institution
+        _write_extra_db_institutions(db_institutions, gs_institutions_group)
+
+    # Run the flow
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    # get write comparison tasks
+    _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
+    # get the filenames result
+    gs_filenames = [
+        *state.result[_write_comparison_tasks[0]].result
+        * state.result[_write_comparison_tasks[0]].result
+    ]
+    # filter to error filenames
+    gs_error_filenames = [filename for filename in gs_filenames if filename]
+    # get extra db institution filename
+    extra_db_institutions_filename = state.result[
+        flow.get_tasks(name="_write_extra_db_institutions")[0]
+    ].result
+    # write zip file
+    with ZipFile("qa-test.zip", "w") as zip_file:
+        for filename in [*gs_filenames, extra_db_institutions_filename]:
+            zip_file.write(filename)
 
 
 ###############################################################################
