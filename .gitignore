@@ -110,3 +110,6 @@ ENV/
 
 # Editor stuff
 .vscode
+
+# tmp
+tmp
