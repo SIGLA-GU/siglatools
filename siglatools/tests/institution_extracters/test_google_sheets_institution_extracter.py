@@ -17,12 +17,13 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
     "a1_notation, expected",
     [
         pytest.param(
-            A1Notation(sheet_title="Sheet1", start_row=2, end_row=1),
+            A1Notation(sheet_id="0", sheet_title="Sheet1", start_row=2, end_row=1),
             None,
             marks=pytest.mark.raises(exception=exceptions.InvalidRangeInA1Notation),
         ),
         pytest.param(
             A1Notation(
+                sheet_id="0",
                 sheet_title="Sheet1",
                 start_row=1,
                 end_row=2,
@@ -34,6 +35,7 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
         ),
         pytest.param(
             A1Notation(
+                sheet_id="0",
                 sheet_title="Sheet1",
                 start_row=1,
                 end_row=2,
@@ -45,32 +47,43 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
         ),
         (
             A1Notation(
+                sheet_id="0",
                 sheet_title="Sheet1",
                 start_row=1,
                 end_row=2,
                 start_column="A",
                 end_column="B",
             ),
-            "Sheet1!A1:B2",
+            "'Sheet1'!A1:B2",
         ),
         (
             A1Notation(
+                sheet_id="0",
                 sheet_title="Sheet1",
                 start_row=1,
                 end_row=2,
                 start_column="A",
                 end_column="AA",
             ),
-            "Sheet1!A1:AA2",
+            "'Sheet1'!A1:AA2",
         ),
         pytest.param(
-            A1Notation(sheet_title="Sheet1", start_row=1, end_row=2, start_column="A"),
+            A1Notation(
+                sheet_id="0",
+                sheet_title="Sheet1",
+                start_row=1,
+                end_row=2,
+                start_column="A",
+            ),
             None,
             marks=pytest.mark.raises(
                 exception=exceptions.IncompleteColumnRangeInA1Notation
             ),
         ),
-        (A1Notation(sheet_title="Sheet1", start_row=1, end_row=2), "Sheet1!1:2"),
+        (
+            A1Notation(sheet_id="0", sheet_title="Sheet1", start_row=1, end_row=2),
+            "'Sheet1'!1:2",
+        ),
     ],
 )
 def test_construct_a1_notation(a1_notation, expected):

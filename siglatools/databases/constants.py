@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from enum import Enum
 
-class DatabaseCollection:
+
+class DatabaseCollection(Enum):
     institutions = "institutions"
     variables = "variables"
     rights = "rights"
@@ -10,7 +12,12 @@ class DatabaseCollection:
     body_of_law = "body_of_law"
 
 
-class VariableType:
+class VariableType(Enum):
     standard = "standard"
     composite = "composite"
     aggregate = "aggregate"
+
+
+class Environment(Enum):
+    staging = "staging"
+    production = "production"

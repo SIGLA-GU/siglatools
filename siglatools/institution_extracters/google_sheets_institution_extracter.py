@@ -87,6 +87,8 @@ def _get_multilple_sigla_answer_variable(
     """
     try:
         institution = {
+            "spread_sheet_id": sheet_data.spreadsheet_id,
+            "sheet_id": sheet_data.sheet_id,
             "name": sheet_data.meta_data.get("name"),
             "country": sheet_data.meta_data.get("country"),
             "category": sheet_data.meta_data.get("category"),
@@ -139,6 +141,8 @@ def _get_standard_institution(
     ]
     institutions = [
         {
+            "spreadsheet_id": sheet_data.spreadsheet_id,
+            "sheet_id": sheet_data.sheet_id,
             "name": institution_name,
             "category": sheet_data.meta_data.get("category"),
             "childs": [
@@ -189,8 +193,10 @@ class A1Notation(NamedTuple):
     but they don't have to be.
 
     Attributes:
+        sheet_id: str
+            The id of the sheet that contains a group cells
         sheet_title: str
-            The title of the sheet that contains the a group of cells.
+            The title of the sheet that contains a group of cells.
         start_row: int
             The top row boundary of a group of cells.
         end_row: int
@@ -201,6 +207,7 @@ class A1Notation(NamedTuple):
             The right column boundary of a group of cells
     """
 
+    sheet_id: str
     sheet_title: str
     start_row: int
     end_row: int
@@ -212,9 +219,9 @@ class A1Notation(NamedTuple):
         Returns str representation of the a1 notation.
         """
         if self.start_column is not None and self.end_column is not None:
-            return f"{self.sheet_title}!{self.start_column}{self.start_row}:{self.end_column}{self.end_row}"
+            return f"'{self.sheet_title}'!{self.start_column}{self.start_row}:{self.end_column}{self.end_row}"
         else:
-            return f"{self.sheet_title}!{self.start_row}:{self.end_row}"
+            return f"'{self.sheet_title}'!{self.start_row}:{self.end_row}"
 
 
 class GoogleSheetsInstitutionExtracter:
@@ -261,20 +268,22 @@ class GoogleSheetsInstitutionExtracter:
         # Get A1 notation for the all the cells in top two rows of Sheet1
         GoogleSheetsInstitutionExtracter.__construct_a1_notation(
             A1Notation(
-                sheet_title="Sheet1"
-                start_row=1
-                end_row=2
+                sheet_id="0",
+                sheet_title="Sheet1",
+                start_row=1,
+                end_row=2,
             )
         )
 
         # Get A1 notation for the first two cells in the top two rows of Sheet1
         GoogleSheetsInstitutionExtracter.__construct_a1_notation(
             A1Notation(
-                sheet_title="Sheet1"
-                start_row=1
-                end_row=2
-                start_column="A"
-                end_column="B"
+                sheet_id="0",
+                sheet_title="Sheet1",
+                start_row=1,
+                end_row=2,
+                start_column="A",
+                end_column="B",
             )
         )
         ```
@@ -345,7 +354,10 @@ class GoogleSheetsInstitutionExtracter:
         # Create an A1Notation for each sheet's meta data
         return [
             A1Notation(
-                sheet_title=sheet.get("properties").get("title"), start_row=1, end_row=2
+                sheet_id=sheet.get("properties").get("sheetId"),
+                sheet_title=sheet.get("properties").get("title"),
+                start_row=1,
+                end_row=2,
             )
             for sheet in spreadsheet_response.get("sheets")
         ]
@@ -395,6 +407,7 @@ class GoogleSheetsInstitutionExtracter:
         # Use the meta datum to create an a1 notation to get the datum of each sheet
         bounding_box_a1_notations = [
             A1Notation(
+                sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
                 start_row=int(meta_datum.get("start_row")),
                 end_row=int(meta_datum.get("end_row")),
@@ -424,6 +437,7 @@ class GoogleSheetsInstitutionExtracter:
         # Create a1 notations to get next uv dates
         next_uv_date_a1_notations = [
             A1Notation(
+                sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
                 start_row=int(meta_datum.get("start_row")),
                 end_row=int(meta_datum.get("end_row")),
@@ -456,7 +470,9 @@ class GoogleSheetsInstitutionExtracter:
         log.info(f"Found {len(meta_data)} sheets in spreadsheet {spreadsheet_title}")
         return [
             SheetData(
+                spreadsheet_id=spreadsheet_id,
                 spreadsheet_title=spreadsheet_title,
+                sheet_id=a1_notation.sheet_id,
                 sheet_title=a1_notation.sheet_title,
                 meta_data=meta_data[i],
                 data=data[i],
@@ -530,7 +546,9 @@ class GoogleSheetsInstitutionExtracter:
             )
 
         return FormattedSheetData(
+            spreadsheet_id=sheet_data.spreadsheet_id,
             spreadsheet_title=sheet_data.spreadsheet_title,
+            sheet_id=sheet_data.sheet_id,
             sheet_title=sheet_data.sheet_title,
             meta_data=sheet_data.meta_data,
             formatted_data=formatted_data,

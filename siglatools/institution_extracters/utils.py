@@ -9,8 +9,12 @@ class SheetData(NamedTuple):
     The extracted data from a Google Sheet.
 
     Attributes:
+        spreadsheet_id: str
+            The id of the spreadsheet that contains the sheet.
         spreadsheet_title: str
             The title of spreadsheet that contains the sheet.
+        sheet_id: str
+            The id of the sheet.
         sheet_title: str
             The title of the sheet.
         meta_data: Dict[str, str]
@@ -21,7 +25,9 @@ class SheetData(NamedTuple):
             Dates of next update and verify.
     """
 
+    spreadsheet_id: str
     spreadsheet_title: str
+    sheet_id: str
     sheet_title: str
     meta_data: Dict[str, str]
     data: List[List[str]]
@@ -33,8 +39,12 @@ class FormattedSheetData(NamedTuple):
     The formatted data from a Google Sheet.
 
     Attributes:
+        spreadsheet_id: str
+            The id of the spreadsheet that contains the sheet.
         spreadsheet_title: str
             The title of the spreadsheet that contains the sheet.
+        sheet_id: str
+            The id of the sheet.
         sheet_title: str
             The title of the sheet.
         meta_data: Dict[str, str]
@@ -43,7 +53,9 @@ class FormattedSheetData(NamedTuple):
             The formatted data of the sheet.
     """
 
+    spreadsheet_id: str
     spreadsheet_title: str
+    sheet_id: str
     sheet_title: str
     meta_data: Dict[str, str]
     formatted_data: List

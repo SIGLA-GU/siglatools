@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Dict
+from typing import Dict, List, Any, Optional, Tuple
 
 from pymongo import MongoClient, ReturnDocument, UpdateOne
 
@@ -125,6 +125,8 @@ class MongoDBDatabase:
         """
         # Create the institution primary keys
         institution = {
+            "spreadsheet_id": formatted_sheet_data.spreadsheet_id,
+            "sheet_id": formatted_sheet_data.sheet_id,
             "name": formatted_sheet_data.meta_data.get("variable_heading"),
             "country": formatted_sheet_data.meta_data.get("country"),
             "category": formatted_sheet_data.meta_data.get("category"),
@@ -148,7 +150,6 @@ class MongoDBDatabase:
                 variable_heading_list.append(variable_heading)
                 variable_heading_dict[variable_heading] = [sigla_answers]
         # Create the list of variables
-        variable_heading_list.sort()
         variables = [
             {
                 "institution": institution_doc.get("_id"),
@@ -327,6 +328,34 @@ class MongoDBDatabase:
                 load_function_key,
                 formatted_sheet_data.meta_data.get("data_type"),
             )
+
+    def find(
+        self,
+        collection: str,
+        filter: Dict[str, Any],
+        sort: Optional[List[Tuple[str, str]]],
+    ) -> List[Dict[str, Any]]:
+        """
+        Query the database for documents.
+
+        Parameters
+        ----------
+        collection: str
+            The db collection to query for documents.
+        filter: Dict[str, Any]
+            A prototype document that all results must match.
+        sort: Optional[List[Tuple[str, str]]]
+            A list of (key, direction) pairs specifying the sort order for this query.
+
+        Returns
+        -------
+        docs: List[Dict[str, Any]]
+            The list of matched documents.
+        """
+        cursor = self._db.get_collection(collection).find(filter)
+        if sort:
+            cursor.sort(sort)
+        return [doc for doc in cursor]
 
     def __str__(self):
         return f"<MongoDBDatabase [{self._db_connection_url}]>"
