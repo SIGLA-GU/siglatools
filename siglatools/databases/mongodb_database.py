@@ -333,7 +333,7 @@ class MongoDBDatabase:
         self,
         collection: str,
         filter: Dict[str, Any],
-        sort: Optional[List[Tuple[str, str]]],
+        sort: Optional[List[Tuple[str, str]]] = None,
     ) -> List[Dict[str, Any]]:
         """
         Query the database for documents.
