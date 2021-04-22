@@ -11,7 +11,6 @@ import csv
 import logging
 import sys
 import traceback
-from enum import Enum
 from typing import Any, Dict, List, NamedTuple, Tuple
 from zipfile import ZipFile
 
@@ -39,7 +38,7 @@ log = logging.getLogger()
 ###############################################################################
 
 
-class Datasource(Enum):
+class Datasource:
     googlesheet = "GoogleSheet"
     database = "Database"
 
