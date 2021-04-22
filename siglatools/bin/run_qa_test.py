@@ -7,10 +7,12 @@ users' virtualenv when the parent module is installed using pip.
 """
 
 import argparse
+import csv
 import logging
 import sys
 import traceback
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple
+from enum import Enum
+from typing import Any, Dict, List, NamedTuple, Tuple
 from zipfile import ZipFile
 
 from distributed import LocalCluster
@@ -24,10 +26,7 @@ from siglatools import get_module_version
 from ..databases.constants import DatabaseCollection, Environment, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat
-from ..institution_extracters.google_sheets_institution_extracter import (
-    GoogleSheetsInstitutionExtracter,
-)
-from ..institution_extracters.utils import FormattedSheetData, SheetData
+from ..institution_extracters.utils import FormattedSheetData
 from .run_sigla_pipeline import _extract, _transform
 
 ###############################################################################
@@ -156,16 +155,19 @@ def _gather_db_variables(
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
-    db_institution.update(variables=variables)
+    db_institution.update(variables=db_variables)
     return db_institution
 
 
 @task
 def _group_db_institutions(db_institutions: List[Dict[str, Any]]) -> Dict[str, Any]:
-    return {
-        f"""{db_institution.get("country")}{db_institution.get("category")}{db_institution.get("name")}""": db_institution
-        for db_institution in db_institutions
-    }
+    db_institutions_group = {}
+    for db_institution in db_institutions:
+        country = db_institution.get("country")
+        category = db_institution.get("category")
+        name = db_institution.get("name")
+        db_institutions_group.update({f"{country}{category}{name}": db_institution})
+    return db_institutions_group
 
 
 @task
@@ -391,10 +393,11 @@ def _compare_gs_composite_variable(
         logic_field_comparisons.append(num_matched_institutions_comparison)
 
         if not num_matched_institutions_comparison.has_error():
+            db_institution = db_institutions[0]
             # compare institution name
             institution_name_comparison = FieldComparison(
                 "Institution name",
-                (Datasource.database, db_institutions[0].get("name")),
+                (Datasource.database, db_institution.get("name")),
                 (Datasource.googlesheet, institution_name),
             )
             logic_field_comparisons.append(institution_name_comparison)
@@ -439,7 +442,7 @@ def _compare_gs_composite_variable(
                             len(formatted_sheet_data.formatted_data),
                         ),
                     )
-                    logic_field_comparisons.append(row_nums_comparison)
+                    logic_field_comparisons.append(num_rows_comparison)
 
                     for db_row, gs_row in enumerate(
                         zip(
@@ -500,11 +503,14 @@ def _write_comparison(
 def _write_extra_db_institutions(
     db_institutions: List[Dict[str, Any]], gs_institutions_group: Dict[str, Any]
 ) -> str:
-    extra_db_institutions = [
-        db_institution
-        for db_institution in db_institutions
-        if gs_institutions_group.get(f"{country}{category}{name}")
-    ]
+    extra_db_institutions = []
+    for db_institution in db_institutions:
+        country = db_institution.get("country")
+        category = db_institution.get("category")
+        name = db_institution.get("name")
+        if gs_institutions_group.get(f"{country}{category}{name}") is None:
+            extra_db_institutions.append(db_institution)
+
     filename = "/tmp/extra-institutions.csv"
     with open(filename, "w") as error_file:
         fieldnames = [
@@ -558,7 +564,7 @@ def run_qa_test(
         )
         # db institutions with their db variables and composite variable data
         db_institutions = _gather_db_variables.map(
-            flatten(institutions_data), unmapped(db_connection_url)
+            flatten(db_institutions_data), unmapped(db_connection_url)
         )
         # group db institutions
         db_institutions_group = _group_db_institutions(db_institutions)
@@ -607,13 +613,6 @@ def run_qa_test(
             gs_composites, unmapped(db_institutions_group)
         )
 
-        # compare db institutions against gs institutions
-        # get list field comparison whether each db instituion has a corresponding
-        # gs institution
-        db_institution_comparisons = _compare_db_institution.map(
-            db_institutions, unmapped(gs_institutions_group)
-        )
-
         # write gs institution comparisons
         _write_comparison.map(gs_institution_comparisons)
         # write gs composite comparisons
@@ -638,7 +637,7 @@ def run_qa_test(
     ].result
     # write zip file
     with ZipFile("qa-test.zip", "w") as zip_file:
-        for filename in [*gs_filenames, extra_db_institutions_filename]:
+        for filename in [*gs_error_filenames, extra_db_institutions_filename]:
             zip_file.write(filename)
 
 

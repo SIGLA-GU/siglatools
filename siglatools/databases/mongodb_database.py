@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 from pymongo import MongoClient, ReturnDocument, UpdateOne
 
@@ -330,7 +330,10 @@ class MongoDBDatabase:
             )
 
     def find(
-        collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]]
+        self,
+        collection: str,
+        filter: Dict[str, Any],
+        sort: Optional[List[Tuple[str, str]]],
     ) -> List[Dict[str, Any]]:
         """TODO"""
         cursor = self._db.get_collection(collection).find(filter)
