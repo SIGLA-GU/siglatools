@@ -306,6 +306,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    formatted_sheet_data: FormattedSheetData</span>
 <span class="sd">        The sheet&#39;s formatted data.</span>
+<span class="sd">    db_connection_url: str</span>
+<span class="sd">        The DB&#39;s connection url str.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">database</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
     <span class="n">database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="p">)</span>

@@ -230,7 +230,8 @@
 <dl class="class">
 <dt id="siglatools.databases.constants.DatabaseCollection">
 <em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">DatabaseCollection</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#DatabaseCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
 <dl class="attribute">
 <dt id="siglatools.databases.constants.DatabaseCollection.amendments">
 <code class="sig-name descname">amendments</code><em class="property"> = 'amendments'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.amendments" title="Permalink to this definition">¶</a></dt>
@@ -259,9 +260,27 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="siglatools.databases.constants.Environment">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">Environment</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.Environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="siglatools.databases.constants.Environment.production">
+<code class="sig-name descname">production</code><em class="property"> = 'production'</em><a class="headerlink" href="#siglatools.databases.constants.Environment.production" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.Environment.staging">
+<code class="sig-name descname">staging</code><em class="property"> = 'staging'</em><a class="headerlink" href="#siglatools.databases.constants.Environment.staging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="siglatools.databases.constants.VariableType">
 <em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">VariableType</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#VariableType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.VariableType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
 <dl class="attribute">
 <dt id="siglatools.databases.constants.VariableType.aggregate">
 <code class="sig-name descname">aggregate</code><em class="property"> = 'aggregate'</em><a class="headerlink" href="#siglatools.databases.constants.VariableType.aggregate" title="Permalink to this definition">¶</a></dt>
@@ -305,6 +324,27 @@
 <dt id="siglatools.databases.mongodb_database.MongoDBDatabase.close_connection">
 <code class="sig-name descname">close_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.close_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.close_connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleanup client resources and disconnect from MongoDB.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.databases.mongodb_database.MongoDBDatabase.find">
+<code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param">collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]]</em><span class="sig-paren">)</span> &#x2192; List[Dict[str, Any]]<a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the database for documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> (<em>str</em>) – The db collection to query for documents.</p></li>
+<li><p><strong>filter</strong> (<em>Dict[str, Any]</em>) – A prototype document that all results must match.</p></li>
+<li><p><strong>sort</strong> (<em>Optional[List[Tuple[str, str]]]</em>) – A list of (key, direction) pairs specifying the sort order for this query.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>docs</strong> – The list of matched documents.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Dict[str, Any]]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

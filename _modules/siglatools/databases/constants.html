@@ -209,8 +209,10 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
-<div class="viewcode-block" id="DatabaseCollection"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.DatabaseCollection">[docs]</a><span class="k">class</span> <span class="nc">DatabaseCollection</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DatabaseCollection"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.DatabaseCollection">[docs]</a><span class="k">class</span> <span class="nc">DatabaseCollection</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">institutions</span> <span class="o">=</span> <span class="s2">&quot;institutions&quot;</span>
     <span class="n">variables</span> <span class="o">=</span> <span class="s2">&quot;variables&quot;</span>
     <span class="n">rights</span> <span class="o">=</span> <span class="s2">&quot;rights&quot;</span>
@@ -218,10 +220,15 @@
     <span class="n">body_of_law</span> <span class="o">=</span> <span class="s2">&quot;body_of_law&quot;</span></div>
 
 
-<div class="viewcode-block" id="VariableType"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.VariableType">[docs]</a><span class="k">class</span> <span class="nc">VariableType</span><span class="p">:</span>
+<div class="viewcode-block" id="VariableType"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.VariableType">[docs]</a><span class="k">class</span> <span class="nc">VariableType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">standard</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span>
     <span class="n">composite</span> <span class="o">=</span> <span class="s2">&quot;composite&quot;</span>
     <span class="n">aggregate</span> <span class="o">=</span> <span class="s2">&quot;aggregate&quot;</span></div>
+
+
+<div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.constants.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">staging</span> <span class="o">=</span> <span class="s2">&quot;staging&quot;</span>
+    <span class="n">production</span> <span class="o">=</span> <span class="s2">&quot;production&quot;</span></div>
 </pre></div>
 
            </div>

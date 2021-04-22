@@ -292,7 +292,9 @@ This doesn’t capture all possible A1 notations because start_row and end_row a
 but they don’t have to be.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
-<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the a group of cells.</p>
+<dt>sheet_id: str</dt><dd><p>The id of the sheet that contains a group cells</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains a group of cells.</p>
 </dd>
 <dt>start_row: int</dt><dd><p>The top row boundary of a group of cells.</p>
 </dd>
@@ -305,35 +307,41 @@ but they don’t have to be.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of A1Notation(sheet_title, start_row, end_row, start_column, end_column)</p>
+<p>Create new instance of A1Notation(sheet_id, sheet_title, start_row, end_row, start_column, end_column)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column">
 <code class="sig-name descname">end_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
+<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row">
 <code class="sig-name descname">end_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id">
+<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">
 <code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
+<dd><p>Alias for field number 1</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column">
 <code class="sig-name descname">start_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
+<dd><p>Alias for field number 4</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row">
 <code class="sig-name descname">start_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 2</p>
 </dd></dl>
 
 </dd></dl>
@@ -410,7 +418,11 @@ but they don’t have to be.</p>
 <p>The formatted data from a Google Sheet.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_id: str</dt><dd><p>The id of the spreadsheet that contains the sheet.</p>
+</dd>
 <dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet that contains the sheet.</p>
+</dd>
+<dt>sheet_id: str</dt><dd><p>The id of the sheet.</p>
 </dd>
 <dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
 </dd>
@@ -421,29 +433,41 @@ but they don’t have to be.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of FormattedSheetData(spreadsheet_title, sheet_title, meta_data, formatted_data)</p>
+<p>Create new instance of FormattedSheetData(spreadsheet_id, spreadsheet_title, sheet_id, sheet_title, meta_data, formatted_data)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.formatted_data">
 <code class="sig-name descname">formatted_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.formatted_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
+<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.meta_data">
 <code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.meta_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_id">
+<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">
 <code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id">
+<code class="sig-name descname">spreadsheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">
 <code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
+<dd><p>Alias for field number 1</p>
 </dd></dl>
 
 </dd></dl>
@@ -455,7 +479,11 @@ but they don’t have to be.</p>
 <p>The extracted data from a Google Sheet.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_id: str</dt><dd><p>The id of the spreadsheet that contains the sheet.</p>
+</dd>
 <dt>spreadsheet_title: str</dt><dd><p>The title of spreadsheet that contains the sheet.</p>
+</dd>
+<dt>sheet_id: str</dt><dd><p>The id of the sheet.</p>
 </dd>
 <dt>sheet_title: str</dt><dd><p>The title of the sheet.</p>
 </dd>
@@ -468,35 +496,47 @@ but they don’t have to be.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of SheetData(spreadsheet_title, sheet_title, meta_data, data, next_uv_dates)</p>
+<p>Create new instance of SheetData(spreadsheet_id, spreadsheet_title, sheet_id, sheet_title, meta_data, data, next_uv_dates)</p>
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.data">
 <code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
+<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.meta_data">
 <code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.meta_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 4</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.next_uv_dates">
 <code class="sig-name descname">next_uv_dates</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.next_uv_dates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.SheetData.sheet_id">
+<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.sheet_title">
 <code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.utils.SheetData.spreadsheet_id">
+<code class="sig-name descname">spreadsheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.institution_extracters.utils.SheetData.spreadsheet_title">
 <code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
+<dd><p>Alias for field number 1</p>
 </dd></dl>
 
 </dd></dl>

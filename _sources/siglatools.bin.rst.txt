@@ -20,6 +20,14 @@ siglatools.bin.run\_external\_link\_checker module
    :undoc-members:
    :show-inheritance:
 
+siglatools.bin.run\_qa\_test module
+-----------------------------------
+
+.. automodule:: siglatools.bin.run_qa_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.bin.run\_sigla\_pipeline module
 ------------------------------------------
 
