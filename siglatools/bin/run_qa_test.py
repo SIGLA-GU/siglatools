@@ -158,7 +158,7 @@ class Comparison(NamedTuple):
 
     def get_filename(self):
         "Get the file name."
-        return f"tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
+        return f"tmp/{self.spreadsheet_title},{self.sheet_title},{self.name}.txt"
 
     def write(self) -> str:
         """
@@ -420,7 +420,7 @@ def _compare_gs_institution(
             # compare number of variables
             institution_field_comparisons.append(
                 FieldComparison(
-                    "Number of variables",
+                    "Total number of variables",
                     (Datasource.database, len(db_institution.get("childs"))),
                     (Datasource.googlesheet, len(gs_institution.data.get("childs"))),
                 )
@@ -494,7 +494,8 @@ def _compare_gs_institution(
                 # create a comparison for the variable and append to the list of variable comparisons
                 variable_comparisons.append(
                     ObjectComparison(
-                        gs_variable.get("name"), variable_field_comparisons
+                        f"""Variable: {gs_variable.get("name")}""",
+                        variable_field_comparisons,
                     )
                 )
 
@@ -613,7 +614,7 @@ def _compare_gs_composite_variable(
 
                     # compare the number of rows
                     num_rows_comparison = FieldComparison(
-                        f"Number of {variable_hyperlink}",
+                        f"Total number of {variable_hyperlink}",
                         (Datasource.database, len(db_composite_variable_data)),
                         (
                             Datasource.googlesheet,
@@ -669,9 +670,10 @@ def _compare_gs_composite_variable(
 @task
 def _write_comparison(
     comparison: Comparison,
-) -> str:
-    "Write a comoparison to a file."
-    return comparison.write()
+) -> Comparison:
+    "Write a comparison to a file."
+    comparison.write()
+    return comparison
 
 
 @task
@@ -818,21 +820,27 @@ def run_qa_test(
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     # get write comparison tasks
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
-    # get the filenames result
-    gs_filenames = [
+    # get the comparisons
+    comparisons = [
         *state.result[_write_comparison_tasks[0]].result,
         *state.result[_write_comparison_tasks[1]].result,
     ]
-    # filter to error filenames
-    gs_error_filenames = [filename for filename in gs_filenames if filename]
+    # filter to error comparisons
+    gs_error_comparisons = [
+        comparison for comparison in comparisons if comparison.has_error()
+    ]
     # get extra db institution filename
     extra_db_institutions_filename = state.result[
         flow.get_tasks(name="_write_extra_db_institutions")[0]
     ].result
     # write zip file
     with ZipFile("qa-test.zip", "w") as zip_file:
-        for filename in [*gs_error_filenames, extra_db_institutions_filename]:
-            zip_file.write(filename)
+        for comp in gs_error_comparisons:
+            zip_file.write(
+                comp.get_filename(),
+                f"{comp.spreadsheet_title}/{comp.sheet_title},{comp.name}",
+            )
+        zip_file.write(extra_db_institutions_filename, "extra-institutions.csv")
 
 
 ###############################################################################
