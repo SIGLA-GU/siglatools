@@ -907,7 +907,7 @@ def main():
         args = Args()
         dbg = args.debug
         spreadsheet_ids = [
-            spreadsheet_id.trim() for spreadsheet_id in args.spreadsheet_ids.split(",")
+            spreadsheet_id.strip() for spreadsheet_id in args.spreadsheet_ids.split(",")
         ]
         if not spreadsheet_ids:
             raise Exception("No spreadsheet ids found.")
