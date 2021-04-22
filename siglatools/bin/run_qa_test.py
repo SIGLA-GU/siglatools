@@ -204,17 +204,6 @@ def _gather_gs_institutions(
         ]
 
 
-"""@task
-def _get_composite_variable(
-    spreadsheet_id: str,
-    sheet_id: str,
-    google_api_credentials_path: str,
-) -> FormattedSheetData:
-    extracter = GoogleSheetsInstitutionExtracter(google_api_credentials_path)
-    spreadsheets_data = extracter.get_spreadsheet_data(spreadsheet_id, [sheet_id])
-    return GoogleSheetsInstitutionExtracter.process_sheet_data(spreadsheets_data[0])"""
-
-
 @task
 def _group_gs_institutions(
     gs_institutions: List[GsInstitution],
