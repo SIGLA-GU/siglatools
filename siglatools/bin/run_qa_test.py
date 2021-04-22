@@ -209,8 +209,7 @@ def _group_gs_institutions(
     gs_institutions: List[GsInstitution],
 ) -> Dict[str, Any]:
     return {
-        f"""{gs_institution.get("country")}{gs_institution.get("category")}{gs_institution.get("name")}""": gs_institution
-        for gs_institution in gs_institutions
+        gs_institution.get_key(): gs_institution for gs_institution in gs_institutions
     }
 
 
