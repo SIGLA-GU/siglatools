@@ -83,6 +83,7 @@ setup(
             "run_sigla_pipeline=siglatools.bin.run_sigla_pipeline:main",
             "run_external_link_checker=siglatools.bin.run_external_link_checker:main",
             "get_next_uv_dates=siglatools.bin.get_next_uv_dates:main",
+            "run_qa_test=siglatools.bin.run_qa_test:main",
         ],
     },
     install_requires=requirements,
