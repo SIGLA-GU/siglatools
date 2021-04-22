@@ -98,6 +98,8 @@ def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str):
     ----------
     formatted_sheet_data: FormattedSheetData
         The sheet's formatted data.
+    db_connection_url: str
+        The DB's connection url str.
     """
     database = MongoDBDatabase(db_connection_url)
     database.load(formatted_sheet_data)

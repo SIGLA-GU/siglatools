@@ -45,6 +45,22 @@ class Datasource(Enum):
 
 
 class GsInstitution(NamedTuple):
+    """
+    An institution from GoogleSheet.
+
+    Attributes:
+        spreadsheet_id: str
+            The spreadsheet id.
+        spreadsheet_title: str
+            The spreadsheet title.
+        sheet_id: str
+            The sheet id.
+        sheet_title: str
+            The sheet title.
+        data: Any
+            The institution object and its variables.
+    """
+
     spreadsheet_id: str
     spreadsheet_title: str
     sheet_id: str
@@ -52,6 +68,7 @@ class GsInstitution(NamedTuple):
     data: Any
 
     def get_key(self) -> str:
+        "Get the key of the institution."
         country = self.data.get("country")
         category = self.data.get("category")
         name = self.data.get("name")
@@ -59,25 +76,51 @@ class GsInstitution(NamedTuple):
 
 
 class FieldComparison(NamedTuple):
+    """
+    A comparison of two values for a field.
+
+    Attributes:
+        field: str
+            The field name.
+        actual: Tuple[str, Any]
+            A value and its source.
+        expected: Tuple[str, Any]
+            A value and its source.
+    """
+
     field: str
     actual: Tuple[str, Any]
     expected: Tuple[str, Any]
 
     def has_error(self) -> bool:
+        "Does the two values mismatch?"
         return self.actual[1] == self.expected[1]
 
     def get_msg(self) -> str:
+        "Get str of the two values."
         return f"{self.field}| {self.actual[0]}: {self.actual[1]}, {self.expected[0]}: {self.expected[1]}"
 
 
 class ObjectComparison(NamedTuple):
+    """
+    A group of FieldComparison.
+
+    Attributes:
+        name: str
+            The name of the group.
+        field_comparisons: List[FieldComparison]
+            The group of FieldComparison.
+    """
+
     name: str
     field_comparisons: List[FieldComparison]
 
     def has_error(self) -> bool:
+        "Does any of the group of FieldComparison have a mismatch?"
         return any([comparison.has_error() for comparison in self.field_comparisons])
 
     def get_error_msgs(self) -> List[str]:
+        "Get a list of msg for the mistmatch FieldComparison."
         return [
             comparison.get_msg()
             for comparison in self.field_comparisons
@@ -86,21 +129,47 @@ class ObjectComparison(NamedTuple):
 
 
 class Comparison(NamedTuple):
+    """
+    A group of ObjectComparison.
+
+    Attributes:
+        spreadsheet_title: str
+            The spreadsheet source of the GoogleSheet data.
+        sheet_title: str
+            The sheet source of the GoogleSheet data.
+        name: str
+            The name of the group.
+        data_comparisons: List[ObjectComparison]
+            The group of ObjectComparison.
+
+    """
+
     spreadsheet_title: str
     sheet_title: str
     name: str
     data_comparisons: List[ObjectComparison]
 
     def has_error(self) -> bool:
+        "Does any of the group of ObjectCOmparison has a mismatch?"
         return any([comparison.has_error() for comparison in self.data_comparisons])
 
     def get_gs_source(self):
+        "Get the GoogleSheet source."
         return f"Spreadsheet: {self.spreadsheet_title}, Sheet: {self.sheet_title}"
 
     def get_filename(self):
+        "Get the file name."
         return f"/tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
 
     def write(self) -> str:
+        """
+        Write the mistmatch data_comparisons to a file.
+
+        Returns
+        -------
+        filename: str
+            The filename.
+        """
         if self.has_error():
             with open(self.get_filename(), "w") as error_file:
                 # titles
@@ -127,7 +196,23 @@ class Comparison(NamedTuple):
 def _gather_db_institutions(
     spreadsheet_id: str,
     db_connection_url: str,
-) -> List[Dict[str, str]]:
+) -> List[Dict[str, Any]]:
+    """
+    Gather institutions from the database.
+
+    Parameters
+    ----------
+    spreadsheet_id: str
+        The spreadsheet id source of the institutions.
+    db_connection_url: str
+        The DB's connection url str.
+
+    Returns
+    -------
+    institutions: List[Dict[str, Any]]
+        The list of institutions.
+
+    """
     db = MongoDBDatabase(db_connection_url)
     return db.find(
         collection=DatabaseCollection.institutions,
@@ -140,6 +225,21 @@ def _gather_db_variables(
     institution: Dict[str, Any],
     db_connection_url: str,
 ) -> Dict[str, Any]:
+    """
+    Gather variables for a given institution from the database.
+
+    Parameters
+    ----------
+    institution: Dict[str, Any]
+        The institution.
+    db_connection_url: str
+        The DB's connection url str.
+
+    Returns
+    -------
+    institution: Dict[str, Any]
+        The instiution with its variables (and any composite variable data).
+    """
     db = MongoDBDatabase(db_connection_url)
     db_institution = institution.copy()
     db_variables = db.find(
@@ -161,6 +261,19 @@ def _gather_db_variables(
 
 @task
 def _group_db_institutions(db_institutions: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Group database institutions according to their unique key.
+
+    Parameters
+    ----------
+    db_instituions: List[Dict[str, Any]]
+        The list of institutions.
+
+    Returns
+    -------
+    grouped_institutions: Dict[str, Any]
+        A dictionary of institutions grouped by their unique key.
+    """
     db_institutions_group = {}
     for db_institution in db_institutions:
         country = db_institution.get("country")
@@ -174,6 +287,19 @@ def _group_db_institutions(db_institutions: List[Dict[str, Any]]) -> Dict[str, A
 def _gather_gs_institutions(
     formatted_sheet_data: FormattedSheetData,
 ) -> List[GsInstitution]:
+    """
+    Gather institutions from GoogleSheet.
+
+    Parameters
+    ----------
+    formatted_sheet_data: FormattedSheetData,
+        The list of sheet.
+
+    Returns
+    -------
+    institutions: List[GsInstitution]
+        The list of institutions.
+    """
     gs_format = formatted_sheet_data.meta_data.get("format")
     if gs_format == GoogleSheetsFormat.institution_and_composite_variable:
         country = formatted_sheet_data.meta_data.get("country")
@@ -210,6 +336,19 @@ def _gather_gs_institutions(
 def _group_gs_institutions(
     gs_institutions: List[GsInstitution],
 ) -> Dict[str, Any]:
+    """
+    Group GoogleSheet institutions according to their unique key.
+
+    Parameters
+    ----------
+    gs_instituions: List[GsInstitution]
+        The list of institutions.
+
+    Returns
+    -------
+    grouped_institutions: Dict[str, Any]
+        A dictionary of institutions grouped by their unique key.
+    """
     return {
         gs_institution.get_key(): gs_institution for gs_institution in gs_institutions
     }
@@ -220,6 +359,21 @@ def _compare_gs_institution(
     gs_institution: GsInstitution,
     db_institutions_group: Dict[str, Any],
 ) -> Comparison:
+    """
+    Compare GoogleSheet institution against its database institution.
+
+    Parameters
+    ----------
+    gs_institution: GsInstitution
+        The GoogleSheet Institution.
+    db_institutions_group: Dict[str, Any]
+        Db institutions grouped by their unique key.
+
+    Returns
+    -------
+    comparison: Comparison
+        The comparison result of the two institutions.
+    """
     variable_comparisons = []
     # get the db institution
     db_institution = db_institutions_group.get(gs_institution.get_key())
@@ -360,6 +514,22 @@ def _compare_gs_composite_variable(
     formatted_sheet_data: FormattedSheetData,
     db_connection_url: str,
 ) -> List[Comparison]:
+    """
+    Compare GoogleSheet composite variable data against its Database counterpoint.
+
+    Parameters
+    ----------
+    formatted_sheet_data: FormattedSheetData
+        The sheet data thats contains the composite variable data.
+    db_connection_url: str
+        The DB's connection url str.
+
+    Returns
+    -------
+    comparisons: List[Comparison]
+        A list of comparisons for the two composite variable data. One for each of its parent institution.
+    """
+
     institution_country = formatted_sheet_data.meta_data.get("country")
     institution_category = formatted_sheet_data.meta_data.get("category")
     institution_names = [
@@ -496,6 +666,7 @@ def _compare_gs_composite_variable(
 def _write_comparison(
     comparison: Comparison,
 ) -> str:
+    "Write a comoparison to a file."
     return comparison.write()
 
 
@@ -503,6 +674,23 @@ def _write_comparison(
 def _write_extra_db_institutions(
     db_institutions: List[Dict[str, Any]], gs_institutions_group: Dict[str, Any]
 ) -> str:
+    """
+    Write extra database institutions doesn't have an institution in the GoogleSheet to a file.
+
+    Parameters
+    ----------
+    db_institutions: List[Dict[str, Any]]
+        The list of database institutions.
+    gs_institutions_group: Dict[str, Any]
+        GoogleSheet institutions grouped by their unique key.
+
+    Returns
+    -------
+    filename: str
+        The filename.
+
+    """
+
     extra_db_institutions = []
     for db_institution in db_institutions:
         country = db_institution.get("country")
@@ -543,12 +731,14 @@ def run_qa_test(
     google_api_credentials_path: str,
 ):
     """
-    Run the the external link checker
+    Run QA test
 
     Parameters
     ----------
-    master_spreadsheet_id: str
-        The master spreadsheet id
+    spreadsheet_ids: List[str]
+        The list of spreadsheet ids to run QA test.
+    db_connection_url: str
+        The DB's connection url str.
     google_api_credentials_path: str
         The path to Google API credentials file needed to read Google Sheets.
     """
