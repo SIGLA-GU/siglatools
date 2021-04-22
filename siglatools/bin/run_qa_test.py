@@ -11,7 +11,6 @@ import csv
 import logging
 import sys
 import traceback
-from enum import Enum
 from typing import Any, Dict, List, NamedTuple, Tuple
 from zipfile import ZipFile
 
@@ -39,7 +38,7 @@ log = logging.getLogger()
 ###############################################################################
 
 
-class Datasource(Enum):
+class Datasource:
     googlesheet = "GoogleSheet"
     database = "Database"
 
@@ -907,7 +906,7 @@ def main():
         args = Args()
         dbg = args.debug
         spreadsheet_ids = [
-            spreadsheet_id.trim() for spreadsheet_id in args.spreadsheet_ids.split(",")
+            spreadsheet_id.strip() for spreadsheet_id in args.spreadsheet_ids.split(",")
         ]
         if not spreadsheet_ids:
             raise Exception("No spreadsheet ids found.")
