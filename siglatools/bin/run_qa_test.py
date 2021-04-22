@@ -383,14 +383,14 @@ def _compare_gs_composite_variable(
         )
 
         # compare matched db institutions
-        db_institution_comparison = FieldComparison(
+        num_matched_institutions_comparison = FieldComparison(
             "Number of matched institutions",
             (Datasource.database, len(db_institutions)),
             (Datasource.googlesheet, 1),
         )
-        logic_field_comparisons.append(db_institution_comparison)
+        logic_field_comparisons.append(num_matched_institutions_comparison)
 
-        if not db_institution_comparison.has_error():
+        if not num_matched_institutions_comparison.has_error():
             # compare institution name
             institution_name_comparison = FieldComparison(
                 "Institution name",
