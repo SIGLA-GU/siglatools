@@ -254,7 +254,7 @@ def _gather_db_variables(
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
-    db_institution.update(variables=db_variables)
+    db_institution.update(childs=db_variables)
     return db_institution
 
 
@@ -314,7 +314,7 @@ def _gather_gs_institutions(
                     "country": country,
                     "category": category,
                     "name": name,
-                    "variables": formatted_sheet_data.formatted_data,
+                    "childs": formatted_sheet_data.formatted_data,
                 },
             )
         ]
@@ -411,19 +411,19 @@ def _compare_gs_institution(
             )
         )
 
-        if db_institution.get("variables")[0].get("type") != VariableType.aggregate:
+        if db_institution.get("childs")[0].get("type") != VariableType.aggregate:
             # compare number of variables
             institution_field_comparisons.append(
                 FieldComparison(
                     "Number of variables",
-                    (Datasource.database, len(db_institution.get("variables"))),
-                    (Datasource.googlesheet, len(gs_institution.data.get("variables"))),
+                    (Datasource.database, len(db_institution.get("childs"))),
+                    (Datasource.googlesheet, len(gs_institution.data.get("childs"))),
                 )
             )
             for (db_variable, gs_variable) in enumerate(
                 zip(
-                    db_institution.get("variables"),
-                    gs_institution.data.get("variables"),
+                    db_institution.get("childs"),
+                    gs_institution.data.get("childs"),
                 )
             ):
                 # compare the required variable fields
