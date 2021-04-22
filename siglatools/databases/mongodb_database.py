@@ -125,6 +125,8 @@ class MongoDBDatabase:
         """
         # Create the institution primary keys
         institution = {
+            "spreadsheet_id": formatted_sheet_data.spreadsheet_id,
+            "sheet_id": formatted_sheet_data.sheet_id,
             "name": formatted_sheet_data.meta_data.get("variable_heading"),
             "country": formatted_sheet_data.meta_data.get("country"),
             "category": formatted_sheet_data.meta_data.get("category"),

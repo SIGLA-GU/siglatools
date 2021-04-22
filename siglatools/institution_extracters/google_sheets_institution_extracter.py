@@ -87,6 +87,8 @@ def _get_multilple_sigla_answer_variable(
     """
     try:
         institution = {
+            "spread_sheet_id": sheet_data.spreadsheet_id,
+            "sheet_id": sheet_data.sheet_id,
             "name": sheet_data.meta_data.get("name"),
             "country": sheet_data.meta_data.get("country"),
             "category": sheet_data.meta_data.get("category"),
@@ -139,6 +141,8 @@ def _get_standard_institution(
     ]
     institutions = [
         {
+            "spreadsheet_id": sheet_data.spreadsheet_id,
+            "sheet_id": sheet_data.sheet_id,
             "name": institution_name,
             "category": sheet_data.meta_data.get("category"),
             "childs": [
@@ -359,8 +363,7 @@ class GoogleSheetsInstitutionExtracter:
         ]
 
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
-        """TODO modify to excep Optional list of sheet_id
-        if list is empty then get all, if not the sheet_id
+        """
         Get the spreadsheet data given a spreadsheet id.
 
         Parameters
