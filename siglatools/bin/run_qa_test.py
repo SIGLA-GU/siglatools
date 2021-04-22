@@ -706,29 +706,32 @@ def _write_extra_db_institutions(
             extra_db_institutions.append(db_institution)
 
     filename = "tmp/extra-institutions.csv"
-    with open(filename, "w") as error_file:
-        fieldnames = [
-            "_id",
-            "spreadsheet_id",
-            "sheet_id",
-            "country",
-            "category",
-            "name",
-        ]
-        writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
-        writer.writeheader()
-        for db_institution in extra_db_institutions:
-            writer.writerow(
-                {
-                    "_id": db_institution.get("_id"),
-                    "spreadsheet_id": db_institution.get("spreadsheet_id"),
-                    "sheet_id": db_institution.get("sheet_id"),
-                    "country": db_institution.get("country"),
-                    "category": db_institution.get("category"),
-                    "name": db_institution.get("name"),
-                }
-            )
-    return filename
+    if extra_db_institutions:
+        with open(filename, "w") as error_file:
+            fieldnames = [
+                "_id",
+                "spreadsheet_id",
+                "sheet_id",
+                "country",
+                "category",
+                "name",
+            ]
+            writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
+            writer.writeheader()
+            for db_institution in extra_db_institutions:
+                writer.writerow(
+                    {
+                        "_id": db_institution.get("_id"),
+                        "spreadsheet_id": db_institution.get("spreadsheet_id"),
+                        "sheet_id": db_institution.get("sheet_id"),
+                        "country": db_institution.get("country"),
+                        "category": db_institution.get("category"),
+                        "name": db_institution.get("name"),
+                    }
+                )
+        return filename
+    else:
+        return None
 
 
 def run_qa_test(
@@ -840,7 +843,8 @@ def run_qa_test(
                 comp.get_filename(),
                 f"{comp.spreadsheet_title}/{comp.sheet_title},{comp.name}",
             )
-        zip_file.write(extra_db_institutions_filename, "extra-institutions.csv")
+        if extra_db_institutions_filename:
+            zip_file.write(extra_db_institutions_filename, "extra-institutions.csv")
 
 
 ###############################################################################
