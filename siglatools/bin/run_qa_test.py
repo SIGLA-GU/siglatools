@@ -515,7 +515,7 @@ def _compare_gs_composite_variable(
     db_connection_url: str,
 ) -> List[Comparison]:
     """
-    Compare GoogleSheet composite variable data against its Database counterpoint.
+    Compare GoogleSheet composite variable data against its Database counterpart.
 
     Parameters
     ----------
