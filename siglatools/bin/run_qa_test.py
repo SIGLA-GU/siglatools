@@ -93,11 +93,11 @@ class FieldComparison(NamedTuple):
 
     def has_error(self) -> bool:
         "Does the two values mismatch?"
-        return self.actual[1] == self.expected[1]
+        return self.actual[1] != self.expected[1]
 
     def get_msg(self) -> str:
-        "Get str of the two values."
-        return f"{self.field}| {self.actual[0]}: {self.actual[1]}, {self.expected[0]}: {self.expected[1]}"
+        "Get the field name."
+        return self.field
 
 
 class ObjectComparison(NamedTuple):
@@ -158,7 +158,7 @@ class Comparison(NamedTuple):
 
     def get_filename(self):
         "Get the file name."
-        return f"/tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
+        return f"tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
 
     def write(self) -> str:
         """
@@ -248,9 +248,14 @@ def _gather_db_variables(
     )
     for db_variable in db_variables:
         if db_variable.get("type") == VariableType.composite:
+            variable_str = (
+                "variables"
+                if db_variable.get("hyperlink") == DatabaseCollection.body_of_law
+                else "variable"
+            )
             composite_variable_data = db.find(
                 collection=db_variable.get("hyperlink"),
-                filter={"variable": db_variable.get("_id")},
+                filter={f"{variable_str}": db_variable.get("_id")},
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
@@ -420,11 +425,9 @@ def _compare_gs_institution(
                     (Datasource.googlesheet, len(gs_institution.data.get("childs"))),
                 )
             )
-            for (db_variable, gs_variable) in enumerate(
-                zip(
-                    db_institution.get("childs"),
-                    gs_institution.data.get("childs"),
-                )
+            for db_variable, gs_variable in zip(
+                db_institution.get("childs"),
+                gs_institution.data.get("childs"),
             ):
                 # compare the required variable fields
                 variable_field_comparisons = [
@@ -503,7 +506,7 @@ def _compare_gs_institution(
         return Comparison(
             spreadsheet_title=gs_institution.spreadsheet_title,
             sheet_title=gs_institution.sheet_title,
-            name=gs_institution.get("name"),
+            name=gs_institution.data.get("name"),
             data_comparisons=[institution_comparison, *variable_comparisons],
         )
 
@@ -596,9 +599,15 @@ def _compare_gs_composite_variable(
                     db_variable = db_variables[0]
 
                     # get the rows
+                    variable_str = (
+                        "variables"
+                        if db_variable.get("hyperlink")
+                        == DatabaseCollection.body_of_law
+                        else "variable"
+                    )
                     db_composite_variable_data = db.find(
                         collection=db_variable.get("hyperlink"),
-                        filter={"variable": db_variable.get("_id")},
+                        filter={f"{variable_str}": db_variable.get("_id")},
                         sort=[("index", ASCENDING)],
                     )
 
@@ -613,11 +622,9 @@ def _compare_gs_composite_variable(
                     )
                     logic_field_comparisons.append(num_rows_comparison)
 
-                    for db_row, gs_row in enumerate(
-                        zip(
-                            db_composite_variable_data,
-                            formatted_sheet_data.formatted_data,
-                        )
+                    for db_row, gs_row in zip(
+                        db_composite_variable_data,
+                        formatted_sheet_data.formatted_data,
                     ):
                         # compare each cell
                         cell_comparisons = [
@@ -626,11 +633,9 @@ def _compare_gs_composite_variable(
                                 (Datasource.database, db_cell.get("answer")),
                                 (Datasource.googlesheet, gs_cell.get("answer")),
                             )
-                            for db_cell, gs_cell in enumerate(
-                                zip(
-                                    db_row.get("sigla_answers"),
-                                    gs_row.get("sigla_answers"),
-                                )
+                            for db_cell, gs_cell in zip(
+                                db_row.get("sigla_answers"),
+                                gs_row.get("sigla_answers"),
                             )
                         ]
 
@@ -698,7 +703,7 @@ def _write_extra_db_institutions(
         if gs_institutions_group.get(f"{country}{category}{name}") is None:
             extra_db_institutions.append(db_institution)
 
-    filename = "/tmp/extra-institutions.csv"
+    filename = "tmp/extra-institutions.csv"
     with open(filename, "w") as error_file:
         fieldnames = [
             "_id",
@@ -799,7 +804,7 @@ def run_qa_test(
         # compare gs composite variables against db institutions
         # get list of list of comparisons
         gs_composite_comparisons = _compare_gs_composite_variable.map(
-            gs_composites, unmapped(db_institutions_group)
+            gs_composites, unmapped(db_connection_url)
         )
 
         # write gs institution comparisons
