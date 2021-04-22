@@ -335,7 +335,23 @@ class MongoDBDatabase:
         filter: Dict[str, Any],
         sort: Optional[List[Tuple[str, str]]],
     ) -> List[Dict[str, Any]]:
-        """TODO"""
+        """
+        Query the database for documents.
+
+        Parameters
+        ----------
+        collection: str
+            The db collection to query for documents.
+        filter: Dict[str, Any]
+            A prototype document that all results must match.
+        sort: Optional[List[Tuple[str, str]]]
+            A list of (key, direction) pairs specifying the sort order for this query.
+
+        Returns
+        -------
+        docs: List[Dict[str, Any]]
+            The list of matched documents.
+        """
         cursor = self._db.get_collection(collection).find(filter)
         if sort:
             cursor.sort(sort)
