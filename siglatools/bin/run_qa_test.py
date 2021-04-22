@@ -816,8 +816,8 @@ def run_qa_test(
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
     # get the filenames result
     gs_filenames = [
-        *state.result[_write_comparison_tasks[0]].result
-        * state.result[_write_comparison_tasks[0]].result
+        *state.result[_write_comparison_tasks[0]].result,
+        *state.result[_write_comparison_tasks[1]].result,
     ]
     # filter to error filenames
     gs_error_filenames = [filename for filename in gs_filenames if filename]
