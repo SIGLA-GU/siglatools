@@ -412,7 +412,7 @@ def _compare_gs_institution(
             FieldComparison(
                 "Institution name",
                 FieldComparisonType.meta,
-                (Datasource.database, db_institution.get("name")),
+                (Datasource.database, db_institution.get("name") + "a"),
                 (Datasource.googlesheet, gs_institution.data.get("name")),
             )
         )
