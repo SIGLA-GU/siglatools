@@ -43,6 +43,11 @@ class Datasource:
     database = "Database"
 
 
+class FieldComparisonType:
+    meta = "meta"
+    data = "data"
+
+
 class GsInstitution(NamedTuple):
     """
     An institution from GoogleSheet.
@@ -81,6 +86,8 @@ class FieldComparison(NamedTuple):
     Attributes:
         field: str
             The field name.
+        comparison_type: str
+            The field comparison type.
         actual: Tuple[str, Any]
             A value and its source.
         expected: Tuple[str, Any]
@@ -88,16 +95,24 @@ class FieldComparison(NamedTuple):
     """
 
     field: str
+    comparison_type: str
     actual: Tuple[str, Any]
     expected: Tuple[str, Any]
 
     def has_error(self) -> bool:
         "Does the two values mismatch?"
-        return self.actual[1] == self.expected[1]
+        return self.actual[1] != self.expected[1]
 
-    def get_msg(self) -> str:
+    def get_str_rep(self) -> str:
         "Get str of the two values."
         return f"{self.field}| {self.actual[0]}: {self.actual[1]}, {self.expected[0]}: {self.expected[1]}"
+
+    def get_error_msg(self) -> str:
+        "Get error msg."
+        if self.comparison_type == FieldComparisonType.meta:
+            return self.get_str_rep()
+        else:
+            return f"Incorrect value for {self.field}"
 
 
 class ObjectComparison(NamedTuple):
@@ -121,7 +136,7 @@ class ObjectComparison(NamedTuple):
     def get_error_msgs(self) -> List[str]:
         "Get a list of msg for the mistmatch FieldComparison."
         return [
-            comparison.get_msg()
+            comparison.get_error_msg()
             for comparison in self.field_comparisons
             if comparison.has_error()
         ]
@@ -158,7 +173,7 @@ class Comparison(NamedTuple):
 
     def get_filename(self):
         "Get the file name."
-        return f"/tmp/{self.spreadsheet_title}|{self.sheet_title}|{self.name}.txt"
+        return f"tmp/{self.spreadsheet_title},{self.sheet_title},{self.name}.txt"
 
     def write(self) -> str:
         """
@@ -248,13 +263,18 @@ def _gather_db_variables(
     )
     for db_variable in db_variables:
         if db_variable.get("type") == VariableType.composite:
+            variable_str = (
+                "variables"
+                if db_variable.get("hyperlink") == DatabaseCollection.body_of_law
+                else "variable"
+            )
             composite_variable_data = db.find(
                 collection=db_variable.get("hyperlink"),
-                filter={"variable": db_variable.get("_id")},
+                filter={f"{variable_str}": db_variable.get("_id")},
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
-    db_institution.update(variables=db_variables)
+    db_institution.update(childs=db_variables)
     return db_institution
 
 
@@ -314,7 +334,7 @@ def _gather_gs_institutions(
                     "country": country,
                     "category": category,
                     "name": name,
-                    "variables": formatted_sheet_data.formatted_data,
+                    "childs": formatted_sheet_data.formatted_data,
                 },
             )
         ]
@@ -381,6 +401,7 @@ def _compare_gs_institution(
     institution_field_comparisons = [
         FieldComparison(
             "Institution exists in",
+            FieldComparisonType.meta,
             (Datasource.database, True if db_institution else False),
             (Datasource.googlesheet, True),
         )
@@ -390,6 +411,7 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution name",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("name")),
                 (Datasource.googlesheet, gs_institution.data.get("name")),
             )
@@ -398,6 +420,7 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution country",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("country")),
                 (Datasource.googlesheet, gs_institution.data.get("country")),
             )
@@ -406,60 +429,67 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution category",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("category")),
                 (Datasource.googlesheet, gs_institution.data.get("category")),
             )
         )
 
-        if db_institution.get("variables")[0].get("type") != VariableType.aggregate:
+        if db_institution.get("childs")[0].get("type") != VariableType.aggregate:
             # compare number of variables
             institution_field_comparisons.append(
                 FieldComparison(
-                    "Number of variables",
-                    (Datasource.database, len(db_institution.get("variables"))),
-                    (Datasource.googlesheet, len(gs_institution.data.get("variables"))),
+                    "Total number of variables",
+                    FieldComparisonType.meta,
+                    (Datasource.database, len(db_institution.get("childs"))),
+                    (Datasource.googlesheet, len(gs_institution.data.get("childs"))),
                 )
             )
-            for (db_variable, gs_variable) in enumerate(
-                zip(
-                    db_institution.get("variables"),
-                    gs_institution.data.get("variables"),
-                )
+            for db_variable, gs_variable in zip(
+                db_institution.get("childs"),
+                gs_institution.data.get("childs"),
             ):
                 # compare the required variable fields
                 variable_field_comparisons = [
                     FieldComparison(
                         "Variable heading",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("heading")),
                         (Datasource.googlesheet, gs_variable.get("heading")),
                     ),
                     FieldComparison(
                         "Variable name",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("name")),
                         (Datasource.googlesheet, gs_variable.get("name")),
                     ),
                     FieldComparison(
                         "Variable type",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("type")),
                         (Datasource.googlesheet, gs_variable.get("type")),
                     ),
                     FieldComparison(
                         "Variable index",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("variable_index")),
                         (Datasource.googlesheet, gs_variable.get("variable_index")),
                     ),
                     FieldComparison(
                         "Sigla's answer",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("sigla_answer")),
                         (Datasource.googlesheet, gs_variable.get("sigla_answer")),
                     ),
                     FieldComparison(
                         "Original text",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("orig_text")),
                         (Datasource.googlesheet, gs_variable.get("orig_text")),
                     ),
                     FieldComparison(
                         "Source",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("source")),
                         (Datasource.googlesheet, gs_variable.get("source")),
                     ),
@@ -470,6 +500,7 @@ def _compare_gs_institution(
                     variable_field_comparisons.append(
                         FieldComparison(
                             "Variable hyperlink",
+                            FieldComparisonType.meta,
                             (Datasource.database, db_variable.get("hyperlink")),
                             (Datasource.googlesheet, gs_variable.get("hyperlink")),
                         )
@@ -478,6 +509,7 @@ def _compare_gs_institution(
                     variable_field_comparisons.append(
                         FieldComparison(
                             f"""{gs_variable.get("name")} exists in""",
+                            FieldComparisonType.meta,
                             (
                                 Datasource.database,
                                 True
@@ -491,7 +523,8 @@ def _compare_gs_institution(
                 # create a comparison for the variable and append to the list of variable comparisons
                 variable_comparisons.append(
                     ObjectComparison(
-                        gs_variable.get("name"), variable_field_comparisons
+                        f"""Variable: {gs_variable.get("name")}""",
+                        variable_field_comparisons,
                     )
                 )
 
@@ -503,7 +536,7 @@ def _compare_gs_institution(
         return Comparison(
             spreadsheet_title=gs_institution.spreadsheet_title,
             sheet_title=gs_institution.sheet_title,
-            name=gs_institution.get("name"),
+            name=gs_institution.data.get("name"),
             data_comparisons=[institution_comparison, *variable_comparisons],
         )
 
@@ -556,6 +589,7 @@ def _compare_gs_composite_variable(
         # compare matched db institutions
         num_matched_institutions_comparison = FieldComparison(
             "Number of matched institutions",
+            FieldComparisonType.meta,
             (Datasource.database, len(db_institutions)),
             (Datasource.googlesheet, 1),
         )
@@ -566,6 +600,7 @@ def _compare_gs_composite_variable(
             # compare institution name
             institution_name_comparison = FieldComparison(
                 "Institution name",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("name")),
                 (Datasource.googlesheet, institution_name),
             )
@@ -587,6 +622,7 @@ def _compare_gs_composite_variable(
                 # compare the number of matched variables
                 num_matched_variables_comparison = FieldComparison(
                     "Number of matched variables",
+                    FieldComparisonType.meta,
                     (Datasource.database, len(db_variables)),
                     (Datasource.googlesheet, 1),
                 )
@@ -596,15 +632,22 @@ def _compare_gs_composite_variable(
                     db_variable = db_variables[0]
 
                     # get the rows
+                    variable_str = (
+                        "variables"
+                        if db_variable.get("hyperlink")
+                        == DatabaseCollection.body_of_law
+                        else "variable"
+                    )
                     db_composite_variable_data = db.find(
                         collection=db_variable.get("hyperlink"),
-                        filter={"variable": db_variable.get("_id")},
+                        filter={f"{variable_str}": db_variable.get("_id")},
                         sort=[("index", ASCENDING)],
                     )
 
                     # compare the number of rows
                     num_rows_comparison = FieldComparison(
-                        f"Number of {variable_hyperlink}",
+                        f"Total number of {variable_hyperlink}",
+                        FieldComparisonType.meta,
                         (Datasource.database, len(db_composite_variable_data)),
                         (
                             Datasource.googlesheet,
@@ -613,24 +656,21 @@ def _compare_gs_composite_variable(
                     )
                     logic_field_comparisons.append(num_rows_comparison)
 
-                    for db_row, gs_row in enumerate(
-                        zip(
-                            db_composite_variable_data,
-                            formatted_sheet_data.formatted_data,
-                        )
+                    for db_row, gs_row in zip(
+                        db_composite_variable_data,
+                        formatted_sheet_data.formatted_data,
                     ):
                         # compare each cell
                         cell_comparisons = [
                             FieldComparison(
                                 gs_cell.get("name"),
+                                FieldComparisonType.data,
                                 (Datasource.database, db_cell.get("answer")),
                                 (Datasource.googlesheet, gs_cell.get("answer")),
                             )
-                            for db_cell, gs_cell in enumerate(
-                                zip(
-                                    db_row.get("sigla_answers"),
-                                    gs_row.get("sigla_answers"),
-                                )
+                            for db_cell, gs_cell in zip(
+                                db_row.get("sigla_answers"),
+                                gs_row.get("sigla_answers"),
                             )
                         ]
 
@@ -664,9 +704,10 @@ def _compare_gs_composite_variable(
 @task
 def _write_comparison(
     comparison: Comparison,
-) -> str:
-    "Write a comoparison to a file."
-    return comparison.write()
+) -> Comparison:
+    "Write a comparison to a file."
+    comparison.write()
+    return comparison
 
 
 @task
@@ -698,30 +739,33 @@ def _write_extra_db_institutions(
         if gs_institutions_group.get(f"{country}{category}{name}") is None:
             extra_db_institutions.append(db_institution)
 
-    filename = "/tmp/extra-institutions.csv"
-    with open(filename, "w") as error_file:
-        fieldnames = [
-            "_id",
-            "spreadsheet_id",
-            "sheet_id",
-            "country",
-            "category",
-            "name",
-        ]
-        writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
-        writer.writeheader()
-        for db_institution in extra_db_institutions:
-            writer.writerow(
-                {
-                    "_id": db_institution.get("_id"),
-                    "spreadsheet_id": db_institution.get("spreadsheet_id"),
-                    "sheet_id": db_institution.get("sheet_id"),
-                    "country": db_institution.get("country"),
-                    "category": db_institution.get("category"),
-                    "name": db_institution.get("name"),
-                }
-            )
-    return filename
+    filename = "tmp/extra-institutions.csv"
+    if extra_db_institutions:
+        with open(filename, "w") as error_file:
+            fieldnames = [
+                "_id",
+                "spreadsheet_id",
+                "sheet_id",
+                "country",
+                "category",
+                "name",
+            ]
+            writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
+            writer.writeheader()
+            for db_institution in extra_db_institutions:
+                writer.writerow(
+                    {
+                        "_id": db_institution.get("_id"),
+                        "spreadsheet_id": db_institution.get("spreadsheet_id"),
+                        "sheet_id": db_institution.get("sheet_id"),
+                        "country": db_institution.get("country"),
+                        "category": db_institution.get("category"),
+                        "name": db_institution.get("name"),
+                    }
+                )
+        return filename
+    else:
+        return None
 
 
 def run_qa_test(
@@ -799,7 +843,7 @@ def run_qa_test(
         # compare gs composite variables against db institutions
         # get list of list of comparisons
         gs_composite_comparisons = _compare_gs_composite_variable.map(
-            gs_composites, unmapped(db_institutions_group)
+            gs_composites, unmapped(db_connection_url)
         )
 
         # write gs institution comparisons
@@ -813,21 +857,28 @@ def run_qa_test(
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     # get write comparison tasks
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
-    # get the filenames result
-    gs_filenames = [
+    # get the comparisons
+    comparisons = [
         *state.result[_write_comparison_tasks[0]].result,
         *state.result[_write_comparison_tasks[1]].result,
     ]
-    # filter to error filenames
-    gs_error_filenames = [filename for filename in gs_filenames if filename]
+    # filter to error comparisons
+    gs_error_comparisons = [
+        comparison for comparison in comparisons if comparison.has_error()
+    ]
     # get extra db institution filename
     extra_db_institutions_filename = state.result[
         flow.get_tasks(name="_write_extra_db_institutions")[0]
     ].result
     # write zip file
     with ZipFile("qa-test.zip", "w") as zip_file:
-        for filename in [*gs_error_filenames, extra_db_institutions_filename]:
-            zip_file.write(filename)
+        for comp in gs_error_comparisons:
+            zip_file.write(
+                comp.get_filename(),
+                f"{comp.spreadsheet_title}/{comp.sheet_title},{comp.name}",
+            )
+        if extra_db_institutions_filename:
+            zip_file.write(extra_db_institutions_filename, "extra-institutions.csv")
 
 
 ###############################################################################
@@ -910,7 +961,7 @@ def main():
         ]
         if not spreadsheet_ids:
             raise Exception("No spreadsheet ids found.")
-        if not args.db_env.strip() not in [env.value for env in Environment]:
+        if args.db_env.strip() not in [Environment.staging, Environment.production]:
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
