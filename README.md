@@ -11,21 +11,8 @@ Tools to extract SIGLA data from Google Sheets and load into MongoDB. Please see
 * Bin script to run SIGLA ETL pipeline.
 * Bin script to run external link checker.
 * Bin script to get the next update and verify dates to determine what data needs updating and verifying.
+* Bin script to run QA test to compare GoogleSheet data and data in the database.
 * GitHub workflows to run bin script semi/automatically on GitHub Actions.
-
-## Quick Start
-### Run SIGLA ETL Pipeline
-```
-run_sigla_pipeline -msi <master_spreadsheet_id> -dbcu <db_connection_url> -gacp /path/to/google-api-credentials.json
-```
-### Run External Link Checker
-```
-run_external_link_checker -msi <master_spreadsheet_id> -gacp /path/to/google-api-credentials.json
-```
-### Get next update and verify dates
-```
-get_next_uv_dates -msi <master_spreadsheet_id> -gacp /path/to/google-api-credentials.json -sd <start_date> -ed <end_date>
-```
 
 ## Installation
 **Stable Release:** `pip install siglatools`<br>
