@@ -593,6 +593,8 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dt>Attributes:</dt><dd><dl class="simple">
 <dt>field: str</dt><dd><p>The field name.</p>
 </dd>
+<dt>comparison_type: str</dt><dd><p>The field comparison type.</p>
+</dd>
 <dt>actual: Tuple[str, Any]</dt><dd><p>A value and its source.</p>
 </dd>
 <dt>expected: Tuple[str, Any]</dt><dd><p>A value and its source.</p>
@@ -600,17 +602,23 @@ users’ virtualenv when the parent module is installed using pip.</p>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of FieldComparison(field, actual, expected)</p>
+<p>Create new instance of FieldComparison(field, comparison_type, actual, expected)</p>
 <dl class="attribute">
 <dt id="siglatools.bin.run_qa_test.FieldComparison.actual">
 <code class="sig-name descname">actual</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.actual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.comparison_type">
+<code class="sig-name descname">comparison_type</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.comparison_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.bin.run_qa_test.FieldComparison.expected">
 <code class="sig-name descname">expected</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.expected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
+<dd><p>Alias for field number 3</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -620,8 +628,14 @@ users’ virtualenv when the parent module is installed using pip.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="siglatools.bin.run_qa_test.FieldComparison.get_msg">
-<code class="sig-name descname">get_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.get_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.get_msg" title="Permalink to this definition">¶</a></dt>
+<dt id="siglatools.bin.run_qa_test.FieldComparison.get_error_msg">
+<code class="sig-name descname">get_error_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.get_error_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.get_error_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get error msg.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.get_str_rep">
+<code class="sig-name descname">get_str_rep</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.get_str_rep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.get_str_rep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get str of the two values.</p>
 </dd></dl>
 
@@ -630,6 +644,22 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <code class="sig-name descname">has_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.has_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.has_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does the two values mismatch?</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">FieldComparisonType</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparisonType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType.data">
+<code class="sig-name descname">data</code><em class="property"> = 'data'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType.meta">
+<code class="sig-name descname">meta</code><em class="property"> = 'meta'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType.meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

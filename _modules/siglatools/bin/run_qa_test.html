@@ -251,6 +251,11 @@
     <span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;Database&quot;</span></div>
 
 
+<div class="viewcode-block" id="FieldComparisonType"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparisonType">[docs]</a><span class="k">class</span> <span class="nc">FieldComparisonType</span><span class="p">:</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="s2">&quot;meta&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span></div>
+
+
 <div class="viewcode-block" id="GsInstitution"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.GsInstitution">[docs]</a><span class="k">class</span> <span class="nc">GsInstitution</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An institution from GoogleSheet.</span>
@@ -289,6 +294,8 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        field: str</span>
 <span class="sd">            The field name.</span>
+<span class="sd">        comparison_type: str</span>
+<span class="sd">            The field comparison type.</span>
 <span class="sd">        actual: Tuple[str, Any]</span>
 <span class="sd">            A value and its source.</span>
 <span class="sd">        expected: Tuple[str, Any]</span>
@@ -296,16 +303,24 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">field</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">comparison_type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">actual</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="n">expected</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 
 <div class="viewcode-block" id="FieldComparison.has_error"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison.has_error">[docs]</a>    <span class="k">def</span> <span class="nf">has_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="s2">&quot;Does the two values mismatch?&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="FieldComparison.get_msg"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison.get_msg">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="FieldComparison.get_str_rep"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison.get_str_rep">[docs]</a>    <span class="k">def</span> <span class="nf">get_str_rep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="s2">&quot;Get str of the two values.&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actual</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+<div class="viewcode-block" id="FieldComparison.get_error_msg"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison.get_error_msg">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="s2">&quot;Get error msg.&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparison_type</span> <span class="o">==</span> <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_str_rep</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Incorrect value for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span></div></div>
 
 
 <div class="viewcode-block" id="ObjectComparison"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.ObjectComparison">[docs]</a><span class="k">class</span> <span class="nc">ObjectComparison</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
@@ -329,7 +344,7 @@
 <div class="viewcode-block" id="ObjectComparison.get_error_msgs"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.ObjectComparison.get_error_msgs">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_msgs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="s2">&quot;Get a list of msg for the mistmatch FieldComparison.&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">comparison</span><span class="o">.</span><span class="n">get_msg</span><span class="p">()</span>
+            <span class="n">comparison</span><span class="o">.</span><span class="n">get_error_msg</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">comparison</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_comparisons</span>
             <span class="k">if</span> <span class="n">comparison</span><span class="o">.</span><span class="n">has_error</span><span class="p">()</span>
         <span class="p">]</span></div></div>
@@ -366,7 +381,7 @@
 
 <div class="viewcode-block" id="Comparison.get_filename"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.get_filename">[docs]</a>    <span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;Get the file name.&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;/tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.txt&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.txt&quot;</span></div>
 
 <div class="viewcode-block" id="Comparison.write"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -456,13 +471,18 @@
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">db_variable</span> <span class="ow">in</span> <span class="n">db_variables</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span><span class="p">:</span>
+            <span class="n">variable_str</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;variables&quot;</span>
+                <span class="k">if</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">body_of_law</span>
+                <span class="k">else</span> <span class="s2">&quot;variable&quot;</span>
+            <span class="p">)</span>
             <span class="n">composite_variable_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
                 <span class="n">collection</span><span class="o">=</span><span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">),</span>
-                <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
+                <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
                 <span class="n">sort</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">ASCENDING</span><span class="p">)],</span>
             <span class="p">)</span>
             <span class="n">db_variable</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">composite_variable_data</span><span class="o">=</span><span class="n">composite_variable_data</span><span class="p">)</span>
-    <span class="n">db_institution</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="n">db_variables</span><span class="p">)</span>
+    <span class="n">db_institution</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">childs</span><span class="o">=</span><span class="n">db_variables</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">db_institution</span>
 
 
@@ -522,7 +542,7 @@
                     <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country</span><span class="p">,</span>
                     <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">category</span><span class="p">,</span>
                     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                    <span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
+                    <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">)</span>
         <span class="p">]</span>
@@ -589,6 +609,7 @@
     <span class="n">institution_field_comparisons</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">FieldComparison</span><span class="p">(</span>
             <span class="s2">&quot;Institution exists in&quot;</span><span class="p">,</span>
+            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">db_institution</span> <span class="k">else</span> <span class="kc">False</span><span class="p">),</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
         <span class="p">)</span>
@@ -598,6 +619,7 @@
         <span class="n">institution_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">FieldComparison</span><span class="p">(</span>
                 <span class="s2">&quot;Institution name&quot;</span><span class="p">,</span>
+                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
             <span class="p">)</span>
@@ -606,6 +628,7 @@
         <span class="n">institution_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">FieldComparison</span><span class="p">(</span>
                 <span class="s2">&quot;Institution country&quot;</span><span class="p">,</span>
+                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)),</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)),</span>
             <span class="p">)</span>
@@ -614,60 +637,67 @@
         <span class="n">institution_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">FieldComparison</span><span class="p">(</span>
                 <span class="s2">&quot;Institution category&quot;</span><span class="p">,</span>
+                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)),</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)),</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variables&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">aggregate</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">aggregate</span><span class="p">:</span>
             <span class="c1"># compare number of variables</span>
             <span class="n">institution_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">FieldComparison</span><span class="p">(</span>
-                    <span class="s2">&quot;Number of variables&quot;</span><span class="p">,</span>
-                    <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variables&quot;</span><span class="p">))),</span>
-                    <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variables&quot;</span><span class="p">))),</span>
+                    <span class="s2">&quot;Total number of variables&quot;</span><span class="p">,</span>
+                    <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">))),</span>
+                    <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">))),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="p">(</span><span class="n">db_variable</span><span class="p">,</span> <span class="n">gs_variable</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="nb">zip</span><span class="p">(</span>
-                    <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variables&quot;</span><span class="p">),</span>
-                    <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variables&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
+            <span class="k">for</span> <span class="n">db_variable</span><span class="p">,</span> <span class="n">gs_variable</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">),</span>
+                <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="c1"># compare the required variable fields</span>
                 <span class="n">variable_field_comparisons</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Variable heading&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Variable name&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Variable type&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Variable index&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_index&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_index&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Sigla&#39;s answer&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answer&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answer&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Original text&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orig_text&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;orig_text&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">)),</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
@@ -678,6 +708,7 @@
                     <span class="n">variable_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">FieldComparison</span><span class="p">(</span>
                             <span class="s2">&quot;Variable hyperlink&quot;</span><span class="p">,</span>
+                            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)),</span>
                             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)),</span>
                         <span class="p">)</span>
@@ -686,6 +717,7 @@
                     <span class="n">variable_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">FieldComparison</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2"> exists in&quot;&quot;&quot;</span><span class="p">,</span>
+                            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                             <span class="p">(</span>
                                 <span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span>
                                 <span class="kc">True</span>
@@ -699,7 +731,8 @@
                 <span class="c1"># create a comparison for the variable and append to the list of variable comparisons</span>
                 <span class="n">variable_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">ObjectComparison</span><span class="p">(</span>
-                        <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">variable_field_comparisons</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Variable: </span><span class="si">{</span><span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+                        <span class="n">variable_field_comparisons</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
 
@@ -711,7 +744,7 @@
         <span class="k">return</span> <span class="n">Comparison</span><span class="p">(</span>
             <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
             <span class="n">sheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
             <span class="n">data_comparisons</span><span class="o">=</span><span class="p">[</span><span class="n">institution_comparison</span><span class="p">,</span> <span class="o">*</span><span class="n">variable_comparisons</span><span class="p">],</span>
         <span class="p">)</span>
 
@@ -764,6 +797,7 @@
         <span class="c1"># compare matched db institutions</span>
         <span class="n">num_matched_institutions_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
             <span class="s2">&quot;Number of matched institutions&quot;</span><span class="p">,</span>
+            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_institutions</span><span class="p">)),</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">)</span>
@@ -774,6 +808,7 @@
             <span class="c1"># compare institution name</span>
             <span class="n">institution_name_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
                 <span class="s2">&quot;Institution name&quot;</span><span class="p">,</span>
+                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">institution_name</span><span class="p">),</span>
             <span class="p">)</span>
@@ -795,6 +830,7 @@
                 <span class="c1"># compare the number of matched variables</span>
                 <span class="n">num_matched_variables_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
                     <span class="s2">&quot;Number of matched variables&quot;</span><span class="p">,</span>
+                    <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                     <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_variables</span><span class="p">)),</span>
                     <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                 <span class="p">)</span>
@@ -804,15 +840,22 @@
                     <span class="n">db_variable</span> <span class="o">=</span> <span class="n">db_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
                     <span class="c1"># get the rows</span>
+                    <span class="n">variable_str</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;variables&quot;</span>
+                        <span class="k">if</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)</span>
+                        <span class="o">==</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">body_of_law</span>
+                        <span class="k">else</span> <span class="s2">&quot;variable&quot;</span>
+                    <span class="p">)</span>
                     <span class="n">db_composite_variable_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
                         <span class="n">collection</span><span class="o">=</span><span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">),</span>
-                        <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
+                        <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
                         <span class="n">sort</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">ASCENDING</span><span class="p">)],</span>
                     <span class="p">)</span>
 
                     <span class="c1"># compare the number of rows</span>
                     <span class="n">num_rows_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Number of </span><span class="si">{</span><span class="n">variable_hyperlink</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;Total number of </span><span class="si">{</span><span class="n">variable_hyperlink</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_composite_variable_data</span><span class="p">)),</span>
                         <span class="p">(</span>
                             <span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span>
@@ -821,24 +864,21 @@
                     <span class="p">)</span>
                     <span class="n">logic_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num_rows_comparison</span><span class="p">)</span>
 
-                    <span class="k">for</span> <span class="n">db_row</span><span class="p">,</span> <span class="n">gs_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                        <span class="nb">zip</span><span class="p">(</span>
-                            <span class="n">db_composite_variable_data</span><span class="p">,</span>
-                            <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
-                        <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">db_row</span><span class="p">,</span> <span class="n">gs_row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                        <span class="n">db_composite_variable_data</span><span class="p">,</span>
+                        <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">,</span>
                     <span class="p">):</span>
                         <span class="c1"># compare each cell</span>
                         <span class="n">cell_comparisons</span> <span class="o">=</span> <span class="p">[</span>
                             <span class="n">FieldComparison</span><span class="p">(</span>
                                 <span class="n">gs_cell</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_cell</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;answer&quot;</span><span class="p">)),</span>
                                 <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_cell</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;answer&quot;</span><span class="p">)),</span>
                             <span class="p">)</span>
-                            <span class="k">for</span> <span class="n">db_cell</span><span class="p">,</span> <span class="n">gs_cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                                <span class="nb">zip</span><span class="p">(</span>
-                                    <span class="n">db_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">),</span>
-                                    <span class="n">gs_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">),</span>
-                                <span class="p">)</span>
+                            <span class="k">for</span> <span class="n">db_cell</span><span class="p">,</span> <span class="n">gs_cell</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                                <span class="n">db_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">),</span>
+                                <span class="n">gs_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">),</span>
                             <span class="p">)</span>
                         <span class="p">]</span>
 
@@ -872,9 +912,10 @@
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_write_comparison</span><span class="p">(</span>
     <span class="n">comparison</span><span class="p">:</span> <span class="n">Comparison</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="s2">&quot;Write a comoparison to a file.&quot;</span>
-    <span class="k">return</span> <span class="n">comparison</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comparison</span><span class="p">:</span>
+    <span class="s2">&quot;Write a comparison to a file.&quot;</span>
+    <span class="n">comparison</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">comparison</span>
 
 
 <span class="nd">@task</span>
@@ -906,30 +947,33 @@
         <span class="k">if</span> <span class="n">gs_institutions_group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">country</span><span class="si">}{</span><span class="n">category</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">extra_db_institutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">db_institution</span><span class="p">)</span>
 
-    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;/tmp/extra-institutions.csv&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">error_file</span><span class="p">:</span>
-        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;sheet_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">error_file</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">db_institution</span> <span class="ow">in</span> <span class="n">extra_db_institutions</span><span class="p">:</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;sheet_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sheet_id&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-                <span class="p">}</span>
-            <span class="p">)</span>
-    <span class="k">return</span> <span class="n">filename</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;tmp/extra-institutions.csv&quot;</span>
+    <span class="k">if</span> <span class="n">extra_db_institutions</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">error_file</span><span class="p">:</span>
+            <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sheet_id&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;country&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;category&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">error_file</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">db_institution</span> <span class="ow">in</span> <span class="n">extra_db_institutions</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;sheet_id&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sheet_id&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="run_qa_test"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.run_qa_test">[docs]</a><span class="k">def</span> <span class="nf">run_qa_test</span><span class="p">(</span>
@@ -1007,7 +1051,7 @@
         <span class="c1"># compare gs composite variables against db institutions</span>
         <span class="c1"># get list of list of comparisons</span>
         <span class="n">gs_composite_comparisons</span> <span class="o">=</span> <span class="n">_compare_gs_composite_variable</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="n">gs_composites</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_institutions_group</span><span class="p">)</span>
+            <span class="n">gs_composites</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="c1"># write gs institution comparisons</span>
@@ -1021,21 +1065,28 @@
     <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
     <span class="c1"># get write comparison tasks</span>
     <span class="n">_write_comparison_tasks</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;_write_comparison&quot;</span><span class="p">)</span>
-    <span class="c1"># get the filenames result</span>
-    <span class="n">gs_filenames</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># get the comparisons</span>
+    <span class="n">comparisons</span> <span class="o">=</span> <span class="p">[</span>
         <span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">_write_comparison_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">result</span><span class="p">,</span>
         <span class="o">*</span><span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">_write_comparison_tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">result</span><span class="p">,</span>
     <span class="p">]</span>
-    <span class="c1"># filter to error filenames</span>
-    <span class="n">gs_error_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">gs_filenames</span> <span class="k">if</span> <span class="n">filename</span><span class="p">]</span>
+    <span class="c1"># filter to error comparisons</span>
+    <span class="n">gs_error_comparisons</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">comparison</span> <span class="k">for</span> <span class="n">comparison</span> <span class="ow">in</span> <span class="n">comparisons</span> <span class="k">if</span> <span class="n">comparison</span><span class="o">.</span><span class="n">has_error</span><span class="p">()</span>
+    <span class="p">]</span>
     <span class="c1"># get extra db institution filename</span>
     <span class="n">extra_db_institutions_filename</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">[</span>
         <span class="n">flow</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;_write_extra_db_institutions&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="p">]</span><span class="o">.</span><span class="n">result</span>
     <span class="c1"># write zip file</span>
     <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;qa-test.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="n">gs_error_filenames</span><span class="p">,</span> <span class="n">extra_db_institutions_filename</span><span class="p">]:</span>
-            <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">gs_error_comparisons</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">comp</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(),</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">comp</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">comp</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">comp</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">extra_db_institutions_filename</span><span class="p">:</span>
+            <span class="n">zip_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">extra_db_institutions_filename</span><span class="p">,</span> <span class="s2">&quot;extra-institutions.csv&quot;</span><span class="p">)</span></div>
 
 
 <span class="c1">###############################################################################</span>
@@ -1118,7 +1169,7 @@
         <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">spreadsheet_ids</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No spreadsheet ids found.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">env</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">env</span> <span class="ow">in</span> <span class="n">Environment</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
             <span class="p">)</span>
