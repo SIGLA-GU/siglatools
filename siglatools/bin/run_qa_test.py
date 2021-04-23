@@ -43,6 +43,11 @@ class Datasource:
     database = "Database"
 
 
+class FieldComparisonType:
+    meta = "meta"
+    data = "data"
+
+
 class GsInstitution(NamedTuple):
     """
     An institution from GoogleSheet.
@@ -81,6 +86,8 @@ class FieldComparison(NamedTuple):
     Attributes:
         field: str
             The field name.
+        comparison_type: str
+            The field comparison type.
         actual: Tuple[str, Any]
             A value and its source.
         expected: Tuple[str, Any]
@@ -88,6 +95,7 @@ class FieldComparison(NamedTuple):
     """
 
     field: str
+    comparison_type: str
     actual: Tuple[str, Any]
     expected: Tuple[str, Any]
 
@@ -95,9 +103,16 @@ class FieldComparison(NamedTuple):
         "Does the two values mismatch?"
         return self.actual[1] != self.expected[1]
 
-    def get_msg(self) -> str:
-        "Get the field name."
-        return self.field
+    def get_str_rep(self) -> str:
+        "Get str of the two values."
+        return f"{self.field}| {self.actual[0]}: {self.actual[1]}, {self.expected[0]}: {self.expected[1]}"
+
+    def get_error_msg(self) -> str:
+        "Get error msg."
+        if self.comparison_type == FieldComparisonType.meta:
+            return self.get_str_rep()
+        else:
+            return f"Incorrect value for {self.field}"
 
 
 class ObjectComparison(NamedTuple):
@@ -121,7 +136,7 @@ class ObjectComparison(NamedTuple):
     def get_error_msgs(self) -> List[str]:
         "Get a list of msg for the mistmatch FieldComparison."
         return [
-            comparison.get_msg()
+            comparison.get_error_msg()
             for comparison in self.field_comparisons
             if comparison.has_error()
         ]
@@ -386,6 +401,7 @@ def _compare_gs_institution(
     institution_field_comparisons = [
         FieldComparison(
             "Institution exists in",
+            FieldComparisonType.meta,
             (Datasource.database, True if db_institution else False),
             (Datasource.googlesheet, True),
         )
@@ -395,6 +411,7 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution name",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("name")),
                 (Datasource.googlesheet, gs_institution.data.get("name")),
             )
@@ -403,6 +420,7 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution country",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("country")),
                 (Datasource.googlesheet, gs_institution.data.get("country")),
             )
@@ -411,6 +429,7 @@ def _compare_gs_institution(
         institution_field_comparisons.append(
             FieldComparison(
                 "Institution category",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("category")),
                 (Datasource.googlesheet, gs_institution.data.get("category")),
             )
@@ -421,6 +440,7 @@ def _compare_gs_institution(
             institution_field_comparisons.append(
                 FieldComparison(
                     "Total number of variables",
+                    FieldComparisonType.meta,
                     (Datasource.database, len(db_institution.get("childs"))),
                     (Datasource.googlesheet, len(gs_institution.data.get("childs"))),
                 )
@@ -433,36 +453,43 @@ def _compare_gs_institution(
                 variable_field_comparisons = [
                     FieldComparison(
                         "Variable heading",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("heading")),
                         (Datasource.googlesheet, gs_variable.get("heading")),
                     ),
                     FieldComparison(
                         "Variable name",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("name")),
                         (Datasource.googlesheet, gs_variable.get("name")),
                     ),
                     FieldComparison(
                         "Variable type",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("type")),
                         (Datasource.googlesheet, gs_variable.get("type")),
                     ),
                     FieldComparison(
                         "Variable index",
+                        FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("variable_index")),
                         (Datasource.googlesheet, gs_variable.get("variable_index")),
                     ),
                     FieldComparison(
                         "Sigla's answer",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("sigla_answer")),
                         (Datasource.googlesheet, gs_variable.get("sigla_answer")),
                     ),
                     FieldComparison(
                         "Original text",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("orig_text")),
                         (Datasource.googlesheet, gs_variable.get("orig_text")),
                     ),
                     FieldComparison(
                         "Source",
+                        FieldComparisonType.data,
                         (Datasource.database, db_variable.get("source")),
                         (Datasource.googlesheet, gs_variable.get("source")),
                     ),
@@ -473,6 +500,7 @@ def _compare_gs_institution(
                     variable_field_comparisons.append(
                         FieldComparison(
                             "Variable hyperlink",
+                            FieldComparisonType.meta,
                             (Datasource.database, db_variable.get("hyperlink")),
                             (Datasource.googlesheet, gs_variable.get("hyperlink")),
                         )
@@ -481,6 +509,7 @@ def _compare_gs_institution(
                     variable_field_comparisons.append(
                         FieldComparison(
                             f"""{gs_variable.get("name")} exists in""",
+                            FieldComparisonType.meta,
                             (
                                 Datasource.database,
                                 True
@@ -560,6 +589,7 @@ def _compare_gs_composite_variable(
         # compare matched db institutions
         num_matched_institutions_comparison = FieldComparison(
             "Number of matched institutions",
+            FieldComparisonType.meta,
             (Datasource.database, len(db_institutions)),
             (Datasource.googlesheet, 1),
         )
@@ -570,6 +600,7 @@ def _compare_gs_composite_variable(
             # compare institution name
             institution_name_comparison = FieldComparison(
                 "Institution name",
+                FieldComparisonType.meta,
                 (Datasource.database, db_institution.get("name")),
                 (Datasource.googlesheet, institution_name),
             )
@@ -591,6 +622,7 @@ def _compare_gs_composite_variable(
                 # compare the number of matched variables
                 num_matched_variables_comparison = FieldComparison(
                     "Number of matched variables",
+                    FieldComparisonType.meta,
                     (Datasource.database, len(db_variables)),
                     (Datasource.googlesheet, 1),
                 )
@@ -615,6 +647,7 @@ def _compare_gs_composite_variable(
                     # compare the number of rows
                     num_rows_comparison = FieldComparison(
                         f"Total number of {variable_hyperlink}",
+                        FieldComparisonType.meta,
                         (Datasource.database, len(db_composite_variable_data)),
                         (
                             Datasource.googlesheet,
@@ -631,6 +664,7 @@ def _compare_gs_composite_variable(
                         cell_comparisons = [
                             FieldComparison(
                                 gs_cell.get("name"),
+                                FieldComparisonType.data,
                                 (Datasource.database, db_cell.get("answer")),
                                 (Datasource.googlesheet, gs_cell.get("answer")),
                             )
