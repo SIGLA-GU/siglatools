@@ -5,6 +5,8 @@
 _Schema_
 ```
 institution_id: {
+    spreadsheet_id: str
+    sheet_id: str
     name: str
     category: str
     sub_category: Optional[List[str]]

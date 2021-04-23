@@ -134,6 +134,13 @@
 <li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="run_qa_test.html">Run QA Test</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
@@ -230,29 +237,9 @@
 <li><p>Bin script to run SIGLA ETL pipeline.</p></li>
 <li><p>Bin script to run external link checker.</p></li>
 <li><p>Bin script to get the next update and verify dates to determine what data needs updating and verifying.</p></li>
+<li><p>Bin script to run QA test to compare GoogleSheet data and data in the database.</p></li>
 <li><p>GitHub workflows to run bin script semi/automatically on GitHub Actions.</p></li>
 </ul>
-</div>
-<div class="section" id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="run-sigla-etl-pipeline">
-<h3>Run SIGLA ETL Pipeline<a class="headerlink" href="#run-sigla-etl-pipeline" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>run_sigla_pipeline -msi &lt;master_spreadsheet_id&gt; -dbcu &lt;db_connection_url&gt; -gacp /path/to/google-api-credentials.json
-</pre></div>
-</div>
-</div>
-<div class="section" id="run-external-link-checker">
-<h3>Run External Link Checker<a class="headerlink" href="#run-external-link-checker" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>run_external_link_checker -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json
-</pre></div>
-</div>
-</div>
-<div class="section" id="get-next-update-and-verify-dates">
-<h3>Get next update and verify dates<a class="headerlink" href="#get-next-update-and-verify-dates" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>get_next_uv_dates -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json -sd &lt;start_date&gt; -ed &lt;end_date&gt;
-</pre></div>
-</div>
-</div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>

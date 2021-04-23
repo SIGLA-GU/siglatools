@@ -135,6 +135,13 @@
 <li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="run_qa_test.html">Run QA Test</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
@@ -222,6 +229,8 @@
 <h2>Institutions<a class="headerlink" href="#institutions" title="Permalink to this headline">¶</a></h2>
 <p><em>Schema</em></p>
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>institution_id: {
+    spreadsheet_id: str
+    sheet_id: str
     name: str
     category: str
     sub_category: Optional[List[str]]

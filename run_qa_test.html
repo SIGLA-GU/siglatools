@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Installation &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>Run QA Test &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="siglatools" href="modules.html" />
-    <link rel="prev" title="Welcome to SIGLA Tools’s documentation!" href="index.html" /> 
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Get next update and verify dates" href="get_next_uv_dates.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,9 +92,9 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#stable-release">Stable release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#from-sources">From sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
@@ -135,11 +135,11 @@
 <li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="run_qa_test.html">Run QA Test</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run QA Test</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -195,13 +195,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Installation</li>
+      <li>Run QA Test</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/run_qa_test.md.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -211,10 +211,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="modules.html" class="btn btn-neutral float-right" title="siglatools" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to SIGLA Tools’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="get_next_uv_dates.html" class="btn btn-neutral float-left" title="Get next update and verify dates" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -223,33 +223,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="stable-release">
-<h2>Stable release<a class="headerlink" href="#stable-release" title="Permalink to this headline">¶</a></h2>
-<p>To install SIGLA Tools, run this command in your terminal:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip install siglatools
+  <div class="section" id="run-qa-test">
+<h1>Run QA Test<a class="headerlink" href="#run-qa-test" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="command-line">
+<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Install the package with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install siglatools
 </pre></div>
 </div>
-<p>This is the preferred method to install SIGLA Tools, as it will always install the most recent stable release.</p>
-<p>If you don’t have <a class="reference external" href="https://pip.pypa.io">pip</a> installed, this <a class="reference external" href="http://docs.python-guide.org/en/latest/starting/installation/">Python installation guide</a> can guide
-you through the process.</p>
-</div>
-<div class="section" id="from-sources">
-<h2>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h2>
-<p>The sources for SIGLA Tools can be downloaded from the <a class="reference external" href="https://github.com/sigla-gu/siglatools">Github repo</a>.</p>
-<p>You can either clone the public repository:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone git://github.com/sigla-gu/siglatools
+</li>
+<li><p>Run the following command with the correct configurations.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_qa_test -gacp /path/to/google-api-credentials.json -ssi &lt;spreadsheet_ids&gt; -dbe &lt;db_env&gt; -sdbcu &lt;staging_db_connection_url&gt; -pdbcu &lt;prod_db_connection_url&gt;
 </pre></div>
 </div>
-<p>Or download the <a class="reference external" href="https://github.com/sigla-gu/siglatools/tarball/master">tarball</a>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl  -OL https://github.com/sigla-gu/siglatools/tarball/master
-</pre></div>
+</li>
+</ol>
 </div>
-<p>Once you have a copy of the source, you can install it with:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python setup.py install
-</pre></div>
+<div class="section" id="github-actions-for-collaborators-only">
+<h2>GitHub Actions (for collaborators+ only)<a class="headerlink" href="#github-actions-for-collaborators-only" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">https://github.com/SIGLA-GU/siglatools/actions</a>.</p></li>
+<li><p>From the list of workflows, select <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">QA</span> <span class="pre">Test</span></code>.</p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> dropdown button.</p></li>
+<li><p>Enter a list of <code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code>s, delimited by <code class="docutils literal notranslate"><span class="pre">,</span></code>. For example <code class="docutils literal notranslate"><span class="pre">spreadsheetId-1,spreadsheetId-2,spreadsheetId-3</span></code>.</p></li>
+<li><p>Enter a database environment, <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code>. Choose <code class="docutils literal notranslate"><span class="pre">staging</span></code> if you want to compare the spreadsheet(s) in step 4 with the <code class="docutils literal notranslate"><span class="pre">staging</span></code> database. Choose <code class="docutils literal notranslate"><span class="pre">production</span></code> if you want to compare the spreadsheet(s) in step 4 with the <code class="docutils literal notranslate"><span class="pre">production</span></code> database.</p></li>
+<li><p>Click on the green <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> button to run the workflow.</p></li>
+<li><p>Wait until a new workflow run result shows up or refresh the page, and click on it to see its details.</p></li>
+<li><p>On the workflow details page, once the run is finished click on the <code class="docutils literal notranslate"><span class="pre">qa-test-artifact</span></code> to download a zip file.</p></li>
+</ol>
 </div>
+<div class="section" id="qa-test-artifact-zip-file">
+<h2>QA Test Artifact Zip File<a class="headerlink" href="#qa-test-artifact-zip-file" title="Permalink to this headline">¶</a></h2>
+<p>The zip file contains any mismatches between the data in the GoogleSheet and the data in the database. One file for each institution, if there are mismatches between the institution in the GoogleSheet and the institution in the database. The files are organized by the spreadsheet they belong to. There is an additional file <code class="docutils literal notranslate"><span class="pre">extra-institutions.csv</span></code>, which contains institutions in the database, but for some reason, doesn’t have a counterpart institution in the GoogleSheet. If there are no files in zip file, then the QA script found no mismatches for the given spreadsheets.</p>
+</div>
+<div class="section" id="spreadsheet-ids-format">
+<h2>Spreadsheet Ids Format<a class="headerlink" href="#spreadsheet-ids-format" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code> is used to identify a spreadsheet. <code class="docutils literal notranslate"><span class="pre">sheetId</span></code> is used to identify a sheet in a spreadsheet. The following shows the structure of the URL and where <code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code> and <code class="docutils literal notranslate"><span class="pre">sheetId</span></code> can be found: <code class="docutils literal notranslate"><span class="pre">https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId</span></code>.</p>
 </div>
 </div>
 
