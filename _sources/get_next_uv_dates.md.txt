@@ -17,7 +17,7 @@
 ## GitHub Actions (for collaborators+ only) 
 
 1. Visit https://github.com/SIGLA-GU/siglatools/actions.
-2. From the list of workflows, select `Get next update and verify dates`.
+2. From the list of workflows, select `Manual Get next update and verify dates`.
 3. Click on the `Run workflow` dropdown button.
 4. Enter a start date and an end date. Make sure they are in YYYY-MM-DD format and start date is less than or equal to end date.
 5. Click on the green `Run workflow` button to run the workflow.
