@@ -1,6 +1,11 @@
 name: Manual Run External Link Checker
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      spreadsheets_id:
+        description: Spreadsheet Ids (delimited by comma)
+        required: true
 
 jobs:
   authorization:
@@ -33,7 +38,7 @@ jobs:
         GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
     - name: Run External Link Checker
       run: |
-        run_external_link_checker -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json
+        run_external_link_checker -ssi ${{ github.event.inputs.spreadsheets_id }} -gacp $HOME/secrets/google-api-credentials.json
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:

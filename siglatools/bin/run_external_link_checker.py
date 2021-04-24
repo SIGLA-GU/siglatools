@@ -84,6 +84,48 @@ class CheckedURL(NamedTuple):
 
 
 @task
+def _get_spreadsheets_id(
+    master_spreadsheet_id: str,
+    google_api_credentials_path: str,
+    spreadsheets_id_str: Optional[str] = None,
+) -> List[str]:
+    """
+    Prefect Task to get spreadsheet ids.
+
+    Parameters
+    ----------
+    master_spreadsheet_id: str
+        The master spreadsheet id.
+    google_api_credentials_path: str
+        The path to Google API credentials file needed to read Google Sheets.
+    spreadsheets_id_str: Optional[str]
+        The list of spreadsheet ids delimited by comma.
+
+    Returns
+    -------
+    spreadsheets_id: List[str]
+        The list of spreadsheet ids.
+
+    """
+    # If spreadsheet ids are provided
+    if spreadsheets_id_str:
+        return [
+            spreadsheet_id.strip() for spreadsheet_id in spreadsheets_id_str.split(",")
+        ]
+
+    # If spreadsheet ids are not provided
+    # Create a connection to the google sheets reader
+    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
+        google_api_credentials_path
+    )
+    # Get the list of spreadsheets ids from the master spreadsheet
+    spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
+        master_spreadsheet_id
+    )
+    return spreadsheets_id
+
+
+@task
 def _extract_external_links(sheet_data: SheetData) -> List[URLData]:
     """
     Prefect Task to extract external links from a sheet.
@@ -180,25 +222,23 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
 def run_external_link_checker(
     master_spreadsheet_id: str,
     google_api_credentials_path: str,
+    spreadsheets_id_str: Optional[str] = None,
 ):
     """
-    Run the the external link checker
+    Run the the external link checker.
+    If a list of spreadsheet ids are provided, run the external link checker
+    against the list of spreadsheet ids, instead of the spreadsheet ids gathered
+    from the master spreadsheet.
 
     Parameters
     ----------
     master_spreadsheet_id: str
-        The master spreadsheet id
+        The master spreadsheet id.
     google_api_credentials_path: str
         The path to Google API credentials file needed to read Google Sheets.
+    spreadsheets_id_str: Optional[str]
+        The list spreadsheet ids, delimited by comma.
     """
-    # Create a connection to the google sheets reader
-    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
-        google_api_credentials_path
-    )
-    # Get the list of spreadsheets ids from the master spreadsheet
-    spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
-        master_spreadsheet_id
-    )
     log.info("Finished external link checker set up, start checking external link.")
     log.info("=" * 80)
     # Spawn local dask cluster
@@ -207,6 +247,11 @@ def run_external_link_checker(
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
     with Flow("Check external links") as flow:
+        # Get spreadsheet ids
+        spreadsheets_id = _get_spreadsheets_id(
+            master_spreadsheet_id, google_api_credentials_path, spreadsheets_id_str
+        )
+
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
@@ -287,6 +332,14 @@ class Args(argparse.Namespace):
             help="The master spreadsheet id",
         )
         p.add_argument(
+            "-ssi",
+            "--spreadsheets-id",
+            action="store",
+            dest="spreadsheets_id",
+            type=str,
+            help="The list of spreadsheet ids, delimited by comma",
+        )
+        p.add_argument(
             "-gacp",
             "--google_api_credentials_path",
             action="store",
@@ -311,6 +364,7 @@ def main():
         run_external_link_checker(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
+            args.spreadsheets_id,
         )
     except Exception as e:
         log.error("=============================================")
