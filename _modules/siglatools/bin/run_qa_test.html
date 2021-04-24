@@ -447,6 +447,7 @@
         <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
         <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">spreadsheet_id</span><span class="p">},</span>
     <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
 
 
 <span class="nd">@task</span>
@@ -490,6 +491,7 @@
             <span class="p">)</span>
             <span class="n">db_variable</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">composite_variable_data</span><span class="o">=</span><span class="n">composite_variable_data</span><span class="p">)</span>
     <span class="n">db_institution</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">childs</span><span class="o">=</span><span class="n">db_variables</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">db_institution</span>
 
 
@@ -912,7 +914,7 @@
                 <span class="p">],</span>
             <span class="p">)</span>
         <span class="p">)</span>
-
+    <span class="n">db</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">comparisons</span>
 
 
