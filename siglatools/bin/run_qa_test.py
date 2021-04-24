@@ -228,11 +228,12 @@ def _gather_db_institutions(
 
     """
     db = MongoDBDatabase(db_connection_url)
-    return db.find(
+    institutions = db.find(
         collection=DatabaseCollection.institutions,
         filter={"spreadsheet_id": spreadsheet_id},
     )
     db.close_connection()
+    return institutions
 
 
 @task
