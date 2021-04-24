@@ -14,6 +14,7 @@ Welcome to SIGLA Tools's documentation!
    Run External Link Checker <run_external_link_checker>
    Get next update and verify dates <get_next_uv_dates>
    Run QA Test <run_qa_test>
+   Spreadsheet Id Format <spreadsheet_id_format>
    contributing
 
 .. mdinclude:: ../README.md
