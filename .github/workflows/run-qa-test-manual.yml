@@ -1,4 +1,4 @@
-name: Run QA Test
+name: Manual Run QA Test
 
 on:
   workflow_dispatch:
