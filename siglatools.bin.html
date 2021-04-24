@@ -139,9 +139,9 @@
 <li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="spreadsheet_id_format.html">Spreadsheet Id Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
@@ -475,13 +475,17 @@ users’ virtualenv when the parent module is installed using pip.</p>
 
 <dl class="function">
 <dt id="siglatools.bin.run_external_link_checker.run_external_link_checker">
-<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the the external link checker</p>
+<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">spreadsheets_id_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the the external link checker.
+If a list of spreadsheet ids are provided, run the external link checker
+against the list of spreadsheet ids, instead of the spreadsheet ids gathered
+from the master spreadsheet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id</p></li>
+<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id.</p></li>
 <li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>spreadsheets_id_str</strong> (<em>Optional[str]</em>) – The list spreadsheet ids, delimited by comma.</p></li>
 </ul>
 </dd>
 </dl>

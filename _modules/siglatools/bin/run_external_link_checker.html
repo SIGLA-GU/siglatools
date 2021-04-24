@@ -137,9 +137,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../run_qa_test.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../run_qa_test.html#spreadsheet-ids-format">Spreadsheet Ids Format</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spreadsheet_id_format.html">Spreadsheet Id Format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#get-started">Get Started!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#deploying">Deploying</a></li>
@@ -299,6 +299,48 @@
 
 
 <span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">_get_spreadsheets_id</span><span class="p">(</span>
+    <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">spreadsheets_id_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to get spreadsheet ids.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    master_spreadsheet_id: str</span>
+<span class="sd">        The master spreadsheet id.</span>
+<span class="sd">    google_api_credentials_path: str</span>
+<span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
+<span class="sd">    spreadsheets_id_str: Optional[str]</span>
+<span class="sd">        The list of spreadsheet ids delimited by comma.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spreadsheets_id: List[str]</span>
+<span class="sd">        The list of spreadsheet ids.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If spreadsheet ids are provided</span>
+    <span class="k">if</span> <span class="n">spreadsheets_id_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">spreadsheet_id</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">spreadsheet_id</span> <span class="ow">in</span> <span class="n">spreadsheets_id_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="c1"># If spreadsheet ids are not provided</span>
+    <span class="c1"># Create a connection to the google sheets reader</span>
+    <span class="n">google_sheets_institution_extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span>
+        <span class="n">google_api_credentials_path</span>
+    <span class="p">)</span>
+    <span class="c1"># Get the list of spreadsheets ids from the master spreadsheet</span>
+    <span class="n">spreadsheets_id</span> <span class="o">=</span> <span class="n">google_sheets_institution_extracter</span><span class="o">.</span><span class="n">get_spreadsheets_id</span><span class="p">(</span>
+        <span class="n">master_spreadsheet_id</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">spreadsheets_id</span>
+
+
+<span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_extract_external_links</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect Task to extract external links from a sheet.</span>
@@ -395,25 +437,23 @@
 <div class="viewcode-block" id="run_external_link_checker"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.run_external_link_checker">[docs]</a><span class="k">def</span> <span class="nf">run_external_link_checker</span><span class="p">(</span>
     <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">spreadsheets_id_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Run the the external link checker</span>
+<span class="sd">    Run the the external link checker.</span>
+<span class="sd">    If a list of spreadsheet ids are provided, run the external link checker</span>
+<span class="sd">    against the list of spreadsheet ids, instead of the spreadsheet ids gathered</span>
+<span class="sd">    from the master spreadsheet.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    master_spreadsheet_id: str</span>
-<span class="sd">        The master spreadsheet id</span>
+<span class="sd">        The master spreadsheet id.</span>
 <span class="sd">    google_api_credentials_path: str</span>
 <span class="sd">        The path to Google API credentials file needed to read Google Sheets.</span>
+<span class="sd">    spreadsheets_id_str: Optional[str]</span>
+<span class="sd">        The list spreadsheet ids, delimited by comma.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Create a connection to the google sheets reader</span>
-    <span class="n">google_sheets_institution_extracter</span> <span class="o">=</span> <span class="n">GoogleSheetsInstitutionExtracter</span><span class="p">(</span>
-        <span class="n">google_api_credentials_path</span>
-    <span class="p">)</span>
-    <span class="c1"># Get the list of spreadsheets ids from the master spreadsheet</span>
-    <span class="n">spreadsheets_id</span> <span class="o">=</span> <span class="n">google_sheets_institution_extracter</span><span class="o">.</span><span class="n">get_spreadsheets_id</span><span class="p">(</span>
-        <span class="n">master_spreadsheet_id</span>
-    <span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished external link checker set up, start checking external link.&quot;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="c1"># Spawn local dask cluster</span>
@@ -422,6 +462,11 @@
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dashboard available at: </span><span class="si">{</span><span class="n">cluster</span><span class="o">.</span><span class="n">dashboard_link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Setup workflow</span>
     <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Check external links&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
+        <span class="c1"># Get spreadsheet ids</span>
+        <span class="n">spreadsheets_id</span> <span class="o">=</span> <span class="n">_get_spreadsheets_id</span><span class="p">(</span>
+            <span class="n">master_spreadsheet_id</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">,</span> <span class="n">spreadsheets_id_str</span>
+        <span class="p">)</span>
+
         <span class="c1"># Extract sheets data.</span>
         <span class="c1"># Get back list of list of SheetData</span>
         <span class="n">spreadsheets_data</span> <span class="o">=</span> <span class="n">_extract</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
@@ -502,6 +547,14 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The master spreadsheet id&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;-ssi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--spreadsheets-id&quot;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+            <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;spreadsheets_id&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The list of spreadsheet ids, delimited by comma&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s2">&quot;-gacp&quot;</span><span class="p">,</span>
             <span class="s2">&quot;--google_api_credentials_path&quot;</span><span class="p">,</span>
             <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
@@ -526,6 +579,7 @@
         <span class="n">run_external_link_checker</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">google_api_credentials_path</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">spreadsheets_id</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;=============================================&quot;</span><span class="p">)</span>

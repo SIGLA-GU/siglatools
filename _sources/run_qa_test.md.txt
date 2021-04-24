@@ -27,8 +27,3 @@
 
 ## QA Test Artifact Zip File
 The zip file contains any mismatches between the data in the GoogleSheet and the data in the database. One file for each institution, if there are mismatches between the institution in the GoogleSheet and the institution in the database. The files are organized by the spreadsheet they belong to. There is an additional file `extra-institutions.csv`, which contains institutions in the database, but for some reason, doesn't have a counterpart institution in the GoogleSheet. If there are no files in the zip file, then the QA script found no mismatches for the given spreadsheets.
-
-
-## Spreadsheet Ids Format
-`spreadsheetId` is used to identify a spreadsheet. `sheetId` is used to identify a sheet in a spreadsheet. The following shows the structure of the URL and where `spreadsheetId` and `sheetId` can be found: `https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId`.
-

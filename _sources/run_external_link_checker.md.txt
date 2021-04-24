@@ -19,9 +19,10 @@
 1. Visit https://github.com/SIGLA-GU/siglatools/actions.
 2. From the list of workflows, select `Manual Run External Link Checker`.
 3. Click on the `Run workflow` dropdown button.
-4. Click on the green `Run workflow` button to run the external link checker.
-5. Wait until a new workflow run result shows up and click on it see its details.
-6. On workflow details page, once the run is finished click on the `external-link-artifact` to download a csv file of bad external URLs.
+4. Enter a list of `spreadsheetId`s, delimited by `,`. For example `spreadsheetId-1,spreadsheetId-2,spreadsheetId-3`.
+5. Click on the green `Run workflow` button to run the external link checker.
+6. Wait until a new workflow run result shows up and click on it see its details.
+7. On workflow details page, once the run is finished click on the `external-link-artifact` to download a csv file of bad external URLs.
 
 ## External Links Reasons
 
