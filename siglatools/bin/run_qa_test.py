@@ -232,6 +232,7 @@ def _gather_db_institutions(
         collection=DatabaseCollection.institutions,
         filter={"spreadsheet_id": spreadsheet_id},
     )
+    db.close_connection()
 
 
 @task
@@ -275,6 +276,7 @@ def _gather_db_variables(
             )
             db_variable.update(composite_variable_data=composite_variable_data)
     db_institution.update(childs=db_variables)
+    db.close_connection()
     return db_institution
 
 
@@ -697,7 +699,7 @@ def _compare_gs_composite_variable(
                 ],
             )
         )
-
+    db.close_connection()
     return comparisons
 
 
