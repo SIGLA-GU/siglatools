@@ -443,11 +443,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">institutions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
         <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
         <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">spreadsheet_id</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">institutions</span>
 
 
 <span class="nd">@task</span>
