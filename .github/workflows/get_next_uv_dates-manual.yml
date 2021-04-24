@@ -1,4 +1,4 @@
-name: Get next update and verify dates
+name: Manual Get next update and verify dates
 
 on:
   workflow_dispatch:
