@@ -223,11 +223,15 @@ def load_spreadsheets(
         )
 
         # use db_institutions to remove data
-        _delete_db_institutions(db_institutions, db_connection_url)
+        delete_db_institutions_task = _delete_db_institutions(
+            db_institutions, db_connection_url
+        )
 
         # extract list of list of sheet data
         spreadsheets_data = _extract.map(
-            spreadsheet_ids, unmapped(google_api_credentials_path)
+            spreadsheet_ids,
+            unmapped(google_api_credentials_path),
+            upstream_tasks=[unmapped(delete_db_institutions_task)],
         )
         # transform to list of formatted sheet data
         formatted_spreadsheets_data = _transform.map(flatten(spreadsheets_data))
