@@ -1,0 +1,55 @@
+name: Manual Run Data(subset) pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      spreadsheet_ids:
+        description: Spreadsheet Ids (delimited by comma)
+        required: true
+      db_env:
+        description: Database Environment (staging or production)
+        required: true
+
+jobs:
+  authorization:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Authorization check
+      uses: octokit/request-action@v2.0.0
+      with:
+        route: GET /repos/:repository/collaborators/${{ github.actor }}
+        repository: ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  load_spreadsheets:
+    needs: [authorization]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install Dependencies
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install .[all]
+    - uses: actions/checkout@v2
+    - name: Decrypt Google API secret
+      run: ./.github/scripts/decrypt_google_api_secret.sh
+      env:
+        GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
+    - name: Load spreadsheets
+      run: |
+        load_spreadsheets -gacp $HOME/secrets/google-api-credentials.json -ssi ${{ github.event.inputs.spreadsheet_ids }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
+    - name: Create tmp dir
+      run: mkdir -p tmp
+    - name: Run QA Test
+      run: |
+        run_qa_test  -gacp $HOME/secrets/google-api-credentials.json -ssi ${{ github.event.inputs.spreadsheet_ids }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: qa-test-artifact
+        path: qa-test.zip
+  
