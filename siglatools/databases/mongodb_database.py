@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from pymongo import MongoClient, ReturnDocument, UpdateOne, DeleteMany
+from bson.objectid import ObjectId
+from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne
 
 from ..institution_extracters import exceptions
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
@@ -357,7 +358,7 @@ class MongoDBDatabase:
             cursor.sort(sort)
         return [doc for doc in cursor]
 
-    def delete_many(self, collection: str, doc_ids: List[str]):
+    def delete_many(self, collection: str, doc_ids: List[ObjectId]):
         """
         Delete documents from the database.
 
@@ -365,7 +366,7 @@ class MongoDBDatabase:
         ----------
         collection: str
             The db collection to delete document from.
-        doc_ids: List[str]
+        doc_ids: List[ObjectId]
             The list of document ids to delete.
         """
         delete_request = DeleteMany({"_id": {"$in": doc_ids}})
