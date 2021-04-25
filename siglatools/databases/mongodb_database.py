@@ -370,7 +370,7 @@ class MongoDBDatabase:
         """
         delete_request = DeleteMany({"_id": {"$in": doc_ids}})
         delete_many_results = self._db.get_collection(collection).bulk_write(
-            delete_request
+            [delete_request]
         )
 
         delete_msg = (
