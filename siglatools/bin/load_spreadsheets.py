@@ -129,9 +129,9 @@ def _delete_db_institutions(
     institution_ids = []
     variable_ids = []
     composite_ids = {
-        DatabaseCollection.rights: [],
-        DatabaseCollection.amendments: [],
-        DatabaseCollection.body_of_law: [],
+        DatabaseCollection.rights: set(),
+        DatabaseCollection.amendments: set(),
+        DatabaseCollection.body_of_law: set(),
     }
     for db_institution in db_institutions:
         institution_ids.append(db_institution.get("_id"))
@@ -140,13 +140,13 @@ def _delete_db_institutions(
             if db_variable.get("type") == VariableType.composite:
                 variable_hyperlink = db_variable.get("hyperlink")
                 for row in db_variable.get("composite_variable_data"):
-                    composite_ids.get(variable_hyperlink).append(row.get("_id"))
+                    composite_ids.get(variable_hyperlink).add(row.get("_id"))
 
     db = MongoDBDatabase(db_connection_url)
     db.delete_many(DatabaseCollection.institutions, institution_ids)
     db.delete_many(DatabaseCollection.variables, variable_ids)
     for collection, ids in composite_ids.items():
-        db.delete_many(collection, ids)
+        db.delete_many(collection, list(ids))
     db.close_connection()
 
 
