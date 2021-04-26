@@ -1,4 +1,4 @@
-name: Manual Run Data(subset) pipeline
+name: Manual Run Data(subset) Pipeline
 
 on:
   workflow_dispatch:
