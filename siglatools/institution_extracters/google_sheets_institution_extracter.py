@@ -485,7 +485,7 @@ class GoogleSheetsInstitutionExtracter:
             for i, a1_notation in enumerate(meta_data_a1_notations)
         ]
 
-    def get_spreadsheets_id(self, master_spreadsheet_id: str) -> List[str]:
+    def get_spreadsheet_ids(self, master_spreadsheet_id: str) -> List[str]:
         """
         Get the list of spreadsheet ids from a master spreadsheet.
 
