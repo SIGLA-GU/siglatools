@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from pymongo import MongoClient, ReturnDocument, UpdateOne
+from bson.objectid import ObjectId
+from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne
 
 from ..institution_extracters import exceptions
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
@@ -356,6 +357,30 @@ class MongoDBDatabase:
         if sort:
             cursor.sort(sort)
         return [doc for doc in cursor]
+
+    def delete_many(self, collection: str, doc_ids: List[ObjectId]):
+        """
+        Delete documents from the database.
+
+        Parameters
+        ----------
+        collection: str
+            The db collection to delete document from.
+        doc_ids: List[ObjectId]
+            The list of document ids to delete.
+        """
+        delete_request = DeleteMany({"_id": {"$in": doc_ids}})
+        delete_many_results = self._db.get_collection(collection).bulk_write(
+            [delete_request]
+        )
+
+        delete_msg = (
+            f"Deleted {delete_many_results.deleted_count}/{len(doc_ids)} {collection}."
+        )
+        if delete_many_results.deleted_count != len(doc_ids):
+            log.error(delete_msg)
+        else:
+            log.info(delete_msg)
 
     def __str__(self):
         return f"<MongoDBDatabase [{self._db_connection_url}]>"
