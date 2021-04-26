@@ -21,11 +21,8 @@ from prefect.engine.executors import DaskExecutor
 from siglatools import get_module_version
 
 from ..institution_extracters.exceptions import InvalidDateRange
-from ..institution_extracters.google_sheets_institution_extracter import (
-    GoogleSheetsInstitutionExtracter,
-)
 from ..institution_extracters.utils import SheetData
-from .run_sigla_pipeline import _extract
+from ..pipelines.utils import _extract, _get_spreadsheet_ids
 
 ###############################################################################
 
@@ -194,14 +191,6 @@ def get_next_uv_dates(
     end_date: date
         The end date.
     """
-    # Create a connection to the google sheets reader
-    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
-        google_api_credentials_path
-    )
-    # Get the list of spreadsheets ids from the master spreadsheet
-    spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
-        master_spreadsheet_id
-    )
     log.info("Finished setup, start finding next uv dates.")
     log.info("=" * 80)
     # Spawn local dask cluster
@@ -210,10 +199,14 @@ def get_next_uv_dates(
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
     with Flow("Get next update and verify dates") as flow:
+        # Get the list of spreadsheet ids from the master spreadsheet
+        spreadsheet_ids = _get_spreadsheet_ids(
+            master_spreadsheet_id, google_api_credentials_path
+        )
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
-            spreadsheets_id,
+            spreadsheet_ids,
             unmapped(google_api_credentials_path),
         )
         log.info("Finished extracting the spreadsheet data.")

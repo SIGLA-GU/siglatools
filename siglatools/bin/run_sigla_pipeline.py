@@ -10,8 +10,6 @@ import argparse
 import logging
 import sys
 import traceback
-from datetime import timedelta
-from typing import List
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
@@ -20,11 +18,16 @@ from prefect.engine.executors import DaskExecutor
 from siglatools import get_module_version
 
 from ..databases import MongoDBDatabase
+from ..databases.constants import Environment
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
-from ..institution_extracters.google_sheets_institution_extracter import (
-    GoogleSheetsInstitutionExtracter,
+from ..pipelines.utils import (
+    _create_filter_task,
+    _extract,
+    _get_spreadsheet_ids,
+    _load_composites_data,
+    _load_institutions_data,
+    _transform,
 )
-from ..institution_extracters.utils import FormattedSheetData, SheetData
 
 ###############################################################################
 
@@ -38,74 +41,7 @@ log = logging.getLogger()
 # Tasks
 
 
-@task(max_retries=5, retry_delay=timedelta(seconds=100))
-def _extract(spreadsheet_id: str, google_api_credentials_path: str) -> List[SheetData]:
-    """
-    Prefect Task to extract data from a spreadsheet.
-
-    Parameters
-    ----------
-    spreadsheet_id: str
-        The spreadsheet_id.
-    google_api_credentials_path: str
-        The path to Google API credentials file needed to read Google Sheets.
-
-    Returns
-    -------
-    spreadsheet_data: List[SheetData]
-        The list of SheetData, one for each sheet in the spreadsheet. Please see the SheetData class
-        to view its attributes.
-    """
-    # Get the spreadsheet data.
-    extracter = GoogleSheetsInstitutionExtracter(google_api_credentials_path)
-    return extracter.get_spreadsheet_data(spreadsheet_id)
-
-
 @task
-def _transform(sheet_data: SheetData) -> FormattedSheetData:
-    """
-    Prefect Task to transform the sheet data into formatted sheet data, in order to load it into the DB.
-
-    Parameters
-    ----------
-    sheet_data: SheetData
-        The sheet's data.
-
-    Returns
-    -------
-    formatted_sheet_data: FormattedSheetData
-        The sheet's formatted data, ready to be consumed by DB.
-    """
-    return GoogleSheetsInstitutionExtracter.process_sheet_data(sheet_data)
-
-
-def _filter_formatted_sheet_data(
-    formatted_sheets_data: List[FormattedSheetData], google_sheets_formats: List[str]
-) -> List[List[FormattedSheetData]]:
-    return [
-        formatted_sheet_data
-        for formatted_sheet_data in formatted_sheets_data
-        if formatted_sheet_data.meta_data.get("format") in google_sheets_formats
-    ]
-
-
-@task
-def _load(formatted_sheet_data: FormattedSheetData, db_connection_url: str):
-    """
-    Prefect Task to load the formatted sheet data into the DB.
-
-    Parameters
-    ----------
-    formatted_sheet_data: FormattedSheetData
-        The sheet's formatted data.
-    db_connection_url: str
-        The DB's connection url str.
-    """
-    database = MongoDBDatabase(db_connection_url)
-    database.load(formatted_sheet_data)
-    database.close_connection()
-
-
 def _clean_up(db_connection_url: str):
     """
     Prefect Task to delete all documents from db.
@@ -135,16 +71,6 @@ def run_sigla_pipeline(
     db_connection_url: str
         The DB's connection url str.
     """
-    # Delete all documents from db
-    _clean_up(db_connection_url)
-    # Create a connection to the google sheets reader
-    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
-        google_api_credentials_path
-    )
-    # Get the list of spreadsheets ids from the master spreadsheet
-    spreadsheets_id = google_sheets_institution_extracter.get_spreadsheets_id(
-        master_spreadsheet_id
-    )
     log.info("Finished pipeline set up, start running pipeline")
     log.info("=" * 80)
     # Spawn local dask cluster
@@ -152,43 +78,55 @@ def run_sigla_pipeline(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("Extract and transform") as flow:
+    with Flow("ETL Pipeline") as flow:
+        # Delete all documents from db
+        clean_up_task = _clean_up(db_connection_url)
+        # Get spreadsheet ids
+        spreadsheet_ids = _get_spreadsheet_ids(
+            master_spreadsheet_id, google_api_credentials_path
+        )
         # Extract sheets data.
         # Get back list of list of SheetData
         spreadsheets_data = _extract.map(
-            spreadsheets_id,
+            spreadsheet_ids,
             unmapped(google_api_credentials_path),
+            upstream_tasks=[unmapped(clean_up_task)],
         )
 
         # Transform list of SheetData into FormattedSheetData
-        _transform.map(flatten(spreadsheets_data))
+        formatted_spreadsheets_data = _transform.map(flatten(spreadsheets_data))
+        # Create instituton filter
+        gs_institution_filter = _create_filter_task(
+            [
+                gs_format.standard_institution,
+                gs_format.multiple_sigla_answer_variable,
+            ]
+        )
+        # Filter to list of institutional formatted sheet data
+        gs_institutions_data = gs_institution_filter(formatted_spreadsheets_data)
+        # Create composite filter
+        gs_composite_filter = _create_filter_task(
+            [
+                gs_format.composite_variable,
+                gs_format.institution_and_composite_variable,
+            ]
+        )
+        # Filter to list of composite formatted sheet data
+        gs_composites_data = gs_composite_filter(formatted_spreadsheets_data)
 
-    # Run the extract and transform flow
-    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
-    formatted_sheets_data = state.result[flow.get_tasks(name="_transform")[0]].result
-    log.info("=" * 80)
-    # Partion into institutions and non-institutions sheets
-    institutions = _filter_formatted_sheet_data(
-        formatted_sheets_data,
-        [
-            gs_format.standard_institution,
-            gs_format.multiple_sigla_answer_variable,
-        ],
-    )
-    non_institutions = _filter_formatted_sheet_data(
-        formatted_sheets_data,
-        [gs_format.institution_and_composite_variable, gs_format.composite_variable],
-    )
-    # Run load institutions flow
-    with Flow("Load institutions") as load_institutions_flow:
-        _load.map(institutions, unmapped(db_connection_url))
+        # Load instutional data
+        load_institutions_data_task = _load_institutions_data.map(
+            gs_institutions_data, unmapped(db_connection_url)
+        )
+        # Load composite data
+        _load_composites_data.map(
+            gs_composites_data,
+            unmapped(db_connection_url),
+            upstream_tasks=[load_institutions_data_task],
+        )
 
-    load_institutions_flow.run(executor=DaskExecutor(cluster.scheduler_address))
-    log.info("=" * 80)
-    # Run load non institutions flow
-    with Flow("Load non institutions") as load_non_institutions_flow:
-        _load.map(non_institutions, unmapped(db_connection_url))
-    load_non_institutions_flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    # Run the flow
+    flow.run(executor=DaskExecutor(cluster.scheduler_address))
 
 
 ###############################################################################
@@ -228,12 +166,28 @@ class Args(argparse.Namespace):
             help="The google api credentials path",
         )
         p.add_argument(
-            "-dbcu",
-            "--db_connection_url",
+            "-dbe",
+            "--db-env",
             action="store",
-            dest="db_connection_url",
+            dest="db_env",
             type=str,
-            help="The Database Connection URL",
+            help="The environment of the database, staging or production",
+        )
+        p.add_argument(
+            "-sdbcu",
+            "--staging_db_connection_url",
+            action="store",
+            dest="staging_db_connection_url",
+            type=str,
+            help="The Staging Database Connection URL",
+        )
+        p.add_argument(
+            "-pdbcu",
+            "--prod_db_connection_url",
+            action="store",
+            dest="prod_db_connection_url",
+            type=str,
+            help="The Production Database Connection URL",
         )
         p.add_argument(
             "--debug", action="store_true", dest="debug", help=argparse.SUPPRESS
@@ -249,10 +203,18 @@ def main():
     try:
         args = Args()
         dbg = args.debug
+        if args.master_spreadsheet_id is None:
+            raise Exception("No main spreadsheet id found.")
+        if args.db_env.strip() not in [Environment.staging, Environment.production]:
+            raise Exception(
+                "Incorrect database enviroment specification. Use 'staging' or 'production'."
+            )
         run_sigla_pipeline(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
-            args.db_connection_url,
+            args.staging_db_connection_url
+            if args.db_env.strip() == Environment.staging
+            else args.prod_db_connection_url,
         )
     except Exception as e:
         log.error("=============================================")
