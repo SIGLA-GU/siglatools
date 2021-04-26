@@ -196,12 +196,12 @@ def load_spreadsheets(
     google_api_credentials_path: str,
 ):
     """
-    Run QA test
+    Load spreadsheets to the database.
 
     Parameters
     ----------
     spreadsheet_ids: List[str]
-        The list of spreadsheet ids to run QA test.
+        The list of spreadsheet ids.
     db_connection_url: str
         The DB's connection url str.
     google_api_credentials_path: str
