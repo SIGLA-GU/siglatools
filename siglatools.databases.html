@@ -124,6 +124,11 @@
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="load_spreadsheets.html">Run Data(subset) Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
@@ -328,6 +333,20 @@
 <dt id="siglatools.databases.mongodb_database.MongoDBDatabase.close_connection">
 <code class="sig-name descname">close_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.close_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.close_connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleanup client resources and disconnect from MongoDB.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.databases.mongodb_database.MongoDBDatabase.delete_many">
+<code class="sig-name descname">delete_many</code><span class="sig-paren">(</span><em class="sig-param">collection: str, doc_ids: List[bson.objectid.ObjectId]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.delete_many"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.delete_many" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete documents from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> (<em>str</em>) – The db collection to delete document from.</p></li>
+<li><p><strong>doc_ids</strong> (<em>List[ObjectId]</em>) – The list of document ids to delete.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

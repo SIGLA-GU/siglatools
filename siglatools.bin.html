@@ -124,6 +124,11 @@
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="load_spreadsheets.html">Run Data(subset) Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
@@ -365,6 +370,37 @@ users’ virtualenv when the parent module is installed using pip.</p>
 <dl class="function">
 <dt id="siglatools.bin.get_next_uv_dates.main">
 <code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-siglatools.bin.load_spreadsheets">
+<span id="siglatools-bin-load-spreadsheets-module"></span><h2>siglatools.bin.load_spreadsheets module<a class="headerlink" href="#module-siglatools.bin.load_spreadsheets" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.load_spreadsheets.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.load_spreadsheets.load_spreadsheets">
+<code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">load_spreadsheets</code><span class="sig-paren">(</span><em class="sig-param">spreadsheet_ids: List[str], db_connection_url: str, google_api_credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#load_spreadsheets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.load_spreadsheets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load spreadsheets to the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spreadsheet_ids</strong> (<em>List[str]</em>) – The list of spreadsheet ids.</p></li>
+<li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.load_spreadsheets.main">
+<code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

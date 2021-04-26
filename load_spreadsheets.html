@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Document Store Schema &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>Run Data(subset) Pipeline &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Run Data Pipeline" href="run_data_pipeline.html" />
-    <link rel="prev" title="siglatools.institution_extracters package" href="siglatools.institution_extracters.html" /> 
+    <link rel="next" title="Run External Link Checker" href="run_external_link_checker.html" />
+    <link rel="prev" title="Run Data Pipeline" href="run_data_pipeline.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,12 +110,12 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#body-of-laws">Body of Laws</a></li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
@@ -124,9 +124,9 @@
 <li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="load_spreadsheets.html">Run Data(subset) Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Run Data(subset) Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
@@ -200,13 +200,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Document Store Schema</li>
+      <li>Run Data(subset) Pipeline</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/document_store_schema.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/load_spreadsheets.md.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,10 +216,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="run_data_pipeline.html" class="btn btn-neutral float-right" title="Run Data Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="run_external_link_checker.html" class="btn btn-neutral float-right" title="Run External Link Checker" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="siglatools.institution_extracters.html" class="btn btn-neutral float-left" title="siglatools.institution_extracters package" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_data_pipeline.html" class="btn btn-neutral float-left" title="Run Data Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -228,123 +228,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="document-store-schema">
-<h1>Document Store Schema<a class="headerlink" href="#document-store-schema" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="institutions">
-<h2>Institutions<a class="headerlink" href="#institutions" title="Permalink to this headline">¶</a></h2>
-<p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>institution_id: {
-    spreadsheet_id: str
-    sheet_id: str
-    name: str
-    category: str
-    sub_category: Optional[List[str]]
-    country: Optional[str]
-}
+  <div class="section" id="run-data-subset-pipeline">
+<h1>Run Data(subset) Pipeline<a class="headerlink" href="#run-data-subset-pipeline" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="command-line">
+<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Install the package with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install siglatools
 </pre></div>
 </div>
-<p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">country</span></code> is optional for International Institutions.
-<code class="docutils literal notranslate"><span class="pre">sub_category</span></code> is for institutions that has another level of categorization.</p>
-</div>
-<div class="section" id="variables">
-<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
-<p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>variable_id: {
-    institution: {
-        type: ObjectId,
-        ref: institutions._id
-    }
-    heading: str
-    name: str
-    variable_index: int
-    sigla_answer: str || List[List[Dict]]
-    orig_text: Optional[str]
-    source: Optional[str]
-    type: &quot;standard&quot; || &quot;composite&quot; || &quot;aggregate&quot;
-    hyperlink: Optional[&quot;rights&quot; || &quot;amendments&quot; || &quot;body_of_law&quot;]
-}
+</li>
+<li><p>Run the following command with the correct configurations.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>load_spreadsheets -gacp /path/to/google-api-credentials.json -ssi &lt;spreadsheet_ids&gt; -dbe &lt;db_env&gt; -sdbcu &lt;staging_db_connection_url&gt; -pdbcu &lt;prod_db_connection_url&gt;
 </pre></div>
 </div>
-<p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">institution</span></code> is used to capture a many-to-one relationship with an institution.
-<code class="docutils literal notranslate"><span class="pre">variable_index</span></code> specifies the order of the variable.
-<code class="docutils literal notranslate"><span class="pre">type</span></code> specifies the variable type. standard variable has the sigla triple: <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code>, <code class="docutils literal notranslate"><span class="pre">orig_text</span></code>, <code class="docutils literal notranslate"><span class="pre">source</span></code> as str, with <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> being optional for International Institutions. composite variable also has a sigla triple, but has an additional <code class="docutils literal notranslate"><span class="pre">hyperlink</span></code> field to link to another collection. For example, the Constitutional Rights variable will have a hyperlink to the rights collection. aggregate variable doesn’t have a sigla triple, since it is missing <code class="docutils literal notranslate"><span class="pre">orig_text</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code>. Instead its <code class="docutils literal notranslate"><span class="pre">sigla_answer</span></code> is a list of list of dict with the format:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>sigla_answer: [
-    [
-        {
-            name: str
-            answer: str
-        },
-    ],
-]
-</pre></div>
+</li>
+</ol>
 </div>
-</div>
-<div class="section" id="rights">
-<h2>Rights<a class="headerlink" href="#rights" title="Permalink to this headline">¶</a></h2>
-<p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>right_id: {
-    variable: {
-        type: ObjectId,
-        ref: variables._id
-    }
-    index: int
-    sigla_answers: [
-        {
-            name: str
-            answer: str
-        }
-    ]
-}
-</pre></div>
-</div>
-<p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">variable</span></code> is used to capture a many-to-one relationship with the Constitutional Rights variable.</p>
-</div>
-<div class="section" id="amendments">
-<h2>Amendments<a class="headerlink" href="#amendments" title="Permalink to this headline">¶</a></h2>
-<p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>amendment_id: {
-    variable: {
-        type: ObjectId,
-        ref: variables._id
-    }
-    index: int
-    sigla_answers: [
-        {
-            name: str
-            answer: str
-        }
-    ]
-}
-</pre></div>
-</div>
-<p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">variable</span></code> is used to capture a many-to-one relationship with the Constitutional Amendments variable.</p>
-</div>
-<div class="section" id="body-of-laws">
-<h2>Body of Laws<a class="headerlink" href="#body-of-laws" title="Permalink to this headline">¶</a></h2>
-<p><em>Schema</em></p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>law_id: {
-    variables: [
-        {
-            type: ObjectId,
-            ref: variables._id
-        },
-    ]
-    index: int
-    sigla_answers: [
-        {
-            name: str
-            answer: str
-        }
-    ]
-}
-</pre></div>
-</div>
-<p><em>Notes</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">variables</span></code> is used to capture a many-to-many relationship with the Body of Law variable. A Body of Law variable is associated with many laws. A single law can be a law for many Body of Law variables.</p>
+<div class="section" id="github-actions-for-collaborators-only">
+<h2>GitHub Actions (for collaborators+ only)<a class="headerlink" href="#github-actions-for-collaborators-only" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">https://github.com/SIGLA-GU/siglatools/actions</a>.</p></li>
+<li><p>From the list of workflows, select <code class="docutils literal notranslate"><span class="pre">Manual</span> <span class="pre">Run</span> <span class="pre">Data(subset)</span> <span class="pre">Pipeline</span></code>.</p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> dropdown button.</p></li>
+<li><p>Enter a list of <code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code>s, delimited by <code class="docutils literal notranslate"><span class="pre">,</span></code>. For example <code class="docutils literal notranslate"><span class="pre">spreadsheetId-1,spreadsheetId-2,spreadsheetId-3</span></code>.</p></li>
+<li><p>Enter a database environment, <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code>. Choose <code class="docutils literal notranslate"><span class="pre">staging</span></code> if you want to load the spreadsheet(s) in step 4 to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> database. Choose <code class="docutils literal notranslate"><span class="pre">production</span></code> if you want to load the spreadsheet(s) in step 4 to the <code class="docutils literal notranslate"><span class="pre">production</span></code> database.</p></li>
+<li><p>Click on the green <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> button to run the workflow.</p></li>
+<li><p>Wait until a new workflow run result shows up or refresh the page, and click on it to see its details.</p></li>
+<li><p>After the script is done loading the spreadsheet(s) to the database, the script runs QA Test and produces a <code class="docutils literal notranslate"><span class="pre">qa-test-artifact</span></code> that contains the result of the QA Test. Please see <a class="reference external" href="run_qa_test.html">Run QA Test</a> to see documentation on the produced zip file.</p></li>
+</ol>
 </div>
 </div>
 

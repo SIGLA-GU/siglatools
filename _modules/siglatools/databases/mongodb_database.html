@@ -122,6 +122,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../load_spreadsheets.html">Run Data(subset) Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../load_spreadsheets.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../run_external_link_checker.html">Run External Link Checker</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#command-line">Command line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
@@ -217,9 +222,10 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">ReturnDocument</span><span class="p">,</span> <span class="n">UpdateOne</span>
+<span class="kn">from</span> <span class="nn">bson.objectid</span> <span class="kn">import</span> <span class="n">ObjectId</span>
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">DeleteMany</span><span class="p">,</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">ReturnDocument</span><span class="p">,</span> <span class="n">UpdateOne</span>
 
 <span class="kn">from</span> <span class="nn">..institution_extracters</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
@@ -571,6 +577,30 @@
         <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
             <span class="n">cursor</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">sort</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">doc</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MongoDBDatabase.delete_many"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.delete_many">[docs]</a>    <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">doc_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ObjectId</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete documents from the database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        collection: str</span>
+<span class="sd">            The db collection to delete document from.</span>
+<span class="sd">        doc_ids: List[ObjectId]</span>
+<span class="sd">            The list of document ids to delete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delete_request</span> <span class="o">=</span> <span class="n">DeleteMany</span><span class="p">({</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">doc_ids</span><span class="p">}})</span>
+        <span class="n">delete_many_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span><span class="o">.</span><span class="n">bulk_write</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">delete_request</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">delete_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Deleted </span><span class="si">{</span><span class="n">delete_many_results</span><span class="o">.</span><span class="n">deleted_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">doc_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">delete_many_results</span><span class="o">.</span><span class="n">deleted_count</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_ids</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">delete_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">delete_msg</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;MongoDBDatabase [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_connection_url</span><span class="si">}</span><span class="s2">]&gt;&quot;</span>

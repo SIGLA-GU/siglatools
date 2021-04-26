@@ -12,6 +12,14 @@ siglatools.bin.get\_next\_uv\_dates module
    :undoc-members:
    :show-inheritance:
 
+siglatools.bin.load\_spreadsheets module
+----------------------------------------
+
+.. automodule:: siglatools.bin.load_spreadsheets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.bin.run\_external\_link\_checker module
 --------------------------------------------------
 
