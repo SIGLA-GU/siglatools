@@ -352,13 +352,13 @@
 
 <dl class="method">
 <dt id="siglatools.databases.mongodb_database.MongoDBDatabase.find">
-<code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param">collection: str, filter: Dict[str, Any], sort: Optional[List[Tuple[str, str]]] = None</em><span class="sig-paren">)</span> &#x2192; List[Dict[str, Any]]<a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.find" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param">collection: str, filters: Dict[str, Any], sort: Optional[List[Tuple[str, str]]] = None</em><span class="sig-paren">)</span> &#x2192; List[Dict[str, Any]]<a class="reference internal" href="_modules/siglatools/databases/mongodb_database.html#MongoDBDatabase.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.mongodb_database.MongoDBDatabase.find" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query the database for documents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>collection</strong> (<em>str</em>) – The db collection to query for documents.</p></li>
-<li><p><strong>filter</strong> (<em>Dict[str, Any]</em>) – A prototype document that all results must match.</p></li>
+<li><p><strong>filters</strong> (<em>Dict[str, Any]</em>) – A prototype document that all results must match.</p></li>
 <li><p><strong>sort</strong> (<em>Optional[List[Tuple[str, str]]]</em>) – A list of (key, direction) pairs specifying the sort order for this query.</p></li>
 </ul>
 </dd>

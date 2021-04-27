@@ -455,7 +455,7 @@
     <span class="n">db</span> <span class="o">=</span> <span class="n">MongoDBDatabase</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
     <span class="n">institutions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
         <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
-        <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">spreadsheet_id</span><span class="p">},</span>
+        <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">spreadsheet_id</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">close_connection</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">institutions</span>
@@ -485,7 +485,7 @@
     <span class="n">db_institution</span> <span class="o">=</span> <span class="n">institution</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">db_variables</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
         <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
-        <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
+        <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
         <span class="n">sort</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;variable_index&quot;</span><span class="p">,</span> <span class="n">ASCENDING</span><span class="p">]],</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">db_variable</span> <span class="ow">in</span> <span class="n">db_variables</span><span class="p">:</span>
@@ -497,7 +497,7 @@
             <span class="p">)</span>
             <span class="n">composite_variable_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
                 <span class="n">collection</span><span class="o">=</span><span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">),</span>
-                <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
                 <span class="n">sort</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">ASCENDING</span><span class="p">)],</span>
             <span class="p">)</span>
             <span class="n">db_variable</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">composite_variable_data</span><span class="o">=</span><span class="n">composite_variable_data</span><span class="p">)</span>
@@ -807,7 +807,7 @@
         <span class="n">row_comparisons</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">db_institutions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
             <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span>
-            <span class="nb">filter</span><span class="o">=</span><span class="p">{</span>
+            <span class="n">filters</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">institution_country</span><span class="p">,</span>
                 <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">institution_category</span><span class="p">,</span>
                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_name</span><span class="p">,</span>
@@ -838,7 +838,7 @@
                 <span class="c1"># get the variable</span>
                 <span class="n">db_variables</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
                     <span class="n">collection</span><span class="o">=</span><span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span>
-                    <span class="nb">filter</span><span class="o">=</span><span class="p">{</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="p">{</span>
                         <span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
                         <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_heading</span><span class="p">,</span>
                         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_name</span><span class="p">,</span>
@@ -868,7 +868,7 @@
                     <span class="p">)</span>
                     <span class="n">db_composite_variable_data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
                         <span class="n">collection</span><span class="o">=</span><span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">),</span>
-                        <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
+                        <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variable_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)},</span>
                         <span class="n">sort</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">ASCENDING</span><span class="p">)],</span>
                     <span class="p">)</span>
 

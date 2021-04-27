@@ -229,7 +229,7 @@
 <span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>
 <span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
 
-<span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="n">DatabaseCollection</span><span class="p">,</span> <span class="n">VariableType</span>
+<span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="n">VariableType</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span>
@@ -243,14 +243,6 @@
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">GOOGLE_API_SCOPES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://www.googleapis.com/auth/spreadsheets&quot;</span><span class="p">]</span>
-<span class="n">CONSTITUTIONAL_RIGHTS</span> <span class="o">=</span> <span class="s2">&quot;Constitutional Rights&quot;</span>
-<span class="n">CONSTITUTIONAL_AMENDMENTS</span> <span class="o">=</span> <span class="s2">&quot;Constitutional Amendments&quot;</span>
-<span class="n">BODY_OF_LAW</span> <span class="o">=</span> <span class="s2">&quot;Body of Law&quot;</span>
-<span class="n">COMPOSITE_VARIABLE_HEADINGS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">CONSTITUTIONAL_RIGHTS</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">rights</span><span class="p">,</span>
-    <span class="n">CONSTITUTIONAL_AMENDMENTS</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">amendments</span><span class="p">,</span>
-    <span class="n">BODY_OF_LAW</span><span class="p">:</span> <span class="n">DatabaseCollection</span><span class="o">.</span><span class="n">body_of_law</span><span class="p">,</span>
-<span class="p">}</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -374,6 +366,7 @@
                     <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
                     <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
                     <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="c1"># The variables starts in the 3rd row of data</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
@@ -386,20 +379,6 @@
     <span class="k">for</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">institutions</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">has_country</span><span class="p">:</span>
             <span class="n">institution</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;childs&quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="n">CONSTITUTIONAL_AMENDMENTS</span><span class="p">,</span>
-                <span class="n">CONSTITUTIONAL_RIGHTS</span><span class="p">,</span>
-            <span class="p">]:</span>
-                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span>
-                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COMPOSITE_VARIABLE_HEADINGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="p">)</span>
-            <span class="k">elif</span> <span class="n">BODY_OF_LAW</span> <span class="ow">in</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span>
-                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">COMPOSITE_VARIABLE_HEADINGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BODY_OF_LAW</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">variable</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutions from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
