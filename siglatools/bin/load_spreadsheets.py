@@ -14,7 +14,6 @@ from typing import Any, Dict, List
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.tasks.control_flow import FilterTask
 from prefect.engine.executors import DaskExecutor
 from pymongo import ASCENDING
 
@@ -22,9 +21,14 @@ from siglatools import get_module_version
 
 from ..databases.constants import DatabaseCollection, Environment, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
-from ..institution_extracters.constants import GoogleSheetsFormat
-from ..institution_extracters.utils import FormattedSheetData
-from .run_sigla_pipeline import _extract, _transform
+from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..pipelines.utils import (
+    _create_filter_task,
+    _extract,
+    _load_composites_data,
+    _load_institutions_data,
+    _transform,
+)
 
 ###############################################################################
 
@@ -150,46 +154,6 @@ def _delete_db_institutions(
     db.close_connection()
 
 
-@task
-def _load_institutions_data(
-    formatted_sheet_data: FormattedSheetData,
-    db_connection_url: str,
-):
-    """
-    Load the institutional formatted sheet data into the database.
-
-    Parameters
-    ----------
-    formatted_sheet_data: FormattedSheetData
-        The sheet's formatted data.
-    db_connection_url: str
-        The DB's connection url str.
-    """
-    db = MongoDBDatabase(db_connection_url)
-    db.load(formatted_sheet_data)
-    db.close_connection()
-
-
-@task
-def _load_composites_data(
-    formatted_sheet_data: FormattedSheetData,
-    db_connection_url: str,
-):
-    """
-    Load the composite formatted sheet data into the database.
-
-    Parameters
-    ----------
-    formatted_sheet_data: FormattedSheetData
-        The sheet's formatted data.
-    db_connection_url: str
-        The DB's connection url str.
-    """
-    db = MongoDBDatabase(db_connection_url)
-    db.load(formatted_sheet_data)
-    db.close_connection()
-
-
 def load_spreadsheets(
     spreadsheet_ids: List[str],
     db_connection_url: str,
@@ -235,22 +199,20 @@ def load_spreadsheets(
         )
         # transform to list of formatted sheet data
         formatted_spreadsheets_data = _transform.map(flatten(spreadsheets_data))
-        # create institutional filter
-        gs_institution_filter = FilterTask(
-            filter_func=lambda x: x.meta_data.get("format")
-            in [
-                GoogleSheetsFormat.standard_institution,
-                GoogleSheetsFormat.multiple_sigla_answer_variable,
+        # create institutonal filter
+        gs_institution_filter = _create_filter_task(
+            [
+                gs_format.standard_institution,
+                gs_format.multiple_sigla_answer_variable,
             ]
         )
         # filter to list of institutional formatted sheet data
         gs_institutions_data = gs_institution_filter(formatted_spreadsheets_data)
-        # create composite filter
-        gs_composite_filter = FilterTask(
-            filter_func=lambda x: x.meta_data.get("format")
-            in [
-                GoogleSheetsFormat.composite_variable,
-                GoogleSheetsFormat.institution_and_composite_variable,
+        # Create composite filter
+        gs_composite_filter = _create_filter_task(
+            [
+                gs_format.composite_variable,
+                gs_format.institution_and_composite_variable,
             ]
         )
         # filter to list of composite formatted sheet data
@@ -355,11 +317,14 @@ def main():
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
-        load_spreadsheets(
-            spreadsheet_ids,
+        db_connection_url = (
             args.staging_db_connection_url
             if args.db_env == Environment.staging
-            else args.prod_db_connection_url,
+            else args.prod_db_connection_url
+        )
+        load_spreadsheets(
+            spreadsheet_ids,
+            db_connection_url,
             args.google_api_credentials_path,
         )
     except Exception as e:

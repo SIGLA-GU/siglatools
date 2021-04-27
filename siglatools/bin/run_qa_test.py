@@ -11,12 +11,11 @@ import csv
 import logging
 import sys
 import traceback
-from typing import Any, Dict, List, NamedTuple, Tuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 from zipfile import ZipFile
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.tasks.control_flow import FilterTask
 from prefect.engine.executors import DaskExecutor
 from pymongo import ASCENDING
 
@@ -24,9 +23,14 @@ from siglatools import get_module_version
 
 from ..databases.constants import DatabaseCollection, Environment, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
-from ..institution_extracters.constants import GoogleSheetsFormat
+from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..institution_extracters.utils import FormattedSheetData
-from .run_sigla_pipeline import _extract, _transform
+from ..pipelines.utils import (
+    _create_filter_task,
+    _extract,
+    _get_spreadsheet_ids,
+    _transform,
+)
 
 ###############################################################################
 
@@ -323,7 +327,7 @@ def _gather_gs_institutions(
         The list of institutions.
     """
     gs_format = formatted_sheet_data.meta_data.get("format")
-    if gs_format == GoogleSheetsFormat.institution_and_composite_variable:
+    if gs_format == gs_format.institution_and_composite_variable:
         country = formatted_sheet_data.meta_data.get("country")
         category = formatted_sheet_data.meta_data.get("category")
         name = formatted_sheet_data.meta_data.get("variable_heading")
@@ -772,21 +776,24 @@ def _write_extra_db_institutions(
 
 
 def run_qa_test(
-    spreadsheet_ids: List[str],
+    master_spreadsheet_id: str,
     db_connection_url: str,
     google_api_credentials_path: str,
+    spreadsheet_ids_str: Optional[str] = None,
 ):
     """
     Run QA test
 
     Parameters
     ----------
-    spreadsheet_ids: List[str]
-        The list of spreadsheet ids to run QA test.
+    master_spreadsheet_id: str
+        The master spreadsheet id.
     db_connection_url: str
         The DB's connection url str.
     google_api_credentials_path: str
         The path to Google API credentials file needed to read Google Sheets.
+    spreadsheet_ids_str: Optional[str] = None
+        The list of spreadsheet ids.
     """
 
     cluster = LocalCluster()
@@ -794,6 +801,10 @@ def run_qa_test(
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
     with Flow("Run QA Test") as flow:
+        # get a list of spreadsheet ids
+        spreadsheet_ids = _get_spreadsheet_ids(
+            master_spreadsheet_id, google_api_credentials_path, spreadsheet_ids_str
+        )
         # list of list of db institutions
         db_institutions_data = _gather_db_institutions.map(
             spreadsheet_ids, unmapped(db_connection_url)
@@ -812,12 +823,11 @@ def run_qa_test(
         # transform to list of formatted sheet data
         formatted_spreadsheets_data = _transform.map(flatten(spreadsheets_data))
         # create institutional filter
-        gs_institution_filter = FilterTask(
-            filter_func=lambda x: x.meta_data.get("format")
-            in [
-                GoogleSheetsFormat.standard_institution,
-                GoogleSheetsFormat.multiple_sigla_answer_variable,
-                GoogleSheetsFormat.institution_and_composite_variable,
+        gs_institution_filter = _create_filter_task(
+            [
+                gs_format.standard_institution,
+                gs_format.multiple_sigla_answer_variable,
+                gs_format.institution_and_composite_variable,
             ]
         )
         # filter to list of institutional formatted sheet data
@@ -825,11 +835,10 @@ def run_qa_test(
         # get list of list of gs institution
         gs_institutions = _gather_gs_institutions.map(gs_institutions_data)
         # create composite filter
-        gs_composite_filter = FilterTask(
-            filter_func=lambda x: x.meta_data.get("format")
-            in [
-                GoogleSheetsFormat.composite_variable,
-                GoogleSheetsFormat.institution_and_composite_variable,
+        gs_composite_filter = _create_filter_task(
+            [
+                gs_format.composite_variable,
+                gs_format.institution_and_composite_variable,
             ]
         )
         # filter to list of composite formatted sheet data
@@ -906,6 +915,14 @@ class Args(argparse.Namespace):
             version="%(prog)s " + get_module_version(),
         )
         p.add_argument(
+            "-msi",
+            "--master_spreadsheet_id",
+            action="store",
+            dest="master_spreadsheet_id",
+            type=str,
+            help="The master spreadsheet id",
+        )
+        p.add_argument(
             "-ssi",
             "--speadsheet-ids",
             action="store",
@@ -959,21 +976,17 @@ def main():
     try:
         args = Args()
         dbg = args.debug
-        spreadsheet_ids = [
-            spreadsheet_id.strip() for spreadsheet_id in args.spreadsheet_ids.split(",")
-        ]
-        if not spreadsheet_ids:
-            raise Exception("No spreadsheet ids found.")
         if args.db_env.strip() not in [Environment.staging, Environment.production]:
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
         run_qa_test(
-            spreadsheet_ids,
+            args.master_spreadsheet_id,
             args.staging_db_connection_url
             if args.db_env == Environment.staging
             else args.prod_db_connection_url,
             args.google_api_credentials_path,
+            args.spreadsheet_ids,
         )
     except Exception as e:
         log.error("=============================================")
