@@ -52,7 +52,6 @@ class MongoDBDatabase:
             "institution": {"$in": institution_docs_id},
             "heading": meta_data.get("variable_heading"),
             "name": meta_data.get("variable_name"),
-            "type": VariableType.composite,
         }
         variable_docs = self.find(db_collection.variables, variable)
         variable_docs_id = [doc.get("_id") for doc in variable_docs]
