@@ -226,7 +226,7 @@ def load_spreadsheets(
         _load_composites_data.map(
             gs_composites_data,
             unmapped(db_connection_url),
-            upstream_tasks=[load_institutions_data_task],
+            upstream_tasks=[unmapped(load_institutions_data_task)],
         )
 
     # Run the flow
