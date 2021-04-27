@@ -23,7 +23,7 @@ from siglatools import get_module_version
 
 from ..databases.constants import DatabaseCollection, Environment, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
-from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..institution_extracters.constants import GoogleSheetsFormat
 from ..institution_extracters.utils import FormattedSheetData
 from ..pipelines.utils import (
     _create_filter_task,
@@ -327,7 +327,7 @@ def _gather_gs_institutions(
         The list of institutions.
     """
     gs_format = formatted_sheet_data.meta_data.get("format")
-    if gs_format == gs_format.institution_and_composite_variable:
+    if gs_format == GoogleSheetsFormat.institution_and_composite_variable:
         country = formatted_sheet_data.meta_data.get("country")
         category = formatted_sheet_data.meta_data.get("category")
         name = formatted_sheet_data.meta_data.get("variable_heading")
@@ -825,9 +825,9 @@ def run_qa_test(
         # create institutional filter
         gs_institution_filter = _create_filter_task(
             [
-                gs_format.standard_institution,
-                gs_format.multiple_sigla_answer_variable,
-                gs_format.institution_and_composite_variable,
+                GoogleSheetsFormat.standard_institution,
+                GoogleSheetsFormat.multiple_sigla_answer_variable,
+                GoogleSheetsFormat.institution_and_composite_variable,
             ]
         )
         # filter to list of institutional formatted sheet data
@@ -837,8 +837,8 @@ def run_qa_test(
         # create composite filter
         gs_composite_filter = _create_filter_task(
             [
-                gs_format.composite_variable,
-                gs_format.institution_and_composite_variable,
+                GoogleSheetsFormat.composite_variable,
+                GoogleSheetsFormat.institution_and_composite_variable,
             ]
         )
         # filter to list of composite formatted sheet data
