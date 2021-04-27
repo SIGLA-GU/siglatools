@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Run External Link Checker &mdash; SIGLA Tools 0.1.0 documentation</title>
+  <title>siglatools.pipelines package &mdash; SIGLA Tools 0.1.0 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Get next update and verify dates" href="get_next_uv_dates.html" />
-    <link rel="prev" title="Run Data(subset) Pipeline" href="load_spreadsheets.html" /> 
+    <link rel="next" title="Document Store Schema" href="document_store_schema.html" />
+    <link rel="prev" title="siglatools.institution_extracters package" href="siglatools.institution_extracters.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,13 +97,13 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Package modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="siglatools.html">siglatools package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="siglatools.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="siglatools.html">siglatools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="siglatools.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="siglatools.bin.html">siglatools.bin package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.pipelines package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -130,10 +130,10 @@
 <li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Run External Link Checker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#external-links-reasons">External Links Reasons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="get_next_uv_dates.html">Get next update and verify dates</a><ul>
@@ -201,13 +201,17 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Run External Link Checker</li>
+          <li><a href="modules.html">siglatools</a> &raquo;</li>
+        
+          <li><a href="siglatools.html">siglatools package</a> &raquo;</li>
+        
+      <li>siglatools.pipelines package</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/run_external_link_checker.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/siglatools.pipelines.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -217,10 +221,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="get_next_uv_dates.html" class="btn btn-neutral float-right" title="Get next update and verify dates" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="document_store_schema.html" class="btn btn-neutral float-right" title="Document Store Schema" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="load_spreadsheets.html" class="btn btn-neutral float-left" title="Run Data(subset) Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="siglatools.institution_extracters.html" class="btn btn-neutral float-left" title="siglatools.institution_extracters package" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -229,46 +233,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="run-external-link-checker">
-<h1>Run External Link Checker<a class="headerlink" href="#run-external-link-checker" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="command-line">
-<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic">
-<li><p>Install the package with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install siglatools
-</pre></div>
+  <div class="section" id="siglatools-pipelines-package">
+<h1>siglatools.pipelines package<a class="headerlink" href="#siglatools-pipelines-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-</li>
-<li><p>Run the following command with the correct configurations.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_external_link_checker -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json
-</pre></div>
+<div class="section" id="module-siglatools.pipelines.utils">
+<span id="siglatools-pipelines-utils-module"></span><h2>siglatools.pipelines.utils module<a class="headerlink" href="#module-siglatools.pipelines.utils" title="Permalink to this headline">¶</a></h2>
 </div>
-</li>
-</ol>
-</div>
-<div class="section" id="github-actions-for-collaborators-only">
-<h2>GitHub Actions (for collaborators+ only)<a class="headerlink" href="#github-actions-for-collaborators-only" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">https://github.com/SIGLA-GU/siglatools/actions</a>.</p></li>
-<li><p>From the list of workflows, select <code class="docutils literal notranslate"><span class="pre">Manual</span> <span class="pre">Run</span> <span class="pre">External</span> <span class="pre">Link</span> <span class="pre">Checker</span></code>.</p></li>
-<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> dropdown button.</p></li>
-<li><p>Enter a list of <code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code>s, delimited by <code class="docutils literal notranslate"><span class="pre">,</span></code>. For example <code class="docutils literal notranslate"><span class="pre">spreadsheetId-1,spreadsheetId-2,spreadsheetId-3</span></code>.</p></li>
-<li><p>Click on the green <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> button to run the external link checker.</p></li>
-<li><p>Wait until a new workflow run result shows up and click on it see its details.</p></li>
-<li><p>On workflow details page, once the run is finished click on the <code class="docutils literal notranslate"><span class="pre">external-link-artifact</span></code> to download a csv file of bad external URLs.</p></li>
-</ol>
-</div>
-<div class="section" id="external-links-reasons">
-<h2>External Links Reasons<a class="headerlink" href="#external-links-reasons" title="Permalink to this headline">¶</a></h2>
-<p>The tab delimited csv file has a <code class="docutils literal notranslate"><span class="pre">reason</span></code> fieldname as to why the URL is included for further inspection. Here are the relevant reasons:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">404</span> <span class="pre">-</span> <span class="pre">Not</span> <span class="pre">found</span></code> means the webpage doesn’t exist.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">-</span> <span class="pre">Forbidden</span></code> means the webpage required authentication or the webpage doesn’t allow a script to visit the webpage. Either way, this webpage requires further inspection.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Untrusted</span> <span class="pre">SSL</span> <span class="pre">Certificate</span></code> means the webpage doesn’t have an acceptable SSL Certificate and the browser may warn users of potential security risks when they visit the webpage.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Request</span> <span class="pre">timed</span> <span class="pre">out</span></code> means it took too long to get a response from the webpage and requires further inspection.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">connecting</span></code> means the script was unable to visit the webpage and requires further inspection.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Unknown</span> <span class="pre">error</span></code> means the script encountered an unknown error and requires further inspection.</p></li>
-</ul>
+<div class="section" id="module-siglatools.pipelines">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-siglatools.pipelines" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

@@ -103,6 +103,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.bin package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -237,20 +238,631 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="siglatools-bin-get-next-uv-dates-module">
-<h2>siglatools.bin.get_next_uv_dates module<a class="headerlink" href="#siglatools-bin-get-next-uv-dates-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-siglatools.bin.get_next_uv_dates">
+<span id="siglatools-bin-get-next-uv-dates-module"></span><h2>siglatools.bin.get_next_uv_dates module<a class="headerlink" href="#module-siglatools.bin.get_next_uv_dates" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.get_next_uv_dates.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.get_next_uv_dates.CheckedNextUVDate">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">CheckedNextUVDate</code><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#CheckedNextUVDate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.CheckedNextUVDate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The status of a next uv date after checking.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>status: NextUVDateStatus</dt><dd><p>The status of a next uv date after checking.</p>
+</dd>
+<dt>next_uv_date_data: NextUVDateData</dt><dd><p>The next uv date and its context. See NextUVDateData class.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of CheckedNextUVDate(status, next_uv_date_data)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.CheckedNextUVDate.next_uv_date_data">
+<code class="sig-name descname">next_uv_date_data</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.CheckedNextUVDate.next_uv_date_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.CheckedNextUVDate.status">
+<code class="sig-name descname">status</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.CheckedNextUVDate.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">NextUVDateData</code><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#NextUVDateData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A next update and verify date and its context</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet the contains the next uv date.</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the next uv date.</p>
+</dd>
+<dt>column_name: str</dt><dd><p>The column location of the next uv date in the sheet.</p>
+</dd>
+<dt>row_index: int</dt><dd><p>The row location of the next uv date in the sheet.</p>
+</dd>
+<dt>next_uv_date: str</dt><dd><p>The next uv date.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of NextUVDateData(spreadsheet_title, sheet_title, column_name, row_index, next_uv_date)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData.column_name">
+<code class="sig-name descname">column_name</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData.column_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData.next_uv_date">
+<code class="sig-name descname">next_uv_date</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData.next_uv_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData.row_index">
+<code class="sig-name descname">row_index</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData.row_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateData.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateStatus">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">NextUVDateStatus</code><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#NextUVDateStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Possible status of a next uv date.</p>
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateStatus.incorrect_date_format">
+<code class="sig-name descname">incorrect_date_format</code><em class="property"> = 'Incorrect date format'</em><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateStatus.incorrect_date_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateStatus.irrelevant">
+<code class="sig-name descname">irrelevant</code><em class="property"> = 'Irrelevant'</em><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateStatus.irrelevant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.get_next_uv_dates.NextUVDateStatus.requires_uv">
+<code class="sig-name descname">requires_uv</code><em class="property"> = 'Requires update and verify'</em><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.NextUVDateStatus.requires_uv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.get_next_uv_dates.get_next_uv_dates">
+<code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">get_next_uv_dates</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">start_date: datetime.date</em>, <em class="sig-param">end_date: datetime.date</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#get_next_uv_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.get_next_uv_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next update and verify dates or uv dates that falls within the date range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>start_date</strong> (<em>date</em>) – The start date.</p></li>
+<li><p><strong>end_date</strong> (<em>date</em>) – The end date.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.get_next_uv_dates.main">
+<code class="sig-prename descclassname">siglatools.bin.get_next_uv_dates.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/get_next_uv_dates.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.get_next_uv_dates.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="siglatools-bin-load-spreadsheets-module">
-<h2>siglatools.bin.load_spreadsheets module<a class="headerlink" href="#siglatools-bin-load-spreadsheets-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-siglatools.bin.load_spreadsheets">
+<span id="siglatools-bin-load-spreadsheets-module"></span><h2>siglatools.bin.load_spreadsheets module<a class="headerlink" href="#module-siglatools.bin.load_spreadsheets" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.load_spreadsheets.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.load_spreadsheets.load_spreadsheets">
+<code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">load_spreadsheets</code><span class="sig-paren">(</span><em class="sig-param">spreadsheet_ids: List[str], db_connection_url: str, google_api_credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#load_spreadsheets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.load_spreadsheets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load spreadsheets to the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spreadsheet_ids</strong> (<em>List[str]</em>) – The list of spreadsheet ids.</p></li>
+<li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.load_spreadsheets.main">
+<code class="sig-prename descclassname">siglatools.bin.load_spreadsheets.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/load_spreadsheets.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.load_spreadsheets.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="siglatools-bin-run-external-link-checker-module">
-<h2>siglatools.bin.run_external_link_checker module<a class="headerlink" href="#siglatools-bin-run-external-link-checker-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-siglatools.bin.run_external_link_checker">
+<span id="siglatools-bin-run-external-link-checker-module"></span><h2>siglatools.bin.run_external_link_checker module<a class="headerlink" href="#module-siglatools.bin.run_external_link_checker" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">CheckedURL</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#CheckedURL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The status of an URL after checking.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>has_error: bool</dt><dd><p>Whether the URL has an error.</p>
+</dd>
+<dt>url_data: URLData</dt><dd><p>The URL and its context. See URLData class.</p>
+</dd>
+<dt>msg: Optional[str] = None</dt><dd><p>The status of the URL after checking. None if has_error is False.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of CheckedURL(has_error, url_data, msg)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.has_error">
+<code class="sig-name descname">has_error</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.has_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.msg">
+<code class="sig-name descname">msg</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.CheckedURL.url_data">
+<code class="sig-name descname">url_data</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.CheckedURL.url_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.URLData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">URLData</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The URL and its context.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet the contains the URL.</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the URL.</p>
+</dd>
+<dt>row_index: int</dt><dd><p>The row location of the URL in the sheet.</p>
+</dd>
+<dt>col_index: int</dt><dd><p>The column location of the URL in the sheet.</p>
+</dd>
+<dt>url: str</dt><dd><p>The URL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of URLData(spreadsheet_title, sheet_title, row_index, col_index, url)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.col_index">
+<code class="sig-name descname">col_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.col_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.row_index">
+<code class="sig-name descname">row_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.row_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.URLData.url">
+<code class="sig-name descname">url</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_external_link_checker.main">
+<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_external_link_checker.run_external_link_checker">
+<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the the external link checker.
+If a list of spreadsheet ids are provided, run the external link checker
+against the list of spreadsheet ids, instead of the spreadsheet ids gathered
+from the master spreadsheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id.</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>spreadsheet_ids_str</strong> (<em>Optional[str]</em>) – The list spreadsheet ids, delimited by comma.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="siglatools-bin-run-qa-test-module">
-<h2>siglatools.bin.run_qa_test module<a class="headerlink" href="#siglatools-bin-run-qa-test-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-siglatools.bin.run_qa_test">
+<span id="siglatools-bin-run-qa-test-module"></span><h2>siglatools.bin.run_qa_test module<a class="headerlink" href="#module-siglatools.bin.run_qa_test" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.Comparison">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">Comparison</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Comparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A group of ObjectComparison.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_title: str</dt><dd><p>The spreadsheet source of the GoogleSheet data.</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The sheet source of the GoogleSheet data.</p>
+</dd>
+<dt>name: str</dt><dd><p>The name of the group.</p>
+</dd>
+<dt>data_comparisons: List[ObjectComparison]</dt><dd><p>The group of ObjectComparison.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of Comparison(spreadsheet_title, sheet_title, name, data_comparisons)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Comparison.data_comparisons">
+<code class="sig-name descname">data_comparisons</code><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.data_comparisons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.Comparison.get_filename">
+<code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Comparison.get_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.get_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the file name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.Comparison.get_gs_source">
+<code class="sig-name descname">get_gs_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Comparison.get_gs_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.get_gs_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the GoogleSheet source.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.Comparison.has_error">
+<code class="sig-name descname">has_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Comparison.has_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.has_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does any of the group of ObjectCOmparison has a mismatch?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Comparison.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Comparison.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Comparison.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.Comparison.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Comparison.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Comparison.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the mistmatch data_comparisons to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The filename.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.Datasource">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">Datasource</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#Datasource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.Datasource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Datasource.database">
+<code class="sig-name descname">database</code><em class="property"> = 'Database'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.Datasource.database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.Datasource.googlesheet">
+<code class="sig-name descname">googlesheet</code><em class="property"> = 'GoogleSheet'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.Datasource.googlesheet" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.FieldComparison">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">FieldComparison</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A comparison of two values for a field.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>field: str</dt><dd><p>The field name.</p>
+</dd>
+<dt>comparison_type: str</dt><dd><p>The field comparison type.</p>
+</dd>
+<dt>actual: Tuple[str, Any]</dt><dd><p>A value and its source.</p>
+</dd>
+<dt>expected: Tuple[str, Any]</dt><dd><p>A value and its source.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of FieldComparison(field, comparison_type, actual, expected)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.actual">
+<code class="sig-name descname">actual</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.actual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.comparison_type">
+<code class="sig-name descname">comparison_type</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.comparison_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.expected">
+<code class="sig-name descname">expected</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.expected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.field">
+<code class="sig-name descname">field</code><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.get_error_msg">
+<code class="sig-name descname">get_error_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.get_error_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.get_error_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get error msg.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.get_str_rep">
+<code class="sig-name descname">get_str_rep</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.get_str_rep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.get_str_rep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get str of the two values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.FieldComparison.has_error">
+<code class="sig-name descname">has_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparison.has_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparison.has_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the two values mismatch?</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">FieldComparisonType</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#FieldComparisonType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType.data">
+<code class="sig-name descname">data</code><em class="property"> = 'data'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.FieldComparisonType.meta">
+<code class="sig-name descname">meta</code><em class="property"> = 'meta'</em><a class="headerlink" href="#siglatools.bin.run_qa_test.FieldComparisonType.meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.GsInstitution">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">GsInstitution</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#GsInstitution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>An institution from GoogleSheet.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>spreadsheet_id: str</dt><dd><p>The spreadsheet id.</p>
+</dd>
+<dt>spreadsheet_title: str</dt><dd><p>The spreadsheet title.</p>
+</dd>
+<dt>sheet_id: str</dt><dd><p>The sheet id.</p>
+</dd>
+<dt>sheet_title: str</dt><dd><p>The sheet title.</p>
+</dd>
+<dt>data: Any</dt><dd><p>The institution object and its variables.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of GsInstitution(spreadsheet_id, spreadsheet_title, sheet_id, sheet_title, data)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.data">
+<code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.get_key">
+<code class="sig-name descname">get_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#GsInstitution.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the key of the institution.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.sheet_id">
+<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.sheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.spreadsheet_id">
+<code class="sig-name descname">spreadsheet_id</code><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.spreadsheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.GsInstitution.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_qa_test.GsInstitution.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_qa_test.ObjectComparison">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">ObjectComparison</code><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#ObjectComparison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.ObjectComparison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A group of FieldComparison.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>name: str</dt><dd><p>The name of the group.</p>
+</dd>
+<dt>field_comparisons: List[FieldComparison]</dt><dd><p>The group of FieldComparison.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of ObjectComparison(name, field_comparisons)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.ObjectComparison.field_comparisons">
+<code class="sig-name descname">field_comparisons</code><a class="headerlink" href="#siglatools.bin.run_qa_test.ObjectComparison.field_comparisons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.ObjectComparison.get_error_msgs">
+<code class="sig-name descname">get_error_msgs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#ObjectComparison.get_error_msgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.ObjectComparison.get_error_msgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of msg for the mistmatch FieldComparison.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_qa_test.ObjectComparison.has_error">
+<code class="sig-name descname">has_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#ObjectComparison.has_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.ObjectComparison.has_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does any of the group of FieldComparison have a mismatch?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_qa_test.ObjectComparison.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#siglatools.bin.run_qa_test.ObjectComparison.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_qa_test.main">
+<code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_qa_test.run_qa_test">
+<code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">run_qa_test</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">db_connection_url: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#run_qa_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.run_qa_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run QA test</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The master spreadsheet id.</p></li>
+<li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>spreadsheet_ids_str</strong> (<em>Optional[str] = None</em>) – The list of spreadsheet ids.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="siglatools-bin-run-sigla-pipeline-module">
-<h2>siglatools.bin.run_sigla_pipeline module<a class="headerlink" href="#siglatools-bin-run-sigla-pipeline-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-siglatools.bin.run_sigla_pipeline">
+<span id="siglatools-bin-run-sigla-pipeline-module"></span><h2>siglatools.bin.run_sigla_pipeline module<a class="headerlink" href="#module-siglatools.bin.run_sigla_pipeline" title="Permalink to this headline">¶</a></h2>
+<p>This script will get deployed in the bin directory of the
+users’ virtualenv when the parent module is installed using pip.</p>
+<dl class="class">
+<dt id="siglatools.bin.run_sigla_pipeline.Args">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_sigla_pipeline.</code><code class="sig-name descname">Args</code><a class="reference internal" href="_modules/siglatools/bin/run_sigla_pipeline.html#Args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_sigla_pipeline.Args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.Namespace</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_sigla_pipeline.main">
+<code class="sig-prename descclassname">siglatools.bin.run_sigla_pipeline.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_sigla_pipeline.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_sigla_pipeline.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="siglatools.bin.run_sigla_pipeline.run_sigla_pipeline">
+<code class="sig-prename descclassname">siglatools.bin.run_sigla_pipeline.</code><code class="sig-name descname">run_sigla_pipeline</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">db_connection_url: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_sigla_pipeline.html#run_sigla_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_sigla_pipeline.run_sigla_pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the SIGLA ETL pipeline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master_spreadsheet_id</strong> – The master spreadsheet id.</p></li>
+<li><p><strong>google_api_credentials_path</strong> (<em>str</em>) – The path to Google API credentials file needed to read Google Sheets.</p></li>
+<li><p><strong>db_connection_url</strong> (<em>str</em>) – The DB’s connection url str.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-siglatools.bin">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-siglatools.bin" title="Permalink to this headline">¶</a></h2>

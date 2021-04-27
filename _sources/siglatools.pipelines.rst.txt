@@ -1,0 +1,22 @@
+siglatools.pipelines package
+============================
+
+Submodules
+----------
+
+siglatools.pipelines.utils module
+---------------------------------
+
+.. automodule:: siglatools.pipelines.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools.pipelines
+   :members:
+   :undoc-members:
+   :show-inheritance:

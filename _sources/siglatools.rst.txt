@@ -9,6 +9,7 @@ Subpackages
    siglatools.bin
    siglatools.databases
    siglatools.institution_extracters
+   siglatools.pipelines
 
 Module contents
 ---------------
