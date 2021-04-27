@@ -64,7 +64,7 @@ def _gather_db_institutions(
     db = MongoDBDatabase(db_connection_url)
     institutions = db.find(
         collection=DatabaseCollection.institutions,
-        filter={"spreadsheet_id": spreadsheet_id},
+        filters={"spreadsheet_id": spreadsheet_id},
     )
     db.close_connection()
     return institutions
@@ -94,7 +94,7 @@ def _gather_db_variables(
     db_institution = institution.copy()
     db_variables = db.find(
         collection=DatabaseCollection.variables,
-        filter={"institution": db_institution.get("_id")},
+        filters={"institution": db_institution.get("_id")},
         sort=[["variable_index", ASCENDING]],
     )
     for db_variable in db_variables:
@@ -106,7 +106,7 @@ def _gather_db_variables(
             )
             composite_variable_data = db.find(
                 collection=db_variable.get("hyperlink"),
-                filter={f"{variable_str}": db_variable.get("_id")},
+                filters={f"{variable_str}": db_variable.get("_id")},
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
