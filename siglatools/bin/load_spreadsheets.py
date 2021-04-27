@@ -22,7 +22,7 @@ from siglatools import get_module_version
 from ..databases.constants import DatabaseCollection, Environment, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
-from ..pipelines import (
+from ..pipelines.utils import (
     _create_filter_task,
     _extract,
     _load_composites_data,
