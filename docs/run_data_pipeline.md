@@ -25,7 +25,7 @@
 8. After the script is done loading the spreadsheet(s) to the database, the script runs QA Test and produces a `qa-test-artifact` that contains the result of the QA Test. Please see [Run QA Test](run_qa_test.html) to see documentation on the produced zip file.
 
 ## Debugging Data Pipeline Logs
-Access the pipeline's logs by opening a specific workflow instance. Then select `run_sigla_pipeline` job (on the left) from the list of jobs. Click the octogon gear icon (on the right) and select `View raw logs`. A successful run of the pipeline is indicated by `Flow run SUCCESS: all reference tasks succeeded` near the end of the logs.
+Access the pipeline's logs by opening a specific workflow instance. Then select `run_sigla_pipeline` job (on the left) from the list of jobs. Click the gear icon (on the right) and select `View raw logs`. A successful run of the pipeline is indicated by `Flow run SUCCESS: all reference tasks succeeded` near the end of the logs.
 
 In cases where the pipeline failed, here are potential errors and how to change the PROD Google Sheets to fix them. Search `ERROR` in the logs to find them.
 
