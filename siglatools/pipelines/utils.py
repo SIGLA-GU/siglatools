@@ -5,7 +5,8 @@ import logging
 from datetime import timedelta
 from typing import List, Optional
 
-from prefect import FilterTask, task
+from prefect import task
+from prefect.tasks.control_flow import FilterTask
 
 from ..databases import MongoDBDatabase
 from ..institution_extracters import GoogleSheetsInstitutionExtracter
