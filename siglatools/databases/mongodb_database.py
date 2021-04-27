@@ -5,7 +5,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from bson.objectid import ObjectId
-from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne
+from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne, UpdateMany
 
 from ..institution_extracters import exceptions
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
@@ -45,10 +45,8 @@ class MongoDBDatabase:
             "country": meta_data.get("country"),
             "category": meta_data.get("category"),
         }
-        institution_cursor = self._db.get_collection(db_collection.institutions).find(
-            institution
-        )
-        institution_docs_id = [doc.get("_id") for doc in institution_cursor]
+        institution_docs = self.find(db_collection.institutions, institution)
+        institution_docs_id = [doc.get("_id") for doc in institution_docs]
 
         variable = {
             "institution": {"$in": institution_docs_id},
@@ -56,13 +54,28 @@ class MongoDBDatabase:
             "name": meta_data.get("variable_name"),
             "type": VariableType.composite,
         }
-        variable_cursor = self._db.get_collection(db_collection.variables).find(
-            variable
-        )
-        variable_docs_id = [doc.get("_id") for doc in variable_cursor]
+        variable_docs = self.find(db_collection.variables, variable)
+        variable_docs_id = [doc.get("_id") for doc in variable_docs]
 
         if len(variable_docs_id) != len(institution_names):
             raise UnableToFindDocument(sheet_title, db_collection.variables, variable)
+
+        # update the variables to have type composite and the right hyperlink
+        update_variables_request = UpdateMany(
+            {"_id": {"$in": variable_docs_id}},
+            {
+                "$set": {
+                    "type": VariableType.composite,
+                    "hyperlink": meta_data.get("data_type"),
+                }
+            },
+        )
+        update_variables_request_result = self._db.get_collection(
+            db_collection.variables
+        ).bulk_write([update_variables_request])
+        log.info(
+            f"Update {update_variables_request_result.modified_count}/{len(variable_docs_id)} variables"
+        )
 
         if meta_data.get("data_type") == db_collection.body_of_law:
             return {"variables": variable_docs_id}
@@ -333,7 +346,7 @@ class MongoDBDatabase:
     def find(
         self,
         collection: str,
-        filter: Dict[str, Any],
+        filters: Dict[str, Any],
         sort: Optional[List[Tuple[str, str]]] = None,
     ) -> List[Dict[str, Any]]:
         """
@@ -343,7 +356,7 @@ class MongoDBDatabase:
         ----------
         collection: str
             The db collection to query for documents.
-        filter: Dict[str, Any]
+        filters: Dict[str, Any]
             A prototype document that all results must match.
         sort: Optional[List[Tuple[str, str]]]
             A list of (key, direction) pairs specifying the sort order for this query.
@@ -353,7 +366,7 @@ class MongoDBDatabase:
         docs: List[Dict[str, Any]]
             The list of matched documents.
         """
-        cursor = self._db.get_collection(collection).find(filter)
+        cursor = self._db.get_collection(collection).find(filters)
         if sort:
             cursor.sort(sort)
         return [doc for doc in cursor]

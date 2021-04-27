@@ -8,7 +8,7 @@ from typing import Dict, List, NamedTuple, Optional, Union
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from ..databases.constants import DatabaseCollection, VariableType
+from ..databases.constants import VariableType
 from . import exceptions
 from .constants import GoogleSheetsFormat as gs_format
 from .utils import FormattedSheetData, SheetData
@@ -22,14 +22,6 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-CONSTITUTIONAL_RIGHTS = "Constitutional Rights"
-CONSTITUTIONAL_AMENDMENTS = "Constitutional Amendments"
-BODY_OF_LAW = "Body of Law"
-COMPOSITE_VARIABLE_HEADINGS = {
-    CONSTITUTIONAL_RIGHTS: DatabaseCollection.rights,
-    CONSTITUTIONAL_AMENDMENTS: DatabaseCollection.amendments,
-    BODY_OF_LAW: DatabaseCollection.body_of_law,
-}
 
 ###############################################################################
 
@@ -153,6 +145,7 @@ def _get_standard_institution(
                     "orig_text": variable_row[2 + i * 3 + 1],
                     "source": variable_row[2 + i * 3 + 2],
                     "variable_index": j,
+                    "type": VariableType.standard,
                 }
                 # The variables starts in the 3rd row of data
                 for j, variable_row in enumerate(sheet_data.data[2:])
@@ -165,20 +158,6 @@ def _get_standard_institution(
     for institution in institutions:
         if has_country:
             institution["country"] = sheet_data.meta_data.get("country")
-        for variable in institution.get("childs"):
-            if variable.get("heading").strip() in [
-                CONSTITUTIONAL_AMENDMENTS,
-                CONSTITUTIONAL_RIGHTS,
-            ]:
-                variable["type"] = VariableType.composite
-                variable["hyperlink"] = COMPOSITE_VARIABLE_HEADINGS.get(
-                    variable.get("heading").strip()
-                )
-            elif BODY_OF_LAW in variable.get("heading").strip():
-                variable["type"] = VariableType.composite
-                variable["hyperlink"] = COMPOSITE_VARIABLE_HEADINGS.get(BODY_OF_LAW)
-            else:
-                variable["type"] = VariableType.standard
 
     log.info(
         f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
