@@ -239,7 +239,7 @@
 </div>
 </li>
 <li><p>Run the following command with the correct configurations.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_sigla_pipeline -msi &lt;master_spreadsheet_id&gt; -dbcu &lt;db_connection_url&gt; -gacp /path/to/google-api-credentials.json
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_sigla_pipeline -msi &lt;master_spreadsheet_id&gt; -gacp /path/to/google-api-credentials.json -dbe &lt;db_env&gt; -sdbcu &lt;staging_db_connection_url&gt; -pdbcu &lt;prod_db_connection_url&gt;
 </pre></div>
 </div>
 </li>
@@ -248,16 +248,19 @@
 <div class="section" id="github-actions-for-collaborators-only">
 <h2>GitHub Actions (for collaborators+ only)<a class="headerlink" href="#github-actions-for-collaborators-only" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/issues/new/choose">https://github.com/SIGLA-GU/siglatools/issues/new/choose</a></p></li>
-<li><p>Get started with Run Staging Pipeline to run the staging pipeline, or with Run Production Pipeline to run the production pipeline</p></li>
-<li><p>Add an appropriate title and in the body of the issue write about the key changes to the data</p></li>
-<li><p>Click Submit New Issue</p></li>
-<li><p>Go to the <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">Actions</a> tab and see the pipeline in progress. You can narrow down the workflows by choosing the type of workflows on the left side, either Manual Run Staging Pipepline or Manual Run Production Pipeline. Then find the specific workflow by finding the GitHub issue title in step 3. Click on the workflow to view its details. On the left side, you should see a check beside <code class="docutils literal notranslate"><span class="pre">authorization_and_correct_label</span></code>. And if the pipeline ran succesfully then you should also see a check next to <code class="docutils literal notranslate"><span class="pre">pipeline</span></code>.</p></li>
+<li><p>Visit <a class="reference external" href="https://github.com/SIGLA-GU/siglatools/actions">https://github.com/SIGLA-GU/siglatools/actions</a>.</p></li>
+<li><p>From the list of workflows, select <code class="docutils literal notranslate"><span class="pre">Manual</span> <span class="pre">Run</span> <span class="pre">Data</span> <span class="pre">Pipeline</span></code>.</p></li>
+<li><p>Click on the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> dropdown button.</p></li>
+<li><p>Enter the <code class="docutils literal notranslate"><span class="pre">spreadsheetId</span></code> of the main spreadsheet.</p></li>
+<li><p>Enter a database environment, <code class="docutils literal notranslate"><span class="pre">staging</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code>. Choose <code class="docutils literal notranslate"><span class="pre">staging</span></code> if you want to load the spreadsheet(s) found in the main spreadsheet of step 4 to the <code class="docutils literal notranslate"><span class="pre">staging</span></code> database. Choose <code class="docutils literal notranslate"><span class="pre">production</span></code> if you want to load the spreadsheet(s) found in the main spreadsheet of step 4 to the <code class="docutils literal notranslate"><span class="pre">production</span></code> database. <span class="raw-html-m2r"><em>Only the data in these spreadsheets will be in the database, and nothing else.</em></span></p></li>
+<li><p>Click on the green <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">workflow</span></code> button to run the workflow.</p></li>
+<li><p>Wait until a new workflow run result shows up or refresh the page, and click on it to see its details.</p></li>
+<li><p>After the script is done loading the spreadsheet(s) to the database, the script runs QA Test and produces a <code class="docutils literal notranslate"><span class="pre">qa-test-artifact</span></code> that contains the result of the QA Test. Please see <a class="reference external" href="run_qa_test.html">Run QA Test</a> to see documentation on the produced zip file.</p></li>
 </ol>
 </div>
 <div class="section" id="debugging-data-pipeline-logs">
 <h2>Debugging Data Pipeline Logs<a class="headerlink" href="#debugging-data-pipeline-logs" title="Permalink to this headline">¶</a></h2>
-<p>Access the pipeline’s logs by opening a specific workflow (follow similar instructions in the above step 5) and then on the right side click <code class="docutils literal notranslate"><span class="pre">...</span></code> and select <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">raw</span> <span class="pre">logs</span></code>. A successful run of the pipeline is indicated by <code class="docutils literal notranslate"><span class="pre">Flow</span> <span class="pre">run</span> <span class="pre">SUCCESS:</span> <span class="pre">all</span> <span class="pre">reference</span> <span class="pre">tasks</span> <span class="pre">succeeded</span></code> near the end of the logs.</p>
+<p>Access the pipeline’s logs by opening a specific workflow instance. Then select <code class="docutils literal notranslate"><span class="pre">run_sigla_pipeline</span></code> job (on the left) from the list of jobs. Click the octogon gear icon (on the right) and select <code class="docutils literal notranslate"><span class="pre">View</span> <span class="pre">raw</span> <span class="pre">logs</span></code>. A successful run of the pipeline is indicated by <code class="docutils literal notranslate"><span class="pre">Flow</span> <span class="pre">run</span> <span class="pre">SUCCESS:</span> <span class="pre">all</span> <span class="pre">reference</span> <span class="pre">tasks</span> <span class="pre">succeeded</span></code> near the end of the logs.</p>
 <p>In cases where the pipeline failed, here are potential errors and how to change the PROD Google Sheets to fix them. Search <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> in the logs to find them.</p>
 <ul class="simple">
 <li><p>TypeError (missing 3 required positional arguments: sheet_title, start_row, and end_row): In the metadata section of a Google Sheet, make sure start_row and end_row have values.</p></li>

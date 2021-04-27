@@ -11,19 +11,21 @@
 2. Run the following command with the correct configurations.
 
     ```bash
-    run_sigla_pipeline -msi <master_spreadsheet_id> -dbcu <db_connection_url> -gacp /path/to/google-api-credentials.json
+    run_sigla_pipeline -msi <master_spreadsheet_id> -gacp /path/to/google-api-credentials.json -dbe <db_env> -sdbcu <staging_db_connection_url> -pdbcu <prod_db_connection_url>
     ```
 
 ## GitHub Actions (for collaborators+ only) 
-
-1. Visit https://github.com/SIGLA-GU/siglatools/issues/new/choose
-2. Get started with Run Staging Pipeline to run the staging pipeline, or with Run Production Pipeline to run the production pipeline
-3. Add an appropriate title and in the body of the issue write about the key changes to the data
-4. Click Submit New Issue
-5. Go to the [Actions](https://github.com/SIGLA-GU/siglatools/actions) tab and see the pipeline in progress. You can narrow down the workflows by choosing the type of workflows on the left side, either Manual Run Staging Pipepline or Manual Run Production Pipeline. Then find the specific workflow by finding the GitHub issue title in step 3. Click on the workflow to view its details. On the left side, you should see a check beside `authorization_and_correct_label`. And if the pipeline ran succesfully then you should also see a check next to `pipeline`.
+1. Visit https://github.com/SIGLA-GU/siglatools/actions.
+2. From the list of workflows, select `Manual Run Data Pipeline`.
+3. Click on the `Run workflow` dropdown button.
+4. Enter the `spreadsheetId` of the main spreadsheet.
+5. Enter a database environment, `staging` or `production`. Choose `staging` if you want to load the spreadsheet(s) found in the main spreadsheet of step 4 to the `staging` database. Choose `production` if you want to load the spreadsheet(s) found in the main spreadsheet of step 4 to the `production` database. <em>Only the data in these spreadsheets will be in the database, and nothing else.</em>
+6. Click on the green `Run workflow` button to run the workflow.
+7. Wait until a new workflow run result shows up or refresh the page, and click on it to see its details.
+8. After the script is done loading the spreadsheet(s) to the database, the script runs QA Test and produces a `qa-test-artifact` that contains the result of the QA Test. Please see [Run QA Test](run_qa_test.html) to see documentation on the produced zip file.
 
 ## Debugging Data Pipeline Logs
-Access the pipeline's logs by opening a specific workflow (follow similar instructions in the above step 5) and then on the right side click `...` and select `View raw logs`. A successful run of the pipeline is indicated by `Flow run SUCCESS: all reference tasks succeeded` near the end of the logs.
+Access the pipeline's logs by opening a specific workflow instance. Then select `run_sigla_pipeline` job (on the left) from the list of jobs. Click the octogon gear icon (on the right) and select `View raw logs`. A successful run of the pipeline is indicated by `Flow run SUCCESS: all reference tasks succeeded` near the end of the logs.
 
 In cases where the pipeline failed, here are potential errors and how to change the PROD Google Sheets to fix them. Search `ERROR` in the logs to find them.
 
