@@ -471,12 +471,6 @@ def _compare_gs_institution(
                         (Datasource.googlesheet, gs_variable.get("name")),
                     ),
                     FieldComparison(
-                        "Variable type",
-                        FieldComparisonType.meta,
-                        (Datasource.database, db_variable.get("type")),
-                        (Datasource.googlesheet, gs_variable.get("type")),
-                    ),
-                    FieldComparison(
                         "Variable index",
                         FieldComparisonType.meta,
                         (Datasource.database, db_variable.get("variable_index")),
@@ -503,15 +497,6 @@ def _compare_gs_institution(
                 ]
 
                 if db_variable.get("type") == VariableType.composite:
-                    # compare the hyperlink
-                    variable_field_comparisons.append(
-                        FieldComparison(
-                            "Variable hyperlink",
-                            FieldComparisonType.meta,
-                            (Datasource.database, db_variable.get("hyperlink")),
-                            (Datasource.googlesheet, gs_variable.get("hyperlink")),
-                        )
-                    )
                     # compare if there is a link between variable and composite variable collection
                     variable_field_comparisons.append(
                         FieldComparison(
@@ -524,6 +509,16 @@ def _compare_gs_institution(
                                 else False,
                             ),
                             (Datasource.googlesheet, True),
+                        )
+                    )
+                else:
+                    # compare variable type
+                    variable_field_comparisons.append(
+                        FieldComparison(
+                            "Variable type",
+                            FieldComparisonType.meta,
+                            (Datasource.database, db_variable.get("type")),
+                            (Datasource.googlesheet, gs_variable.get("type")),
                         )
                     )
 
