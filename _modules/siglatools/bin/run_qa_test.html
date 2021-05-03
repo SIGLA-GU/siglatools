@@ -692,12 +692,6 @@
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)),</span>
                     <span class="p">),</span>
                     <span class="n">FieldComparison</span><span class="p">(</span>
-                        <span class="s2">&quot;Variable type&quot;</span><span class="p">,</span>
-                        <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
-                        <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
-                        <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
-                    <span class="p">),</span>
-                    <span class="n">FieldComparison</span><span class="p">(</span>
                         <span class="s2">&quot;Variable index&quot;</span><span class="p">,</span>
                         <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_index&quot;</span><span class="p">)),</span>
@@ -724,15 +718,6 @@
                 <span class="p">]</span>
 
                 <span class="k">if</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span><span class="p">:</span>
-                    <span class="c1"># compare the hyperlink</span>
-                    <span class="n">variable_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">FieldComparison</span><span class="p">(</span>
-                            <span class="s2">&quot;Variable hyperlink&quot;</span><span class="p">,</span>
-                            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
-                            <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)),</span>
-                            <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hyperlink&quot;</span><span class="p">)),</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
                     <span class="c1"># compare if there is a link between variable and composite variable collection</span>
                     <span class="n">variable_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">FieldComparison</span><span class="p">(</span>
@@ -745,6 +730,16 @@
                                 <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
                             <span class="p">),</span>
                             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># compare variable type</span>
+                    <span class="n">variable_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">FieldComparison</span><span class="p">(</span>
+                            <span class="s2">&quot;Variable type&quot;</span><span class="p">,</span>
+                            <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+                            <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">db_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
+                            <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="n">gs_variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)),</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
 
