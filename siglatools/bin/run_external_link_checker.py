@@ -12,7 +12,7 @@ import logging
 import re
 import sys
 import traceback
-from typing import List, NamedTuple, Optional
+from typing import List, NamedTuple, Optional, Tuple
 
 import requests
 from distributed import LocalCluster
@@ -47,19 +47,24 @@ class URLData(NamedTuple):
             The title of the spreadsheet the contains the URL.
         sheet_title: str
             The title of the sheet that contains the URL.
-        row_index: int
-            The row location of the URL in the sheet.
-        col_index: int
-            The column location of the URL in the sheet.
+        cells: List[Tuple[int, int]]
+            List of cells that contain this URL.
         url: str
             The URL.
     """
 
     spreadsheet_title: str
     sheet_title: str
-    row_index: int
-    col_index: int
+    cells: List[Tuple[int, int]]
     url: str
+
+    def get_key(self) -> str:
+        "Get the key."
+        return f"{self.spreadsheet_title}{self.sheet_title}{self.url}"
+
+    def add_cell(self, cell: Tuple[int, int]):
+        "Add a cell to the list of cells."
+        self.cells.append(cell)
 
 
 class CheckedURL(NamedTuple):
@@ -107,12 +112,35 @@ def _extract_external_links(sheet_data: SheetData) -> List[URLData]:
                     URLData(
                         spreadsheet_title=sheet_data.spreadsheet_title,
                         sheet_title=sheet_data.sheet_title,
-                        row_index=row_index,
-                        col_index=col_index,
+                        cells=[(row_index, col_index)],
                         url=url,
                     )
                 )
     return urls_data
+
+
+@task
+def _unique_external_links(urls_data: List[URLData]) -> List[URLData]:
+    """
+    Prefect Task to merge url data together by merging cells.
+
+    Parameters
+    ----------
+    urls_data: List[URLData]
+        The list of URLs and their contexts.
+
+    Returns
+    -------
+    urls_data: List[URLData]
+        The list of merged urls data.
+    """
+    external_links_group = {}
+    for url_data in urls_data:
+        if url_data.get_key() not in external_links_group:
+            external_links_group.update({url_data.get_key(): url_data})
+        else:
+            external_links_group.get(url_data.get_key()).add_cell(url_data.cells[0])
+    return list(external_links_group.values())
 
 
 @task
@@ -216,8 +244,10 @@ def run_external_link_checker(
         # Extract links from list of SheetData
         # Get back list of list of URLData
         links_data = _extract_external_links.map(flatten(spreadsheets_data))
+        # Unique the url data
+        unique_links_data = _unique_external_links(flatten(links_data))
         # Check external links
-        _check_external_link.map(flatten(links_data))
+        _check_external_link.map(unique_links_data)
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
@@ -231,25 +261,25 @@ def run_external_link_checker(
         key=lambda x: (
             x.url_data.spreadsheet_title,
             x.url_data.sheet_title,
-            x.url_data.row_index,
-            x.url_data.col_index,
             x.url_data.url,
         ),
     )
     # Write error links to a csv file
     with open("external_links.csv", mode="w") as csv_file:
-        fieldnames = ["spreadsheet_title", "sheet_title", "cell", "url", "reason"]
+        fieldnames = ["spreadsheet_title", "sheet_title", "cells", "url", "reason"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter="\t")
         writer.writeheader()
         for link in sorted_error_links:
             url_data = link.url_data
+            cells = [
+                convert_rowcol_to_A1_name(cell[0], cell[1])
+                for cell in sorted(url_data.cells, key=lambda x: (x[0], x[1]))
+            ]
             writer.writerow(
                 {
                     "spreadsheet_title": url_data.spreadsheet_title,
                     "sheet_title": url_data.sheet_title,
-                    "cell": convert_rowcol_to_A1_name(
-                        url_data.row_index, url_data.col_index
-                    ),
+                    "cells": ",".join(cells),
                     "url": url_data.url,
                     "reason": f"{link.msg}",
                 }
