@@ -140,7 +140,9 @@ def _unique_external_links(urls_data: List[URLData]) -> List[URLData]:
             external_links_group.update({url_data.get_key(): url_data})
         else:
             external_links_group.get(url_data.get_key()).add_cell(url_data.cells[0])
-    return list(external_links_group.values())
+    unique_urls_data = list(external_links_group.values())
+    log.info(f"Found {len(unique_urls_data)} links.")
+    return unique_urls_data
 
 
 @task
