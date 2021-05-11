@@ -590,7 +590,7 @@ def _compare_gs_composite_variable(
 
         # compare matched db institutions
         num_matched_institutions_comparison = FieldComparison(
-            "Number of matched institutions",
+            "Number of found institutions",
             FieldComparisonType.meta,
             (Datasource.database, len(db_institutions)),
             (Datasource.googlesheet, 1),
@@ -623,7 +623,7 @@ def _compare_gs_composite_variable(
 
                 # compare the number of matched variables
                 num_matched_variables_comparison = FieldComparison(
-                    "Number of matched variables",
+                    "Number of found variables",
                     FieldComparisonType.meta,
                     (Datasource.database, len(db_variables)),
                     (Datasource.googlesheet, 1),
