@@ -453,54 +453,103 @@ users’ virtualenv when the parent module is installed using pip.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="siglatools.bin.run_external_link_checker.URLData">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">URLData</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData" title="Permalink to this definition">¶</a></dt>
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">GoogleSheetCell</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#GoogleSheetCell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>The URL and its context.</p>
+<p>A GoogleSheet cell.</p>
 <dl class="simple">
 <dt>Attributes:</dt><dd><dl class="simple">
 <dt>spreadsheet_title: str</dt><dd><p>The title of the spreadsheet the contains the URL.</p>
 </dd>
 <dt>sheet_title: str</dt><dd><p>The title of the sheet that contains the URL.</p>
 </dd>
-<dt>row_index: int</dt><dd><p>The row location of the URL in the sheet.</p>
+<dt>row_index: int</dt><dd><p>The row index of the cell.</p>
 </dd>
-<dt>col_index: int</dt><dd><p>The column location of the URL in the sheet.</p>
+<dt>col_index: int</dt><dd><p>The col index of the cell.</p>
+</dd>
+<dt>url: Optional[str] = None</dt><dd><p>The url in the cell.</p>
+</dd>
+<dt>msg: Optional[str] = None</dt><dd><p>The status of url.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Create new instance of GoogleSheetCell(spreadsheet_title, sheet_title, row_index, col_index, url, msg)</p>
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.col_index">
+<code class="sig-name descname">col_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.col_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.msg">
+<code class="sig-name descname">msg</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.row_index">
+<code class="sig-name descname">row_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.row_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.sheet_title">
+<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.bin.run_external_link_checker.GoogleSheetCell.url">
+<code class="sig-name descname">url</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.GoogleSheetCell.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.bin.run_external_link_checker.URLData">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">URLData</code><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>The URL and its context.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>cells: List[GoogleSheetCell]</dt><dd><p>The list of cells that has the URL.</p>
 </dd>
 <dt>url: str</dt><dd><p>The URL.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<p>Create new instance of URLData(spreadsheet_title, sheet_title, row_index, col_index, url)</p>
-<dl class="attribute">
-<dt id="siglatools.bin.run_external_link_checker.URLData.col_index">
-<code class="sig-name descname">col_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.col_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
+<p>Create new instance of URLData(cells, url)</p>
+<dl class="method">
+<dt id="siglatools.bin.run_external_link_checker.URLData.add_cell">
+<code class="sig-name descname">add_cell</code><span class="sig-paren">(</span><em class="sig-param">cell: siglatools.bin.run_external_link_checker.GoogleSheetCell</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData.add_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.add_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a cell to the list of cells.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="siglatools.bin.run_external_link_checker.URLData.row_index">
-<code class="sig-name descname">row_index</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.row_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="siglatools.bin.run_external_link_checker.URLData.sheet_title">
-<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="siglatools.bin.run_external_link_checker.URLData.spreadsheet_title">
-<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dt id="siglatools.bin.run_external_link_checker.URLData.cells">
+<code class="sig-name descname">cells</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.cells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.bin.run_external_link_checker.URLData.get_key">
+<code class="sig-name descname">get_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#URLData.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the key.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="siglatools.bin.run_external_link_checker.URLData.url">
 <code class="sig-name descname">url</code><a class="headerlink" href="#siglatools.bin.run_external_link_checker.URLData.url" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
+<dd><p>Alias for field number 1</p>
 </dd></dl>
 
 </dd></dl>

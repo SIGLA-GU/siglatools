@@ -259,9 +259,9 @@
 <span class="n">URL_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(https?://\S+)&quot;</span>
 
 
-<div class="viewcode-block" id="URLData"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData">[docs]</a><span class="k">class</span> <span class="nc">URLData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="GoogleSheetCell"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.GoogleSheetCell">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheetCell</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The URL and its context.</span>
+<span class="sd">    A GoogleSheet cell.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        spreadsheet_title: str</span>
@@ -269,18 +269,44 @@
 <span class="sd">        sheet_title: str</span>
 <span class="sd">            The title of the sheet that contains the URL.</span>
 <span class="sd">        row_index: int</span>
-<span class="sd">            The row location of the URL in the sheet.</span>
+<span class="sd">            The row index of the cell.</span>
 <span class="sd">        col_index: int</span>
-<span class="sd">            The column location of the URL in the sheet.</span>
-<span class="sd">        url: str</span>
-<span class="sd">            The URL.</span>
+<span class="sd">            The col index of the cell.</span>
+<span class="sd">        url: Optional[str] = None</span>
+<span class="sd">            The url in the cell.</span>
+<span class="sd">        msg: Optional[str] = None</span>
+<span class="sd">            The status of url.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">spreadsheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">row_index</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">col_index</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">msg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="URLData"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData">[docs]</a><span class="k">class</span> <span class="nc">URLData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The URL and its context.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        cells: List[GoogleSheetCell]</span>
+<span class="sd">            The list of cells that has the URL.</span>
+<span class="sd">        url: str</span>
+<span class="sd">            The URL.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GoogleSheetCell</span><span class="p">]</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="URLData.get_key"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="s2">&quot;Get the key.&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span></div>
+
+<div class="viewcode-block" id="URLData.add_cell"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.add_cell">[docs]</a>    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">GoogleSheetCell</span><span class="p">):</span>
+        <span class="s2">&quot;Add a cell to the list of cells.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CheckedURL"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL">[docs]</a><span class="k">class</span> <span class="nc">CheckedURL</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
@@ -326,14 +352,44 @@
             <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
                 <span class="n">urls_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">URLData</span><span class="p">(</span>
-                        <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
-                        <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                        <span class="n">row_index</span><span class="o">=</span><span class="n">row_index</span><span class="p">,</span>
-                        <span class="n">col_index</span><span class="o">=</span><span class="n">col_index</span><span class="p">,</span>
+                        <span class="n">cells</span><span class="o">=</span><span class="p">[</span>
+                            <span class="n">GoogleSheetCell</span><span class="p">(</span>
+                                <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+                                <span class="n">sheet_title</span><span class="o">=</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                                <span class="n">row_index</span><span class="o">=</span><span class="n">row_index</span><span class="p">,</span>
+                                <span class="n">col_index</span><span class="o">=</span><span class="n">col_index</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">],</span>
                         <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
     <span class="k">return</span> <span class="n">urls_data</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">_unique_external_links</span><span class="p">(</span><span class="n">urls_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prefect Task to merge url data together by merging cells.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    urls_data: List[URLData]</span>
+<span class="sd">        The list of URLs and their contexts.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    urls_data: List[URLData]</span>
+<span class="sd">        The list of merged urls data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">external_links_group</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">url_data</span> <span class="ow">in</span> <span class="n">urls_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">url_data</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">external_links_group</span><span class="p">:</span>
+            <span class="n">external_links_group</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">url_data</span><span class="o">.</span><span class="n">get_key</span><span class="p">():</span> <span class="n">url_data</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">external_links_group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_data</span><span class="o">.</span><span class="n">get_key</span><span class="p">())</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">url_data</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">unique_urls_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">external_links_group</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_urls_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> unique links of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">urls_data</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">unique_urls_data</span>
 
 
 <span class="nd">@task</span>
@@ -437,8 +493,10 @@
         <span class="c1"># Extract links from list of SheetData</span>
         <span class="c1"># Get back list of list of URLData</span>
         <span class="n">links_data</span> <span class="o">=</span> <span class="n">_extract_external_links</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">))</span>
+        <span class="c1"># Unique the url data</span>
+        <span class="n">unique_links_data</span> <span class="o">=</span> <span class="n">_unique_external_links</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">links_data</span><span class="p">))</span>
         <span class="c1"># Check external links</span>
-        <span class="n">_check_external_link</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">links_data</span><span class="p">))</span>
+        <span class="n">_check_external_link</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">unique_links_data</span><span class="p">)</span>
 
     <span class="c1"># Run the flow</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
@@ -447,14 +505,28 @@
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
     <span class="c1"># Get error links</span>
     <span class="n">error_links</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">checked_links</span> <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">has_error</span><span class="p">]</span>
-    <span class="n">sorted_error_links</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-        <span class="n">error_links</span><span class="p">,</span>
+    <span class="n">gs_cells</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">error_link</span> <span class="ow">in</span> <span class="n">error_links</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">error_link</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">gs_cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">GoogleSheetCell</span><span class="p">(</span>
+                    <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+                    <span class="n">sheet_title</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                    <span class="n">row_index</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">row_index</span><span class="p">,</span>
+                    <span class="n">col_index</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">col_index</span><span class="p">,</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">error_link</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                    <span class="n">msg</span><span class="o">=</span><span class="n">error_link</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="n">sorted_gs_cells</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">gs_cells</span><span class="p">,</span>
         <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">row_index</span><span class="p">,</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">col_index</span><span class="p">,</span>
-            <span class="n">x</span><span class="o">.</span><span class="n">url_data</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">row_index</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">col_index</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># Write error links to a csv file</span>
@@ -462,17 +534,16 @@
         <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spreadsheet_title&quot;</span><span class="p">,</span> <span class="s2">&quot;sheet_title&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">]</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">sorted_error_links</span><span class="p">:</span>
-            <span class="n">url_data</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url_data</span>
+        <span class="k">for</span> <span class="n">gs_cell</span> <span class="ow">in</span> <span class="n">sorted_gs_cells</span><span class="p">:</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;spreadsheet_title&quot;</span><span class="p">:</span> <span class="n">url_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
-                    <span class="s2">&quot;sheet_title&quot;</span><span class="p">:</span> <span class="n">url_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                    <span class="s2">&quot;spreadsheet_title&quot;</span><span class="p">:</span> <span class="n">gs_cell</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+                    <span class="s2">&quot;sheet_title&quot;</span><span class="p">:</span> <span class="n">gs_cell</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                     <span class="s2">&quot;cell&quot;</span><span class="p">:</span> <span class="n">convert_rowcol_to_A1_name</span><span class="p">(</span>
-                        <span class="n">url_data</span><span class="o">.</span><span class="n">row_index</span><span class="p">,</span> <span class="n">url_data</span><span class="o">.</span><span class="n">col_index</span>
+                        <span class="n">gs_cell</span><span class="o">.</span><span class="n">row_index</span><span class="p">,</span> <span class="n">gs_cell</span><span class="o">.</span><span class="n">col_index</span>
                     <span class="p">),</span>
-                    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url_data</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-                    <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">link</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">gs_cell</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                    <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gs_cell</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished writing external links csv file&quot;</span><span class="p">)</span></div>
