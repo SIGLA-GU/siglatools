@@ -12,7 +12,7 @@ import logging
 import re
 import sys
 import traceback
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, NamedTuple, Optional
 
 import requests
 from distributed import LocalCluster
@@ -38,31 +38,52 @@ log = logging.getLogger()
 URL_REGEX = r"(https?://\S+)"
 
 
-class URLData(NamedTuple):
+class GoogleSheetCell(NamedTuple):
     """
-    The URL and its context.
+    A GoogleSheet cell.
 
     Attributes:
         spreadsheet_title: str
             The title of the spreadsheet the contains the URL.
         sheet_title: str
             The title of the sheet that contains the URL.
-        cells: List[Tuple[int, int]]
-            List of cells that contain this URL.
-        url: str
-            The URL.
+        row_index: int
+            The row index of the cell.
+        col_index: int
+            The col index of the cell.
+        url: Optional[str] = None
+            The url in the cell.
+        msg: Optional[str] = None
+            The status of url.
     """
 
     spreadsheet_title: str
     sheet_title: str
-    cells: List[Tuple[int, int]]
+    row_index: int
+    col_index: int
+    url: Optional[str] = None
+    msg: Optional[str] = None
+
+
+class URLData(NamedTuple):
+    """
+    The URL and its context.
+
+    Attributes:
+        cells: List[GoogleSheetCell]
+            The list of cells that has the URL.
+        url: str
+            The URL.
+    """
+
+    cells: List[GoogleSheetCell]
     url: str
 
     def get_key(self) -> str:
         "Get the key."
-        return f"{self.spreadsheet_title}{self.sheet_title}{self.url}"
+        return self.url
 
-    def add_cell(self, cell: Tuple[int, int]):
+    def add_cell(self, cell: GoogleSheetCell):
         "Add a cell to the list of cells."
         self.cells.append(cell)
 
@@ -110,9 +131,14 @@ def _extract_external_links(sheet_data: SheetData) -> List[URLData]:
             for url in urls:
                 urls_data.append(
                     URLData(
-                        spreadsheet_title=sheet_data.spreadsheet_title,
-                        sheet_title=sheet_data.sheet_title,
-                        cells=[(row_index, col_index)],
+                        cells=[
+                            GoogleSheetCell(
+                                spreadsheet_title=sheet_data.spreadsheet_title,
+                                sheet_title=sheet_data.sheet_title,
+                                row_index=row_index,
+                                col_index=col_index,
+                            )
+                        ],
                         url=url,
                     )
                 )
@@ -141,7 +167,7 @@ def _unique_external_links(urls_data: List[URLData]) -> List[URLData]:
         else:
             external_links_group.get(url_data.get_key()).add_cell(url_data.cells[0])
     unique_urls_data = list(external_links_group.values())
-    log.info(f"Found {len(unique_urls_data)} links.")
+    log.info(f"Found {len(unique_urls_data)} unique links of {len(urls_data)}.")
     return unique_urls_data
 
 
@@ -258,32 +284,45 @@ def run_external_link_checker(
     log.info("=" * 80)
     # Get error links
     error_links = [link for link in checked_links if link.has_error]
-    sorted_error_links = sorted(
-        error_links,
+    gs_cells = []
+    for error_link in error_links:
+        for cell in error_link.url_data.cells:
+            gs_cells.append(
+                GoogleSheetCell(
+                    spreadsheet_title=cell.spreadsheet_title,
+                    sheet_title=cell.sheet_title,
+                    row_index=cell.row_index,
+                    col_index=cell.col_index,
+                    url=error_link.url_data.url,
+                    msg=error_link.msg,
+                )
+            )
+
+    sorted_gs_cells = sorted(
+        gs_cells,
         key=lambda x: (
-            x.url_data.spreadsheet_title,
-            x.url_data.sheet_title,
-            x.url_data.url,
+            x.spreadsheet_title,
+            x.sheet_title,
+            x.row_index,
+            x.col_index,
+            x.url,
         ),
     )
     # Write error links to a csv file
     with open("external_links.csv", mode="w") as csv_file:
-        fieldnames = ["spreadsheet_title", "sheet_title", "cells", "url", "reason"]
+        fieldnames = ["spreadsheet_title", "sheet_title", "cell", "url", "reason"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, delimiter="\t")
         writer.writeheader()
-        for link in sorted_error_links:
-            url_data = link.url_data
-            cells = [
-                convert_rowcol_to_A1_name(cell[0], cell[1])
-                for cell in sorted(url_data.cells, key=lambda x: (x[0], x[1]))
-            ]
+        for gs_cell in sorted_gs_cells:
             writer.writerow(
                 {
-                    "spreadsheet_title": url_data.spreadsheet_title,
-                    "sheet_title": url_data.sheet_title,
-                    "cells": ",".join(cells),
-                    "url": url_data.url,
-                    "reason": f"{link.msg}",
+                    "spreadsheet_title": gs_cell.spreadsheet_title,
+                    "sheet_title": gs_cell.sheet_title,
+                    "cell": convert_rowcol_to_A1_name(
+                        gs_cell.row_index, gs_cell.col_index
+                    ),
+                    "url": gs_cell.url,
+                    "reason": f"{gs_cell.msg}",
                 }
             )
     log.info("Finished writing external links csv file")
