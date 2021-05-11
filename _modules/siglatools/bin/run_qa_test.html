@@ -811,7 +811,7 @@
 
         <span class="c1"># compare matched db institutions</span>
         <span class="n">num_matched_institutions_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
-            <span class="s2">&quot;Number of matched institutions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Number of found institutions&quot;</span><span class="p">,</span>
             <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_institutions</span><span class="p">)),</span>
             <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -844,7 +844,7 @@
 
                 <span class="c1"># compare the number of matched variables</span>
                 <span class="n">num_matched_variables_comparison</span> <span class="o">=</span> <span class="n">FieldComparison</span><span class="p">(</span>
-                    <span class="s2">&quot;Number of matched variables&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Number of found variables&quot;</span><span class="p">,</span>
                     <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
                     <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_variables</span><span class="p">)),</span>
                     <span class="p">(</span><span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
