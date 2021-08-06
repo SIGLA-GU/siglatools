@@ -3,7 +3,6 @@
 
 import logging
 from datetime import timedelta
-from siglatools.institution_extracters.constants import MetaDataField
 from typing import List, Optional
 
 from prefect import task
@@ -11,6 +10,7 @@ from prefect.tasks.control_flow import FilterTask
 
 from ..databases import MongoDBDatabase
 from ..institution_extracters import GoogleSheetsInstitutionExtracter
+from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import FormattedSheetData, SheetData
 
 ###############################################################################
