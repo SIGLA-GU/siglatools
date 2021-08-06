@@ -530,17 +530,17 @@ def _compare_gs_institution(
                     )
                 )
 
-        # create a institution comparison
-        institution_comparison = ObjectComparison(
-            "Institution", institution_field_comparisons
-        )
-        # create a general comparison to contain institution and variable comparisons
-        return Comparison(
-            spreadsheet_title=gs_institution.spreadsheet_title,
-            sheet_title=gs_institution.sheet_title,
-            name=gs_institution.data.get("name"),
-            data_comparisons=[institution_comparison, *variable_comparisons],
-        )
+    # create a institution comparison
+    institution_comparison = ObjectComparison(
+        "Institution", institution_field_comparisons
+    )
+    # create a general comparison to contain institution and variable comparisons
+    return Comparison(
+        spreadsheet_title=gs_institution.spreadsheet_title,
+        sheet_title=gs_institution.sheet_title,
+        name=gs_institution.data.get("name"),
+        data_comparisons=[institution_comparison, *variable_comparisons],
+    )
 
 
 @task
