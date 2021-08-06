@@ -9,7 +9,6 @@ users' virtualenv when the parent module is installed using pip.
 import argparse
 import csv
 import logging
-from siglatools.institution_extracters.constants import MetaDataField
 import sys
 import traceback
 from datetime import date
@@ -20,6 +19,7 @@ from prefect import Flow, flatten, task, unmapped
 from prefect.executors import DaskExecutor
 
 from siglatools import get_module_version
+from siglatools.institution_extracters.constants import MetaDataField
 
 from ..institution_extracters.exceptions import InvalidDateRange
 from ..institution_extracters.utils import SheetData
