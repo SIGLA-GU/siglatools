@@ -16,7 +16,7 @@ from zipfile import ZipFile
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.engine.executors import DaskExecutor
+from prefect.executors import DaskExecutor
 from pymongo import ASCENDING
 
 from siglatools import get_module_version

@@ -17,7 +17,7 @@ from typing import List, NamedTuple, Optional
 import requests
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.engine.executors import DaskExecutor
+from prefect.executors import DaskExecutor
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 

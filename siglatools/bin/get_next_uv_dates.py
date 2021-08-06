@@ -16,7 +16,7 @@ from typing import List, NamedTuple
 
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.engine.executors import DaskExecutor
+from prefect.executors import DaskExecutor
 
 from siglatools import get_module_version
 

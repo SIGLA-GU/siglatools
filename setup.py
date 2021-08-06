@@ -3,7 +3,6 @@
 
 """The setup script."""
 
-from requests.packages import urllib3
 from setuptools import find_packages, setup
 
 with open("README.md") as readme_file:
