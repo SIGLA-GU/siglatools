@@ -37,8 +37,21 @@ class VariableField:
     heading = "heading"
     name = "name"
     variable_index = "variable_index"
-    sigla_answer ="sigla_answer"
+    sigla_answer = "sigla_answer"
     orig_text = "orig_text"
     source = "source"
     type = "type"
     hyperlink = "hyperlink"
+
+
+class CompositeVariableField:
+    _id = "_id"
+    variable = "variable"
+    variables = "variables"
+    index = "index"
+    sigla_answers = "sigla_answers"
+
+
+class SiglaAnswerField:
+    name = "name"
+    answer = "answer"

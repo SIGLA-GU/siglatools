@@ -22,9 +22,11 @@ from pymongo import ASCENDING
 from siglatools import get_module_version
 
 from ..databases.constants import (
+    CompositeVariableField,
     DatabaseCollection,
     Environment,
     InstitutionField,
+    SiglaAnswerField,
     VariableField,
     VariableType,
 )
@@ -276,15 +278,15 @@ def _gather_db_variables(
     for db_variable in db_variables:
         if db_variable.get(VariableField.type) == VariableType.composite:
             variable_str = (
-                "variables"
+                CompositeVariableField.variables
                 if db_variable.get(VariableField.hyperlink)
                 == DatabaseCollection.body_of_law
-                else "variable"
+                else CompositeVariableField.variable
             )
             composite_variable_data = db.find(
                 collection=db_variable.get(VariableField.hyperlink),
                 filters={f"{variable_str}": db_variable.get(VariableField._id)},
-                sort=[("index", ASCENDING)],
+                sort=[(CompositeVariableField.index, ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
     db_institution.update(childs=db_variables)
@@ -675,15 +677,15 @@ def _compare_gs_composite_variable(
 
                     # get the rows
                     variable_str = (
-                        "variables"
+                        CompositeVariableField.variables
                         if db_variable.get(VariableField.hyperlink)
                         == DatabaseCollection.body_of_law
-                        else "variable"
+                        else CompositeVariableField.variable
                     )
                     db_composite_variable_data = db.find(
                         collection=db_variable.get(VariableField.hyperlink),
                         filters={f"{variable_str}": db_variable.get(VariableField._id)},
-                        sort=[("index", ASCENDING)],
+                        sort=[(CompositeVariableField.index, ASCENDING)],
                     )
 
                     # compare the number of rows
@@ -705,21 +707,27 @@ def _compare_gs_composite_variable(
                         # compare each cell
                         cell_comparisons = [
                             FieldComparison(
-                                gs_cell.get("name"),
+                                gs_cell.get(SiglaAnswerField.name),
                                 FieldComparisonType.data,
-                                (Datasource.database, db_cell.get("answer")),
-                                (Datasource.googlesheet, gs_cell.get("answer")),
+                                (
+                                    Datasource.database,
+                                    db_cell.get(SiglaAnswerField.answer),
+                                ),
+                                (
+                                    Datasource.googlesheet,
+                                    gs_cell.get(SiglaAnswerField.answer),
+                                ),
                             )
                             for db_cell, gs_cell in zip(
-                                db_row.get("sigla_answers"),
-                                gs_row.get("sigla_answers"),
+                                db_row.get(CompositeVariableField.sigla_answers),
+                                gs_row.get(CompositeVariableField.sigla_answers),
                             )
                         ]
 
                         # compare row
                         row_comparisons.append(
                             ObjectComparison(
-                                name=gs_row.get("index"),
+                                name=gs_row.get(CompositeVariableField.index),
                                 field_comparisons=cell_comparisons,
                             )
                         )

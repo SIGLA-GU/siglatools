@@ -20,6 +20,7 @@ from pymongo import ASCENDING
 from siglatools import get_module_version
 
 from ..databases.constants import (
+    CompositeVariableField,
     DatabaseCollection,
     Environment,
     InstitutionField,
@@ -106,15 +107,15 @@ def _gather_db_variables(
     for db_variable in db_variables:
         if db_variable.get(VariableField.type) == VariableType.composite:
             variable_str = (
-                "variables"
+                CompositeVariableField.variables
                 if db_variable.get(VariableField.hyperlink)
                 == DatabaseCollection.body_of_law
-                else "variable"
+                else CompositeVariableField.variable
             )
             composite_variable_data = db.find(
                 collection=db_variable.get(VariableField.hyperlink),
                 filters={f"{variable_str}": db_variable.get(VariableField._id)},
-                sort=[("index", ASCENDING)],
+                sort=[(CompositeVariableField.index, ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
     db_institution.update(childs=db_variables)

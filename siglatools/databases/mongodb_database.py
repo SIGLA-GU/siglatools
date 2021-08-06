@@ -11,8 +11,10 @@ from ..institution_extracters import exceptions
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..institution_extracters.utils import FormattedSheetData
 from .constants import (
+    CompositeVariableField,
     DatabaseCollection as db_collection,
     InstitutionField,
+    SiglaAnswerField,
     VariableField,
 )
 from .constants import VariableType
@@ -85,9 +87,9 @@ class MongoDBDatabase:
         )
 
         if meta_data.get("data_type") == db_collection.body_of_law:
-            return {"variables": variable_docs_id}
+            return {CompositeVariableField.variables: variable_docs_id}
         else:
-            return {"variable": variable_docs_id[0]}
+            return {CompositeVariableField.variable: variable_docs_id[0]}
 
     def _find_one(
         self, collection: str, primary_keys: Dict[str, str]
@@ -169,8 +171,10 @@ class MongoDBDatabase:
         variable_heading_list = []
         for datum in formatted_sheet_data.formatted_data:
             # Category of a right is the first element in sigla_answers field of datum
-            variable_heading = datum.get("sigla_answers")[0].get("answer")
-            sigla_answers = datum.get("sigla_answers")[1:]
+            variable_heading = datum.get(CompositeVariableField.sigla_answers)[0].get(
+                SiglaAnswerField.answer
+            )
+            sigla_answers = datum.get(CompositeVariableField.sigla_answers)[1:]
             if variable_heading in variable_heading_dict:
                 variable_heading_dict.get(variable_heading).append(sigla_answers)
             else:
@@ -230,7 +234,12 @@ class MongoDBDatabase:
         # Create the list of update requests into the db, one for each row of the composite variable
         update_requests = [
             UpdateOne(
-                {**variable_reference, "index": datum.get("index")},
+                {
+                    **variable_reference,
+                    CompositeVariableField.index: datum.get(
+                        CompositeVariableField.index
+                    ),
+                },
                 {"$set": {**variable_reference, **datum}},
                 upsert=True,
             )

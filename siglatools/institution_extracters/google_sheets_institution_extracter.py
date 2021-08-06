@@ -8,7 +8,13 @@ from typing import Dict, List, NamedTuple, Optional, Union
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from ..databases.constants import InstitutionField, VariableField, VariableType
+from ..databases.constants import (
+    CompositeVariableField,
+    InstitutionField,
+    SiglaAnswerField,
+    VariableField,
+    VariableType,
+)
 from . import exceptions
 from .constants import GoogleSheetsFormat as gs_format
 from .utils import FormattedSheetData, SheetData
@@ -45,9 +51,9 @@ def _get_composite_variable(
     column_names = sheet_data.data[0]
     composite_variable = [
         {
-            "index": i,
-            "sigla_answers": [
-                {"name": column_name, "answer": row[j]}
+            CompositeVariableField.index: i,
+            CompositeVariableField.sigla_answers: [
+                {SiglaAnswerField.name: column_name, SiglaAnswerField.answer: row[j]}
                 for j, column_name in enumerate(column_names)
             ],
         }
