@@ -751,17 +751,17 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
 
-        <span class="c1"># create a institution comparison</span>
-        <span class="n">institution_comparison</span> <span class="o">=</span> <span class="n">ObjectComparison</span><span class="p">(</span>
-            <span class="s2">&quot;Institution&quot;</span><span class="p">,</span> <span class="n">institution_field_comparisons</span>
-        <span class="p">)</span>
-        <span class="c1"># create a general comparison to contain institution and variable comparisons</span>
-        <span class="k">return</span> <span class="n">Comparison</span><span class="p">(</span>
-            <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
-            <span class="n">sheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-            <span class="n">data_comparisons</span><span class="o">=</span><span class="p">[</span><span class="n">institution_comparison</span><span class="p">,</span> <span class="o">*</span><span class="n">variable_comparisons</span><span class="p">],</span>
-        <span class="p">)</span>
+    <span class="c1"># create a institution comparison</span>
+    <span class="n">institution_comparison</span> <span class="o">=</span> <span class="n">ObjectComparison</span><span class="p">(</span>
+        <span class="s2">&quot;Institution&quot;</span><span class="p">,</span> <span class="n">institution_field_comparisons</span>
+    <span class="p">)</span>
+    <span class="c1"># create a general comparison to contain institution and variable comparisons</span>
+    <span class="k">return</span> <span class="n">Comparison</span><span class="p">(</span>
+        <span class="n">spreadsheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+        <span class="n">sheet_title</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
+        <span class="n">data_comparisons</span><span class="o">=</span><span class="p">[</span><span class="n">institution_comparison</span><span class="p">,</span> <span class="o">*</span><span class="n">variable_comparisons</span><span class="p">],</span>
+    <span class="p">)</span>
 
 
 <span class="nd">@task</span>
