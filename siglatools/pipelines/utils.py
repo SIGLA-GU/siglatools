@@ -3,6 +3,7 @@
 
 import logging
 from datetime import timedelta
+from siglatools.institution_extracters.constants import MetaDataField
 from typing import List, Optional
 
 from prefect import task
@@ -159,4 +160,6 @@ def _create_filter_task(gs_formats: List[str]) -> FilterTask:
     task: FilterTask
         The filter task.
     """
-    return FilterTask(filter_func=lambda x: x.meta_data.get("format") in gs_formats)
+    return FilterTask(
+        filter_func=lambda x: x.meta_data.get(MetaDataField.format) in gs_formats
+    )

@@ -9,6 +9,7 @@ users' virtualenv when the parent module is installed using pip.
 import argparse
 import csv
 import logging
+from siglatools.institution_extracters.constants import MetaDataField
 import sys
 import traceback
 from datetime import date
@@ -122,13 +123,13 @@ def _extract_next_uv_dates(sheet_data: SheetData) -> List[NextUVDateData]:
     next_uv_dates_data: List[NextUVDateData]
         The list of next uv dates.
     """
-    column_name = sheet_data.meta_data.get("date_of_next_uv_column")
+    column_name = sheet_data.meta_data.get(MetaDataField.date_of_next_uv_column)
     next_uv_dates_data = [
         NextUVDateData(
             spreadsheet_title=sheet_data.spreadsheet_title,
             sheet_title=sheet_data.sheet_title,
             column_name=column_name,
-            row_index=int(sheet_data.meta_data.get("start_row")) + i,
+            row_index=int(sheet_data.meta_data.get(MetaDataField.start_row)) + i,
             next_uv_date=next_uv_date,
         )
         for i, next_uv_date in enumerate(sheet_data.next_uv_dates)

@@ -8,7 +8,10 @@ from bson.objectid import ObjectId
 from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne, UpdateMany
 
 from ..institution_extracters import exceptions
-from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..institution_extracters.constants import (
+    GoogleSheetsFormat as gs_format,
+    MetaDataField,
+)
 from ..institution_extracters.utils import FormattedSheetData
 from .constants import (
     CompositeVariableField,
@@ -60,8 +63,8 @@ class MongoDBDatabase:
 
         variable = {
             VariableField.institution: {"$in": institution_docs_id},
-            VariableField.heading: meta_data.get("variable_heading"),
-            VariableField.name: meta_data.get("variable_name"),
+            VariableField.heading: meta_data.get(MetaDataField.variable_heading),
+            VariableField.name: meta_data.get(MetaDataField.variable_name),
         }
         variable_docs = self.find(db_collection.variables, variable)
         variable_docs_id = [doc.get(VariableField._id) for doc in variable_docs]
@@ -75,7 +78,7 @@ class MongoDBDatabase:
             {
                 "$set": {
                     VariableField.type: VariableType.composite,
-                    VariableField.hyperlink: meta_data.get("data_type"),
+                    VariableField.hyperlink: meta_data.get(MetaDataField.data_type),
                 }
             },
         )
@@ -86,7 +89,7 @@ class MongoDBDatabase:
             f"Update {update_variables_request_result.modified_count}/{len(variable_docs_id)} variables"
         )
 
-        if meta_data.get("data_type") == db_collection.body_of_law:
+        if meta_data.get(MetaDataField.data_type) == db_collection.body_of_law:
             return {CompositeVariableField.variables: variable_docs_id}
         else:
             return {CompositeVariableField.variable: variable_docs_id[0]}
@@ -151,7 +154,7 @@ class MongoDBDatabase:
             InstitutionField.spreadsheet_id: formatted_sheet_data.spreadsheet_id,
             InstitutionField.sheet_id: formatted_sheet_data.sheet_id,
             InstitutionField.name: formatted_sheet_data.meta_data.get(
-                "variable_heading"
+                MetaDataField.variable_heading
             ),
             InstitutionField.country: formatted_sheet_data.meta_data.get(
                 InstitutionField.country
@@ -226,7 +229,7 @@ class MongoDBDatabase:
         formatted_sheet_data: FormattedSheetData
             The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.
         """
-        data_type = formatted_sheet_data.meta_data.get("data_type")
+        data_type = formatted_sheet_data.meta_data.get(MetaDataField.data_type)
         # Get the composite variable reference
         variable_reference = self._create_variable_reference(
             formatted_sheet_data.sheet_title, formatted_sheet_data.meta_data
@@ -364,14 +367,14 @@ class MongoDBDatabase:
         formatted_sheet_data: FormattedSheetData
             The formatted sheet data. Please see the class FormattedSheetData to view its attributes.
         """
-        load_function_key = formatted_sheet_data.meta_data.get("format")
+        load_function_key = formatted_sheet_data.meta_data.get(MetaDataField.format)
         if load_function_key in self._load_function_dict:
             self._load_function_dict[load_function_key](formatted_sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
                 formatted_sheet_data.sheet_title,
                 load_function_key,
-                formatted_sheet_data.meta_data.get("data_type"),
+                formatted_sheet_data.meta_data.get(MetaDataField.data_type),
             )
 
     def find(

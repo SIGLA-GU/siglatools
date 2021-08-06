@@ -31,7 +31,7 @@ from ..databases.constants import (
     VariableType,
 )
 from ..databases.mongodb_database import MongoDBDatabase
-from ..institution_extracters.constants import GoogleSheetsFormat
+from ..institution_extracters.constants import GoogleSheetsFormat, MetaDataField
 from ..institution_extracters.utils import FormattedSheetData
 from ..pipelines.utils import (
     _create_filter_task,
@@ -335,11 +335,11 @@ def _gather_gs_institutions(
     institutions: List[GsInstitution]
         The list of institutions.
     """
-    gs_format = formatted_sheet_data.meta_data.get("format")
+    gs_format = formatted_sheet_data.meta_data.get(MetaDataField.format)
     if gs_format == GoogleSheetsFormat.institution_and_composite_variable:
         country = formatted_sheet_data.meta_data.get(InstitutionField.country)
         category = formatted_sheet_data.meta_data.get(InstitutionField.category)
-        name = formatted_sheet_data.meta_data.get("variable_heading")
+        name = formatted_sheet_data.meta_data.get(MetaDataField.variable_heading)
         return [
             GsInstitution(
                 spreadsheet_id=formatted_sheet_data.spreadsheet_id,
@@ -460,7 +460,10 @@ def _compare_gs_institution(
             )
         )
 
-        if db_institution.get("childs")[0].get("type") != VariableType.aggregate:
+        if (
+            db_institution.get("childs")[0].get(VariableField.type)
+            != VariableType.aggregate
+        ):
             # compare number of variables
             institution_field_comparisons.append(
                 FieldComparison(
@@ -610,9 +613,11 @@ def _compare_gs_composite_variable(
         for name in formatted_sheet_data.meta_data.get(InstitutionField.name).split(";")
     ]
     institution_names.sort()
-    variable_heading = formatted_sheet_data.meta_data.get("variable_heading")
-    variable_name = formatted_sheet_data.meta_data.get("variable_name")
-    variable_hyperlink = formatted_sheet_data.meta_data.get("data_type")
+    variable_heading = formatted_sheet_data.meta_data.get(
+        MetaDataField.variable_heading
+    )
+    variable_name = formatted_sheet_data.meta_data.get(MetaDataField.variable_name)
+    variable_hyperlink = formatted_sheet_data.meta_data.get(MetaDataField.data_type)
 
     db = MongoDBDatabase(db_connection_url)
     comparisons = []

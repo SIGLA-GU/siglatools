@@ -16,7 +16,7 @@ from ..databases.constants import (
     VariableType,
 )
 from . import exceptions
-from .constants import GoogleSheetsFormat as gs_format
+from .constants import GoogleSheetsFormat as gs_format, MetaDataField
 from .utils import FormattedSheetData, SheetData
 
 ###############################################################################
@@ -402,10 +402,10 @@ class GoogleSheetsInstitutionExtracter:
             A1Notation(
                 sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get("start_row")),
-                end_row=int(meta_datum.get("end_row")),
-                start_column=meta_datum.get("start_column"),
-                end_column=meta_datum.get("end_column"),
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.start_column),
+                end_column=meta_datum.get(MetaDataField.end_column),
             )
             for i, meta_datum in enumerate(meta_data)
         ]
@@ -432,13 +432,13 @@ class GoogleSheetsInstitutionExtracter:
             A1Notation(
                 sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get("start_row")),
-                end_row=int(meta_datum.get("end_row")),
-                start_column=meta_datum.get("date_of_next_uv_column"),
-                end_column=meta_datum.get("date_of_next_uv_column"),
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
+                end_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
             )
             for i, meta_datum in enumerate(meta_data)
-            if meta_datum.get("date_of_next_uv_column") is not None
+            if meta_datum.get(MetaDataField.date_of_next_uv_column) is not None
         ]
         # Get the next uv dates
         next_uv_date_response = (
@@ -471,7 +471,8 @@ class GoogleSheetsInstitutionExtracter:
                 data=data[i],
                 next_uv_dates=(
                     next(next_uv_date_data_iter)
-                    if meta_data[i].get("date_of_next_uv_column") is not None
+                    if meta_data[i].get(MetaDataField.date_of_next_uv_column)
+                    is not None
                     else None
                 ),
             )
@@ -519,7 +520,7 @@ class GoogleSheetsInstitutionExtracter:
             The data in reqired format.
         """
         formatted_data = None
-        get_data_key = sheet_data.meta_data.get("format")
+        get_data_key = sheet_data.meta_data.get(MetaDataField.format)
 
         if (
             get_data_key
@@ -534,8 +535,8 @@ class GoogleSheetsInstitutionExtracter:
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
                 sheet_data.sheet_title,
-                sheet_data.meta_data.get("format"),
-                sheet_data.meta_data.get("data_type"),
+                sheet_data.meta_data.get(MetaDataField.format),
+                sheet_data.meta_data.get(MetaDataField.data_type),
             )
 
         return FormattedSheetData(
