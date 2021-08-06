@@ -19,8 +19,8 @@ from prefect import Flow, flatten, task, unmapped
 from prefect.executors import DaskExecutor
 
 from siglatools import get_module_version
-from siglatools.institution_extracters.constants import MetaDataField
 
+from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.exceptions import InvalidDateRange
 from ..institution_extracters.utils import SheetData
 from ..pipelines.utils import _extract, _get_spreadsheet_ids

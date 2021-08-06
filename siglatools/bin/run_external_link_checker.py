@@ -22,8 +22,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from siglatools import get_module_version
-from siglatools.institution_extracters.constants import MetaDataField
 
+from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import SheetData, convert_rowcol_to_A1_name
 from ..pipelines.utils import _extract, _get_spreadsheet_ids
 
