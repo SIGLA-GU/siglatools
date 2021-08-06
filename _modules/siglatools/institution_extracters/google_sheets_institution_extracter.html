@@ -229,9 +229,15 @@
 <span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>
 <span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
 
-<span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="n">VariableType</span>
+<span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CompositeVariableField</span><span class="p">,</span>
+    <span class="n">InstitutionField</span><span class="p">,</span>
+    <span class="n">SiglaAnswerField</span><span class="p">,</span>
+    <span class="n">VariableField</span><span class="p">,</span>
+    <span class="n">VariableType</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">exceptions</span>
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span><span class="p">,</span> <span class="n">MetaDataField</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span>
 
 <span class="c1">###############################################################################</span>
@@ -266,9 +272,9 @@
     <span class="n">column_names</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">composite_variable</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
-            <span class="s2">&quot;sigla_answers&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">column_name</span><span class="p">,</span> <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">j</span><span class="p">]}</span>
+            <span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+            <span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">sigla_answers</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span><span class="n">SiglaAnswerField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">SiglaAnswerField</span><span class="o">.</span><span class="n">answer</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">j</span><span class="p">]}</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">column_names</span><span class="p">)</span>
             <span class="p">],</span>
         <span class="p">}</span>
@@ -300,26 +306,30 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;sheet_id&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;sub_category&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span>
+            <span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span>
+            <span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">sub_category</span><span class="p">:</span> <span class="p">[</span>
                 <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_cat</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">sub_cat</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub_category&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">sub_cat</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">sub_category</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
             <span class="p">],</span>
             <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">sigla_answer</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">orig_text</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">source</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
             <span class="p">],</span>
@@ -354,19 +364,21 @@
     <span class="p">]</span>
     <span class="n">institutions</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;sheet_id&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">institution_name</span><span class="p">,</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">institution_name</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span>
+            <span class="p">),</span>
             <span class="s2">&quot;childs&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
-                    <span class="s2">&quot;orig_text&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
-                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">sigla_answer</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">orig_text</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">source</span><span class="p">:</span> <span class="n">variable_row</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">standard</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="c1"># The variables starts in the 3rd row of data</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">variable_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
@@ -375,10 +387,12 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">institution_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">institution_names</span><span class="p">)</span>
     <span class="p">]</span>
 
-    <span class="n">has_country</span> <span class="o">=</span> <span class="s2">&quot;country&quot;</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span>
+    <span class="n">has_country</span> <span class="o">=</span> <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span> <span class="ow">in</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span>
     <span class="k">for</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">institutions</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">has_country</span><span class="p">:</span>
-            <span class="n">institution</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)</span>
+            <span class="n">institution</span><span class="p">[</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">]</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span>
+            <span class="p">)</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">institutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> institutions from sheet </span><span class="si">{</span><span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -609,10 +623,10 @@
             <span class="n">A1Notation</span><span class="p">(</span>
                 <span class="n">sheet_id</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_row&quot;</span><span class="p">)),</span>
-                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_row&quot;</span><span class="p">)),</span>
-                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_column&quot;</span><span class="p">),</span>
-                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_column&quot;</span><span class="p">),</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
+                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
+                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">),</span>
+                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
         <span class="p">]</span>
@@ -639,13 +653,13 @@
             <span class="n">A1Notation</span><span class="p">(</span>
                 <span class="n">sheet_id</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                 <span class="n">sheet_title</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_row&quot;</span><span class="p">)),</span>
-                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_row&quot;</span><span class="p">)),</span>
-                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">),</span>
-                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">),</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
+                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
+                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
+                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">]</span>
         <span class="c1"># Get the next uv dates</span>
         <span class="n">next_uv_date_response</span> <span class="o">=</span> <span class="p">(</span>
@@ -678,7 +692,8 @@
                 <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                 <span class="n">next_uv_dates</span><span class="o">=</span><span class="p">(</span>
                     <span class="nb">next</span><span class="p">(</span><span class="n">next_uv_date_data_iter</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date_of_next_uv_column&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">meta_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">)</span>
+                    <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                     <span class="k">else</span> <span class="kc">None</span>
                 <span class="p">),</span>
             <span class="p">)</span>
@@ -726,7 +741,7 @@
 <span class="sd">            The data in reqired format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">formatted_data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">get_data_key</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span>
+        <span class="n">get_data_key</span> <span class="o">=</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">get_data_key</span>
@@ -741,8 +756,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span>
                 <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">),</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">),</span>
+                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span><span class="p">),</span>
+                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">),</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>

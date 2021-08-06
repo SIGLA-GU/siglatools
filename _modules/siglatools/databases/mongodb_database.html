@@ -229,9 +229,18 @@
 <span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">DeleteMany</span><span class="p">,</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">ReturnDocument</span><span class="p">,</span> <span class="n">UpdateOne</span><span class="p">,</span> <span class="n">UpdateMany</span>
 
 <span class="kn">from</span> <span class="nn">..institution_extracters</span> <span class="kn">import</span> <span class="n">exceptions</span>
-<span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
+<span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span><span class="p">,</span>
+    <span class="n">MetaDataField</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span>
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">DatabaseCollection</span> <span class="k">as</span> <span class="n">db_collection</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CompositeVariableField</span><span class="p">,</span>
+    <span class="n">DatabaseCollection</span> <span class="k">as</span> <span class="n">db_collection</span><span class="p">,</span>
+    <span class="n">InstitutionField</span><span class="p">,</span>
+    <span class="n">SiglaAnswerField</span><span class="p">,</span>
+    <span class="n">VariableField</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">VariableType</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">UnableToFindDocument</span>
 
@@ -259,34 +268,38 @@
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_create_variable_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-        <span class="n">institution_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)]</span>
+        <span class="n">institution_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">institution_names</span><span class="p">},</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">institution_names</span><span class="p">},</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="n">institution_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db_collection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span> <span class="n">institution</span><span class="p">)</span>
-        <span class="n">institution_docs_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">institution_docs</span><span class="p">]</span>
+        <span class="n">institution_docs_id</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">institution_docs</span>
+        <span class="p">]</span>
 
         <span class="n">variable</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">institution_docs_id</span><span class="p">},</span>
-            <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_heading&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_name&quot;</span><span class="p">),</span>
+            <span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">institution_docs_id</span><span class="p">},</span>
+            <span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">variable_heading</span><span class="p">),</span>
+            <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">variable_name</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="n">variable_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">db_collection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
-        <span class="n">variable_docs_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">variable_docs</span><span class="p">]</span>
+        <span class="n">variable_docs_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">VariableField</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">variable_docs</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable_docs_id</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">institution_names</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">UnableToFindDocument</span><span class="p">(</span><span class="n">sheet_title</span><span class="p">,</span> <span class="n">db_collection</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
 
         <span class="c1"># update the variables to have type composite and the right hyperlink</span>
         <span class="n">update_variables_request</span> <span class="o">=</span> <span class="n">UpdateMany</span><span class="p">(</span>
-            <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">}},</span>
+            <span class="p">{</span><span class="n">VariableField</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">}},</span>
             <span class="p">{</span>
                 <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span><span class="p">,</span>
-                    <span class="s2">&quot;hyperlink&quot;</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">composite</span><span class="p">,</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">hyperlink</span><span class="p">:</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">),</span>
                 <span class="p">}</span>
             <span class="p">},</span>
         <span class="p">)</span>
@@ -297,10 +310,10 @@
             <span class="sa">f</span><span class="s2">&quot;Update </span><span class="si">{</span><span class="n">update_variables_request_result</span><span class="o">.</span><span class="n">modified_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">variable_docs_id</span><span class="p">)</span><span class="si">}</span><span class="s2"> variables&quot;</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">db_collection</span><span class="o">.</span><span class="n">body_of_law</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;variables&quot;</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span> <span class="o">==</span> <span class="n">db_collection</span><span class="o">.</span><span class="n">body_of_law</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">variable</span><span class="p">:</span> <span class="n">variable_docs_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
 
     <span class="k">def</span> <span class="nf">_find_one</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">primary_keys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
@@ -359,11 +372,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the institution primary keys</span>
         <span class="n">institution</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;spreadsheet_id&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;sheet_id&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_heading&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">MetaDataField</span><span class="o">.</span><span class="n">variable_heading</span>
+            <span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span>
+            <span class="p">),</span>
+            <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">:</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span>
+            <span class="p">),</span>
         <span class="p">}</span>
         <span class="c1"># Find the specific institution</span>
         <span class="n">institution_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_one</span><span class="p">(</span><span class="n">db_collection</span><span class="o">.</span><span class="n">institutions</span><span class="p">,</span> <span class="n">institution</span><span class="p">)</span>
@@ -376,8 +395,10 @@
         <span class="n">variable_heading_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">:</span>
             <span class="c1"># Category of a right is the first element in sigla_answers field of datum</span>
-            <span class="n">variable_heading</span> <span class="o">=</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;answer&quot;</span><span class="p">)</span>
-            <span class="n">sigla_answers</span> <span class="o">=</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sigla_answers&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">variable_heading</span> <span class="o">=</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">sigla_answers</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">SiglaAnswerField</span><span class="o">.</span><span class="n">answer</span>
+            <span class="p">)</span>
+            <span class="n">sigla_answers</span> <span class="o">=</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">sigla_answers</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="k">if</span> <span class="n">variable_heading</span> <span class="ow">in</span> <span class="n">variable_heading_dict</span><span class="p">:</span>
                 <span class="n">variable_heading_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">variable_heading</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigla_answers</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -386,12 +407,12 @@
         <span class="c1"># Create the list of variables</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable_heading</span><span class="p">,</span>
-                <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">variable_heading</span><span class="p">,</span>
-                <span class="s2">&quot;sigla_answer&quot;</span><span class="p">:</span> <span class="n">variable_heading_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">variable_heading</span><span class="p">),</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">aggregate</span><span class="p">,</span>
-                <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">:</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">_id</span><span class="p">),</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">variable_heading</span><span class="p">,</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">:</span> <span class="n">variable_heading</span><span class="p">,</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">sigla_answer</span><span class="p">:</span> <span class="n">variable_heading_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">variable_heading</span><span class="p">),</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">type</span><span class="p">:</span> <span class="n">VariableType</span><span class="o">.</span><span class="n">aggregate</span><span class="p">,</span>
+                <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">variable_heading</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variable_heading_list</span><span class="p">)</span>
         <span class="p">]</span>
@@ -399,9 +420,11 @@
         <span class="n">update_requests</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">UpdateOne</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;institution&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_index&quot;</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span><span class="p">:</span> <span class="n">variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span>
+                    <span class="p">),</span>
                 <span class="p">},</span>
                 <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="n">variable</span><span class="p">},</span>
                 <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -427,7 +450,7 @@
 <span class="sd">        formatted_sheet_data: FormattedSheetData</span>
 <span class="sd">            The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
         <span class="c1"># Get the composite variable reference</span>
         <span class="n">variable_reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_variable_reference</span><span class="p">(</span>
             <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span>
@@ -435,7 +458,12 @@
         <span class="c1"># Create the list of update requests into the db, one for each row of the composite variable</span>
         <span class="n">update_requests</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">UpdateOne</span><span class="p">(</span>
-                <span class="p">{</span><span class="o">**</span><span class="n">variable_reference</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)},</span>
+                <span class="p">{</span>
+                    <span class="o">**</span><span class="n">variable_reference</span><span class="p">,</span>
+                    <span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="n">CompositeVariableField</span><span class="o">.</span><span class="n">index</span>
+                    <span class="p">),</span>
+                <span class="p">},</span>
                 <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">**</span><span class="n">variable_reference</span><span class="p">,</span> <span class="o">**</span><span class="n">datum</span><span class="p">}},</span>
                 <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
@@ -462,9 +490,9 @@
 <span class="sd">        formatted_sheet_data: FormattedSheetData</span>
 <span class="sd">            The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">institution_primary_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;country&quot;</span> <span class="ow">in</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">:</span>
-            <span class="n">institution_primary_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">)</span>
+        <span class="n">institution_primary_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span> <span class="ow">in</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="p">:</span>
+            <span class="n">institution_primary_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">country</span><span class="p">)</span>
         <span class="c1"># Create the list of update requests into the db, one for each institution</span>
         <span class="n">institution_requests</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">UpdateOne</span><span class="p">(</span>
@@ -498,7 +526,7 @@
                 <span class="n">institution_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span>
                     <span class="n">db_collection</span><span class="o">.</span><span class="n">institutions</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="n">pk</span><span class="p">:</span> <span class="n">institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="k">for</span> <span class="n">pk</span> <span class="ow">in</span> <span class="n">institution_primary_keys</span><span class="p">})</span>
-                <span class="n">institution_doc_id_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_id&quot;</span><span class="p">)</span>
+                <span class="n">institution_doc_id_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">institution_doc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">institution_doc_id_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">upserted_id</span>
 
@@ -506,12 +534,19 @@
         <span class="n">variable_requests</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">UpdateOne</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">institution_doc_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
-                    <span class="s2">&quot;heading&quot;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;heading&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;variable_index&quot;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;variable_index&quot;</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">:</span> <span class="n">institution_doc_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">VariableField</span><span class="o">.</span><span class="n">heading</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">VariableField</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                    <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="n">VariableField</span><span class="o">.</span><span class="n">variable_index</span>
+                    <span class="p">),</span>
                 <span class="p">},</span>
-                <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;institution&quot;</span><span class="p">:</span> <span class="n">institution_doc_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="o">**</span><span class="n">child</span><span class="p">}},</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="n">VariableField</span><span class="o">.</span><span class="n">institution</span><span class="p">:</span> <span class="n">institution_doc_id_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+                        <span class="o">**</span><span class="n">child</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
                 <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">institution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">formatted_data</span><span class="p">)</span>
@@ -553,14 +588,14 @@
 <span class="sd">        formatted_sheet_data: FormattedSheetData</span>
 <span class="sd">            The formatted sheet data. Please see the class FormattedSheetData to view its attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">load_function_key</span> <span class="o">=</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">)</span>
+        <span class="n">load_function_key</span> <span class="o">=</span> <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">load_function_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_function_dict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load_function_dict</span><span class="p">[</span><span class="n">load_function_key</span><span class="p">](</span><span class="n">formatted_sheet_data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span>
                 <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                 <span class="n">load_function_key</span><span class="p">,</span>
-                <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">),</span>
+                <span class="n">formatted_sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">),</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MongoDBDatabase.find"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.find">[docs]</a>    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span>
