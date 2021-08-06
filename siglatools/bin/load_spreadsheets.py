@@ -19,7 +19,13 @@ from pymongo import ASCENDING
 
 from siglatools import get_module_version
 
-from ..databases.constants import DatabaseCollection, Environment, InstitutionField, VariableType
+from ..databases.constants import (
+    DatabaseCollection,
+    Environment,
+    InstitutionField,
+    VariableField,
+    VariableType,
+)
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..pipelines.utils import (
@@ -94,19 +100,20 @@ def _gather_db_variables(
     db_institution = institution.copy()
     db_variables = db.find(
         collection=DatabaseCollection.variables,
-        filters={"institution": db_institution.get(InstitutionField._id)},
-        sort=[["variable_index", ASCENDING]],
+        filters={VariableField.institution: db_institution.get(InstitutionField._id)},
+        sort=[[VariableField.variable_index, ASCENDING]],
     )
     for db_variable in db_variables:
-        if db_variable.get("type") == VariableType.composite:
+        if db_variable.get(VariableField.type) == VariableType.composite:
             variable_str = (
                 "variables"
-                if db_variable.get("hyperlink") == DatabaseCollection.body_of_law
+                if db_variable.get(VariableField.hyperlink)
+                == DatabaseCollection.body_of_law
                 else "variable"
             )
             composite_variable_data = db.find(
-                collection=db_variable.get("hyperlink"),
-                filters={f"{variable_str}": db_variable.get("_id")},
+                collection=db_variable.get(VariableField.hyperlink),
+                filters={f"{variable_str}": db_variable.get(VariableField._id)},
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
@@ -140,11 +147,13 @@ def _delete_db_institutions(
     for db_institution in db_institutions:
         institution_ids.append(db_institution.get(InstitutionField._id))
         for db_variable in db_institution.get("childs"):
-            variable_ids.append(db_variable.get("_id"))
-            if db_variable.get("type") == VariableType.composite:
-                variable_hyperlink = db_variable.get("hyperlink")
+            variable_ids.append(db_variable.get(VariableField._id))
+            if db_variable.get(VariableField.type) == VariableType.composite:
+                variable_hyperlink = db_variable.get(VariableField.hyperlink)
                 for row in db_variable.get("composite_variable_data"):
-                    composite_ids.get(variable_hyperlink).add(row.get("_id"))
+                    composite_ids.get(variable_hyperlink).add(
+                        row.get(VariableField._id)
+                    )
 
     db = MongoDBDatabase(db_connection_url)
     db.delete_many(DatabaseCollection.institutions, institution_ids)

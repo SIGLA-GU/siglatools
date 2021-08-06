@@ -21,7 +21,13 @@ from pymongo import ASCENDING
 
 from siglatools import get_module_version
 
-from ..databases.constants import DatabaseCollection, Environment, InstitutionField, VariableType
+from ..databases.constants import (
+    DatabaseCollection,
+    Environment,
+    InstitutionField,
+    VariableField,
+    VariableType,
+)
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat
 from ..institution_extracters.utils import FormattedSheetData
@@ -264,19 +270,20 @@ def _gather_db_variables(
     db_institution = institution.copy()
     db_variables = db.find(
         collection=DatabaseCollection.variables,
-        filters={"institution": db_institution.get(InstitutionField._id)},
-        sort=[["variable_index", ASCENDING]],
+        filters={VariableField.institution: db_institution.get(InstitutionField._id)},
+        sort=[[VariableField.variable_index, ASCENDING]],
     )
     for db_variable in db_variables:
-        if db_variable.get("type") == VariableType.composite:
+        if db_variable.get(VariableField.type) == VariableType.composite:
             variable_str = (
                 "variables"
-                if db_variable.get("hyperlink") == DatabaseCollection.body_of_law
+                if db_variable.get(VariableField.hyperlink)
+                == DatabaseCollection.body_of_law
                 else "variable"
             )
             composite_variable_data = db.find(
-                collection=db_variable.get("hyperlink"),
-                filters={f"{variable_str}": db_variable.get("_id")},
+                collection=db_variable.get(VariableField.hyperlink),
+                filters={f"{variable_str}": db_variable.get(VariableField._id)},
                 sort=[("index", ASCENDING)],
             )
             db_variable.update(composite_variable_data=composite_variable_data)
@@ -420,7 +427,10 @@ def _compare_gs_institution(
                 "Institution name",
                 FieldComparisonType.meta,
                 (Datasource.database, db_institution.get(InstitutionField.name)),
-                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.name)),
+                (
+                    Datasource.googlesheet,
+                    gs_institution.data.get(InstitutionField.name),
+                ),
             )
         )
         # compare institution country
@@ -429,7 +439,10 @@ def _compare_gs_institution(
                 "Institution country",
                 FieldComparisonType.meta,
                 (Datasource.database, db_institution.get(InstitutionField.country)),
-                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.country)),
+                (
+                    Datasource.googlesheet,
+                    gs_institution.data.get(InstitutionField.country),
+                ),
             )
         )
         # compare institution category
@@ -438,7 +451,10 @@ def _compare_gs_institution(
                 "Institution category",
                 FieldComparisonType.meta,
                 (Datasource.database, db_institution.get(InstitutionField.category)),
-                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.category)),
+                (
+                    Datasource.googlesheet,
+                    gs_institution.data.get(InstitutionField.category),
+                ),
             )
         )
 
@@ -461,46 +477,64 @@ def _compare_gs_institution(
                     FieldComparison(
                         "Variable heading",
                         FieldComparisonType.meta,
-                        (Datasource.database, db_variable.get("heading")),
-                        (Datasource.googlesheet, gs_variable.get("heading")),
+                        (Datasource.database, db_variable.get(VariableField.heading)),
+                        (
+                            Datasource.googlesheet,
+                            gs_variable.get(VariableField.heading),
+                        ),
                     ),
                     FieldComparison(
                         "Variable name",
                         FieldComparisonType.meta,
-                        (Datasource.database, db_variable.get("name")),
-                        (Datasource.googlesheet, gs_variable.get("name")),
+                        (Datasource.database, db_variable.get(VariableField.name)),
+                        (Datasource.googlesheet, gs_variable.get(VariableField.name)),
                     ),
                     FieldComparison(
                         "Variable index",
                         FieldComparisonType.meta,
-                        (Datasource.database, db_variable.get("variable_index")),
-                        (Datasource.googlesheet, gs_variable.get("variable_index")),
+                        (
+                            Datasource.database,
+                            db_variable.get(VariableField.variable_index),
+                        ),
+                        (
+                            Datasource.googlesheet,
+                            gs_variable.get(VariableField.variable_index),
+                        ),
                     ),
                     FieldComparison(
                         "Sigla's answer",
                         FieldComparisonType.data,
-                        (Datasource.database, db_variable.get("sigla_answer")),
-                        (Datasource.googlesheet, gs_variable.get("sigla_answer")),
+                        (
+                            Datasource.database,
+                            db_variable.get(VariableField.sigla_answer),
+                        ),
+                        (
+                            Datasource.googlesheet,
+                            gs_variable.get(VariableField.sigla_answer),
+                        ),
                     ),
                     FieldComparison(
                         "Original text",
                         FieldComparisonType.data,
-                        (Datasource.database, db_variable.get("orig_text")),
-                        (Datasource.googlesheet, gs_variable.get("orig_text")),
+                        (Datasource.database, db_variable.get(VariableField.orig_text)),
+                        (
+                            Datasource.googlesheet,
+                            gs_variable.get(VariableField.orig_text),
+                        ),
                     ),
                     FieldComparison(
                         "Source",
                         FieldComparisonType.data,
-                        (Datasource.database, db_variable.get("source")),
-                        (Datasource.googlesheet, gs_variable.get("source")),
+                        (Datasource.database, db_variable.get(VariableField.source)),
+                        (Datasource.googlesheet, gs_variable.get(VariableField.source)),
                     ),
                 ]
 
-                if db_variable.get("type") == VariableType.composite:
+                if db_variable.get(VariableField.type) == VariableType.composite:
                     # compare if there is a link between variable and composite variable collection
                     variable_field_comparisons.append(
                         FieldComparison(
-                            f"""{gs_variable.get("name")} exists in""",
+                            f"""{gs_variable.get(VariableField.name)} exists in""",
                             FieldComparisonType.meta,
                             (
                                 Datasource.database,
@@ -517,15 +551,18 @@ def _compare_gs_institution(
                         FieldComparison(
                             "Variable type",
                             FieldComparisonType.meta,
-                            (Datasource.database, db_variable.get("type")),
-                            (Datasource.googlesheet, gs_variable.get("type")),
+                            (Datasource.database, db_variable.get(VariableField.type)),
+                            (
+                                Datasource.googlesheet,
+                                gs_variable.get(VariableField.type),
+                            ),
                         )
                     )
 
                 # create a comparison for the variable and append to the list of variable comparisons
                 variable_comparisons.append(
                     ObjectComparison(
-                        f"""Variable: {gs_variable.get("name")}""",
+                        f"""Variable: {gs_variable.get(VariableField.name)}""",
                         variable_field_comparisons,
                     )
                 )
@@ -567,7 +604,8 @@ def _compare_gs_composite_variable(
     institution_country = formatted_sheet_data.meta_data.get(InstitutionField.country)
     institution_category = formatted_sheet_data.meta_data.get(InstitutionField.category)
     institution_names = [
-        name.strip() for name in formatted_sheet_data.meta_data.get(InstitutionField.name).split(";")
+        name.strip()
+        for name in formatted_sheet_data.meta_data.get(InstitutionField.name).split(";")
     ]
     institution_names.sort()
     variable_heading = formatted_sheet_data.meta_data.get("variable_heading")
@@ -613,11 +651,13 @@ def _compare_gs_composite_variable(
                 db_variables = db.find(
                     collection=DatabaseCollection.variables,
                     filters={
-                        "institution": db_institution.get(InstitutionField._id),
-                        "heading": variable_heading,
-                        "name": variable_name,
-                        "type": VariableType.composite,
-                        "hyperlink": variable_hyperlink,
+                        VariableField.institution: db_institution.get(
+                            InstitutionField._id
+                        ),
+                        VariableField.heading: variable_heading,
+                        VariableField.name: variable_name,
+                        VariableField.type: VariableType.composite,
+                        VariableField.hyperlink: variable_hyperlink,
                     },
                 )
 
@@ -636,13 +676,13 @@ def _compare_gs_composite_variable(
                     # get the rows
                     variable_str = (
                         "variables"
-                        if db_variable.get("hyperlink")
+                        if db_variable.get(VariableField.hyperlink)
                         == DatabaseCollection.body_of_law
                         else "variable"
                     )
                     db_composite_variable_data = db.find(
-                        collection=db_variable.get("hyperlink"),
-                        filters={f"{variable_str}": db_variable.get("_id")},
+                        collection=db_variable.get(VariableField.hyperlink),
+                        filters={f"{variable_str}": db_variable.get(VariableField._id)},
                         sort=[("index", ASCENDING)],
                     )
 
@@ -758,11 +798,21 @@ def _write_extra_db_institutions(
                 writer.writerow(
                     {
                         InstitutionField._id: db_institution.get(InstitutionField._id),
-                        InstitutionField.spreadsheet_id: db_institution.get(InstitutionField.spreadsheet_id),
-                        InstitutionField.sheet_id: db_institution.get(InstitutionField.sheet_id),
-                        InstitutionField.country: db_institution.get(InstitutionField.country),
-                        InstitutionField.category: db_institution.get(InstitutionField.category),
-                        InstitutionField.name: db_institution.get(InstitutionField.name),
+                        InstitutionField.spreadsheet_id: db_institution.get(
+                            InstitutionField.spreadsheet_id
+                        ),
+                        InstitutionField.sheet_id: db_institution.get(
+                            InstitutionField.sheet_id
+                        ),
+                        InstitutionField.country: db_institution.get(
+                            InstitutionField.country
+                        ),
+                        InstitutionField.category: db_institution.get(
+                            InstitutionField.category
+                        ),
+                        InstitutionField.name: db_institution.get(
+                            InstitutionField.name
+                        ),
                     }
                 )
         return filename

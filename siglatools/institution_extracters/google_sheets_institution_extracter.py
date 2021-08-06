@@ -8,7 +8,7 @@ from typing import Dict, List, NamedTuple, Optional, Union
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from ..databases.constants import InstitutionField, VariableType
+from ..databases.constants import InstitutionField, VariableField, VariableType
 from . import exceptions
 from .constants import GoogleSheetsFormat as gs_format
 from .utils import FormattedSheetData, SheetData
@@ -82,8 +82,12 @@ def _get_multilple_sigla_answer_variable(
             InstitutionField.spreadsheet_id: sheet_data.spreadsheet_id,
             InstitutionField.sheet_id: sheet_data.sheet_id,
             InstitutionField.name: sheet_data.meta_data.get(InstitutionField.name),
-            InstitutionField.country: sheet_data.meta_data.get(InstitutionField.country),
-            InstitutionField.category: sheet_data.meta_data.get(InstitutionField.category),
+            InstitutionField.country: sheet_data.meta_data.get(
+                InstitutionField.country
+            ),
+            InstitutionField.category: sheet_data.meta_data.get(
+                InstitutionField.category
+            ),
             InstitutionField.sub_category: [
                 " ".join(sub_cat.strip().split())
                 for sub_cat in sheet_data.meta_data.get(InstitutionField.sub_category)
@@ -92,13 +96,13 @@ def _get_multilple_sigla_answer_variable(
             ],
             "childs": [
                 {
-                    "heading": variable_row[0],
-                    "name": variable_row[1],
-                    "sigla_answer": variable_row[2],
-                    "orig_text": variable_row[3],
-                    "source": variable_row[4],
-                    "variable_index": i,
-                    "type": VariableType.standard,
+                    VariableField.heading: variable_row[0],
+                    VariableField.name: variable_row[1],
+                    VariableField.sigla_answer: variable_row[2],
+                    VariableField.orig_text: variable_row[3],
+                    VariableField.source: variable_row[4],
+                    VariableField.variable_index: i,
+                    VariableField.type: VariableType.standard,
                 }
                 for i, variable_row in enumerate(sheet_data.data[1:])
             ],
@@ -136,16 +140,18 @@ def _get_standard_institution(
             InstitutionField.spreadsheet_id: sheet_data.spreadsheet_id,
             InstitutionField.sheet_id: sheet_data.sheet_id,
             InstitutionField.name: institution_name,
-            InstitutionField.category: sheet_data.meta_data.get(InstitutionField.category),
+            InstitutionField.category: sheet_data.meta_data.get(
+                InstitutionField.category
+            ),
             "childs": [
                 {
-                    "heading": variable_row[0],
-                    "name": variable_row[1],
-                    "sigla_answer": variable_row[2 + i * 3],
-                    "orig_text": variable_row[2 + i * 3 + 1],
-                    "source": variable_row[2 + i * 3 + 2],
-                    "variable_index": j,
-                    "type": VariableType.standard,
+                    VariableField.heading: variable_row[0],
+                    VariableField.name: variable_row[1],
+                    VariableField.sigla_answer: variable_row[2 + i * 3],
+                    VariableField.orig_text: variable_row[2 + i * 3 + 1],
+                    VariableField.source: variable_row[2 + i * 3 + 2],
+                    VariableField.variable_index: j,
+                    VariableField.type: VariableType.standard,
                 }
                 # The variables starts in the 3rd row of data
                 for j, variable_row in enumerate(sheet_data.data[2:])
@@ -157,7 +163,9 @@ def _get_standard_institution(
     has_country = InstitutionField.country in sheet_data.meta_data
     for institution in institutions:
         if has_country:
-            institution[InstitutionField.country] = sheet_data.meta_data.get(InstitutionField.country)
+            institution[InstitutionField.country] = sheet_data.meta_data.get(
+                InstitutionField.country
+            )
 
     log.info(
         f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
