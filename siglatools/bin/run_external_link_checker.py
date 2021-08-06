@@ -19,7 +19,7 @@ from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
 from prefect.engine.executors import DaskExecutor
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util.retry import Retry
 
 from siglatools import get_module_version
 
