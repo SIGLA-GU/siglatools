@@ -8,9 +8,15 @@ from typing import Dict, List, NamedTuple, Optional, Union
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from ..databases.constants import VariableType
+from ..databases.constants import (
+    CompositeVariableField,
+    InstitutionField,
+    SiglaAnswerField,
+    VariableField,
+    VariableType,
+)
 from . import exceptions
-from .constants import GoogleSheetsFormat as gs_format
+from .constants import GoogleSheetsFormat as gs_format, MetaDataField
 from .utils import FormattedSheetData, SheetData
 
 ###############################################################################
@@ -45,9 +51,9 @@ def _get_composite_variable(
     column_names = sheet_data.data[0]
     composite_variable = [
         {
-            "index": i,
-            "sigla_answers": [
-                {"name": column_name, "answer": row[j]}
+            CompositeVariableField.index: i,
+            CompositeVariableField.sigla_answers: [
+                {SiglaAnswerField.name: column_name, SiglaAnswerField.answer: row[j]}
                 for j, column_name in enumerate(column_names)
             ],
         }
@@ -79,26 +85,30 @@ def _get_multilple_sigla_answer_variable(
     """
     try:
         institution = {
-            "spreadsheet_id": sheet_data.spreadsheet_id,
-            "sheet_id": sheet_data.sheet_id,
-            "name": sheet_data.meta_data.get("name"),
-            "country": sheet_data.meta_data.get("country"),
-            "category": sheet_data.meta_data.get("category"),
-            "sub_category": [
+            InstitutionField.spreadsheet_id: sheet_data.spreadsheet_id,
+            InstitutionField.sheet_id: sheet_data.sheet_id,
+            InstitutionField.name: sheet_data.meta_data.get(InstitutionField.name),
+            InstitutionField.country: sheet_data.meta_data.get(
+                InstitutionField.country
+            ),
+            InstitutionField.category: sheet_data.meta_data.get(
+                InstitutionField.category
+            ),
+            InstitutionField.sub_category: [
                 " ".join(sub_cat.strip().split())
-                for sub_cat in sheet_data.meta_data.get("sub_category")
+                for sub_cat in sheet_data.meta_data.get(InstitutionField.sub_category)
                 .strip()
                 .split(";")
             ],
             "childs": [
                 {
-                    "heading": variable_row[0],
-                    "name": variable_row[1],
-                    "sigla_answer": variable_row[2],
-                    "orig_text": variable_row[3],
-                    "source": variable_row[4],
-                    "variable_index": i,
-                    "type": VariableType.standard,
+                    VariableField.heading: variable_row[0],
+                    VariableField.name: variable_row[1],
+                    VariableField.sigla_answer: variable_row[2],
+                    VariableField.orig_text: variable_row[3],
+                    VariableField.source: variable_row[4],
+                    VariableField.variable_index: i,
+                    VariableField.type: VariableType.standard,
                 }
                 for i, variable_row in enumerate(sheet_data.data[1:])
             ],
@@ -133,19 +143,21 @@ def _get_standard_institution(
     ]
     institutions = [
         {
-            "spreadsheet_id": sheet_data.spreadsheet_id,
-            "sheet_id": sheet_data.sheet_id,
-            "name": institution_name,
-            "category": sheet_data.meta_data.get("category"),
+            InstitutionField.spreadsheet_id: sheet_data.spreadsheet_id,
+            InstitutionField.sheet_id: sheet_data.sheet_id,
+            InstitutionField.name: institution_name,
+            InstitutionField.category: sheet_data.meta_data.get(
+                InstitutionField.category
+            ),
             "childs": [
                 {
-                    "heading": variable_row[0],
-                    "name": variable_row[1],
-                    "sigla_answer": variable_row[2 + i * 3],
-                    "orig_text": variable_row[2 + i * 3 + 1],
-                    "source": variable_row[2 + i * 3 + 2],
-                    "variable_index": j,
-                    "type": VariableType.standard,
+                    VariableField.heading: variable_row[0],
+                    VariableField.name: variable_row[1],
+                    VariableField.sigla_answer: variable_row[2 + i * 3],
+                    VariableField.orig_text: variable_row[2 + i * 3 + 1],
+                    VariableField.source: variable_row[2 + i * 3 + 2],
+                    VariableField.variable_index: j,
+                    VariableField.type: VariableType.standard,
                 }
                 # The variables starts in the 3rd row of data
                 for j, variable_row in enumerate(sheet_data.data[2:])
@@ -154,10 +166,12 @@ def _get_standard_institution(
         for i, institution_name in enumerate(institution_names)
     ]
 
-    has_country = "country" in sheet_data.meta_data
+    has_country = InstitutionField.country in sheet_data.meta_data
     for institution in institutions:
         if has_country:
-            institution["country"] = sheet_data.meta_data.get("country")
+            institution[InstitutionField.country] = sheet_data.meta_data.get(
+                InstitutionField.country
+            )
 
     log.info(
         f"Found {len(institutions)} institutions from sheet {sheet_data.sheet_title}"
@@ -388,10 +402,10 @@ class GoogleSheetsInstitutionExtracter:
             A1Notation(
                 sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get("start_row")),
-                end_row=int(meta_datum.get("end_row")),
-                start_column=meta_datum.get("start_column"),
-                end_column=meta_datum.get("end_column"),
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.start_column),
+                end_column=meta_datum.get(MetaDataField.end_column),
             )
             for i, meta_datum in enumerate(meta_data)
         ]
@@ -418,13 +432,13 @@ class GoogleSheetsInstitutionExtracter:
             A1Notation(
                 sheet_id=meta_data_a1_notations[i].sheet_id,
                 sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get("start_row")),
-                end_row=int(meta_datum.get("end_row")),
-                start_column=meta_datum.get("date_of_next_uv_column"),
-                end_column=meta_datum.get("date_of_next_uv_column"),
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
+                end_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
             )
             for i, meta_datum in enumerate(meta_data)
-            if meta_datum.get("date_of_next_uv_column") is not None
+            if meta_datum.get(MetaDataField.date_of_next_uv_column) is not None
         ]
         # Get the next uv dates
         next_uv_date_response = (
@@ -457,7 +471,8 @@ class GoogleSheetsInstitutionExtracter:
                 data=data[i],
                 next_uv_dates=(
                     next(next_uv_date_data_iter)
-                    if meta_data[i].get("date_of_next_uv_column") is not None
+                    if meta_data[i].get(MetaDataField.date_of_next_uv_column)
+                    is not None
                     else None
                 ),
             )
@@ -505,7 +520,7 @@ class GoogleSheetsInstitutionExtracter:
             The data in reqired format.
         """
         formatted_data = None
-        get_data_key = sheet_data.meta_data.get("format")
+        get_data_key = sheet_data.meta_data.get(MetaDataField.format)
 
         if (
             get_data_key
@@ -520,8 +535,8 @@ class GoogleSheetsInstitutionExtracter:
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
                 sheet_data.sheet_title,
-                sheet_data.meta_data.get("format"),
-                sheet_data.meta_data.get("data_type"),
+                sheet_data.meta_data.get(MetaDataField.format),
+                sheet_data.meta_data.get(MetaDataField.data_type),
             )
 
         return FormattedSheetData(

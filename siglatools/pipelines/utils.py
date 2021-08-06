@@ -10,6 +10,7 @@ from prefect.tasks.control_flow import FilterTask
 
 from ..databases import MongoDBDatabase
 from ..institution_extracters import GoogleSheetsInstitutionExtracter
+from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import FormattedSheetData, SheetData
 
 ###############################################################################
@@ -159,4 +160,6 @@ def _create_filter_task(gs_formats: List[str]) -> FilterTask:
     task: FilterTask
         The filter task.
     """
-    return FilterTask(filter_func=lambda x: x.meta_data.get("format") in gs_formats)
+    return FilterTask(
+        filter_func=lambda x: x.meta_data.get(MetaDataField.format) in gs_formats
+    )

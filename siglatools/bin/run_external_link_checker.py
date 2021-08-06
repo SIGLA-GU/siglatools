@@ -17,12 +17,13 @@ from typing import List, NamedTuple, Optional
 import requests
 from distributed import LocalCluster
 from prefect import Flow, flatten, task, unmapped
-from prefect.engine.executors import DaskExecutor
+from prefect.executors import DaskExecutor
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util.retry import Retry
 
 from siglatools import get_module_version
 
+from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import SheetData, convert_rowcol_to_A1_name
 from ..pipelines.utils import _extract, _get_spreadsheet_ids
 
@@ -125,7 +126,7 @@ def _extract_external_links(sheet_data: SheetData) -> List[URLData]:
     for i, row in enumerate(sheet_data.data):
         for j, cell in enumerate(row):
             urls = re.findall(URL_REGEX, cell)
-            row_index = int(sheet_data.meta_data.get("start_row")) + i - 1
+            row_index = int(sheet_data.meta_data.get(MetaDataField.start_row)) + i - 1
             # Assume bounding box always starts in the first column of a sheet
             col_index = j
             for url in urls:

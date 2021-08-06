@@ -52,6 +52,7 @@ requirements = [
     "distributed",
     "prefect",
     "requests",
+    "urllib3",
 ]
 
 extra_requirements = {
