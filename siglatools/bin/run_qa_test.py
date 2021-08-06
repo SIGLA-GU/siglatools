@@ -347,9 +347,9 @@ def _gather_gs_institutions(
                 sheet_id=formatted_sheet_data.sheet_id,
                 sheet_title=formatted_sheet_data.sheet_title,
                 data={
-                    [InstitutionField.country]: country,
-                    [InstitutionField.category]: category,
-                    [InstitutionField.name]: name,
+                    InstitutionField.country: country,
+                    InstitutionField.category: category,
+                    InstitutionField.name: name,
                     "childs": formatted_sheet_data.formatted_data,
                 },
             )
