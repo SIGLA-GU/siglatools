@@ -79,7 +79,7 @@ def _get_multilple_sigla_answer_variable(
     """
     try:
         institution = {
-            "spread_sheet_id": sheet_data.spreadsheet_id,
+            "spreadsheet_id": sheet_data.spreadsheet_id,
             "sheet_id": sheet_data.sheet_id,
             "name": sheet_data.meta_data.get("name"),
             "country": sheet_data.meta_data.get("country"),
