@@ -19,7 +19,7 @@ from pymongo import ASCENDING
 
 from siglatools import get_module_version
 
-from ..databases.constants import DatabaseCollection, Environment, VariableType
+from ..databases.constants import DatabaseCollection, Environment, InstitutionField, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..pipelines.utils import (
@@ -64,7 +64,7 @@ def _gather_db_institutions(
     db = MongoDBDatabase(db_connection_url)
     institutions = db.find(
         collection=DatabaseCollection.institutions,
-        filters={"spreadsheet_id": spreadsheet_id},
+        filters={InstitutionField.spreadsheet_id: spreadsheet_id},
     )
     db.close_connection()
     return institutions
@@ -94,7 +94,7 @@ def _gather_db_variables(
     db_institution = institution.copy()
     db_variables = db.find(
         collection=DatabaseCollection.variables,
-        filters={"institution": db_institution.get("_id")},
+        filters={"institution": db_institution.get(InstitutionField._id)},
         sort=[["variable_index", ASCENDING]],
     )
     for db_variable in db_variables:
@@ -138,7 +138,7 @@ def _delete_db_institutions(
         DatabaseCollection.body_of_law: set(),
     }
     for db_institution in db_institutions:
-        institution_ids.append(db_institution.get("_id"))
+        institution_ids.append(db_institution.get(InstitutionField._id))
         for db_variable in db_institution.get("childs"):
             variable_ids.append(db_variable.get("_id"))
             if db_variable.get("type") == VariableType.composite:

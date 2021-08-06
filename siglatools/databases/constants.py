@@ -19,3 +19,12 @@ class VariableType:
 class Environment:
     staging = "staging"
     production = "production"
+
+class InstitutionField:
+    _id = "_id",
+    name = "name",
+    country = "country",
+    category = "category",
+    sub_category = "sub_category",
+    sheet_id = "sheet_id",
+    spreadsheet_id = "spreadsheet_id",

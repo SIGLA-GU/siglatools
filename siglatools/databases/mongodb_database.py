@@ -10,7 +10,7 @@ from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne, UpdateMa
 from ..institution_extracters import exceptions
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
 from ..institution_extracters.utils import FormattedSheetData
-from .constants import DatabaseCollection as db_collection
+from .constants import DatabaseCollection as db_collection, InstitutionField
 from .constants import VariableType
 from .exceptions import UnableToFindDocument
 
@@ -38,15 +38,15 @@ class MongoDBDatabase:
         }
 
     def _create_variable_reference(self, sheet_title: str, meta_data: Dict[str, str]):
-        institution_names = [name.strip() for name in meta_data.get("name").split(";")]
+        institution_names = [name.strip() for name in meta_data.get(InstitutionField.name).split(";")]
 
         institution = {
-            "name": {"$in": institution_names},
-            "country": meta_data.get("country"),
-            "category": meta_data.get("category"),
+            InstitutionField.name: {"$in": institution_names},
+            InstitutionField.country: meta_data.get(InstitutionField.country),
+            InstitutionField.category: meta_data.get(InstitutionField.category),
         }
         institution_docs = self.find(db_collection.institutions, institution)
-        institution_docs_id = [doc.get("_id") for doc in institution_docs]
+        institution_docs_id = [doc.get(InstitutionField._id) for doc in institution_docs]
 
         variable = {
             "institution": {"$in": institution_docs_id},
@@ -138,11 +138,11 @@ class MongoDBDatabase:
         """
         # Create the institution primary keys
         institution = {
-            "spreadsheet_id": formatted_sheet_data.spreadsheet_id,
-            "sheet_id": formatted_sheet_data.sheet_id,
-            "name": formatted_sheet_data.meta_data.get("variable_heading"),
-            "country": formatted_sheet_data.meta_data.get("country"),
-            "category": formatted_sheet_data.meta_data.get("category"),
+            InstitutionField.spreadsheet_id: formatted_sheet_data.spreadsheet_id,
+            InstitutionField.sheet_id: formatted_sheet_data.sheet_id,
+            InstitutionField.name: formatted_sheet_data.meta_data.get("variable_heading"),
+            InstitutionField.country: formatted_sheet_data.meta_data.get(InstitutionField.country),
+            InstitutionField.category: formatted_sheet_data.meta_data.get(InstitutionField.category),
         }
         # Find the specific institution
         institution_doc = self._find_one(db_collection.institutions, institution)
@@ -165,7 +165,7 @@ class MongoDBDatabase:
         # Create the list of variables
         variables = [
             {
-                "institution": institution_doc.get("_id"),
+                "institution": institution_doc.get(InstitutionField._id),
                 "name": variable_heading,
                 "heading": variable_heading,
                 "sigla_answer": variable_heading_dict.get(variable_heading),
@@ -241,9 +241,9 @@ class MongoDBDatabase:
         formatted_sheet_data: FormattedSheetData
             The data to be loaded into the database. Please see the FormattedSheetData class to view its attributes.
         """
-        institution_primary_keys = ["name", "category"]
-        if "country" in formatted_sheet_data.meta_data:
-            institution_primary_keys.append("country")
+        institution_primary_keys = [InstitutionField.name, InstitutionField.category]
+        if InstitutionField.country in formatted_sheet_data.meta_data:
+            institution_primary_keys.append(InstitutionField.country)
         # Create the list of update requests into the db, one for each institution
         institution_requests = [
             UpdateOne(
@@ -277,7 +277,7 @@ class MongoDBDatabase:
                 institution_doc = self._db.get_collection(
                     db_collection.institutions
                 ).find_one({pk: institution.get(pk) for pk in institution_primary_keys})
-                institution_doc_id_dict[i] = institution_doc.get("_id")
+                institution_doc_id_dict[i] = institution_doc.get(InstitutionField._id)
             else:
                 institution_doc_id_dict[i] = upserted_id
 

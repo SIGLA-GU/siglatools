@@ -21,7 +21,7 @@ from pymongo import ASCENDING
 
 from siglatools import get_module_version
 
-from ..databases.constants import DatabaseCollection, Environment, VariableType
+from ..databases.constants import DatabaseCollection, Environment, InstitutionField, VariableType
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat
 from ..institution_extracters.utils import FormattedSheetData
@@ -77,9 +77,9 @@ class GsInstitution(NamedTuple):
 
     def get_key(self) -> str:
         "Get the key of the institution."
-        country = self.data.get("country")
-        category = self.data.get("category")
-        name = self.data.get("name")
+        country = self.data.get(InstitutionField.country)
+        category = self.data.get(InstitutionField.category)
+        name = self.data.get(InstitutionField.name)
         return f"{country}{category}{name}"
 
 
@@ -234,7 +234,7 @@ def _gather_db_institutions(
     db = MongoDBDatabase(db_connection_url)
     institutions = db.find(
         collection=DatabaseCollection.institutions,
-        filters={"spreadsheet_id": spreadsheet_id},
+        filters={InstitutionField.spreadsheet_id: spreadsheet_id},
     )
     db.close_connection()
     return institutions
@@ -264,7 +264,7 @@ def _gather_db_variables(
     db_institution = institution.copy()
     db_variables = db.find(
         collection=DatabaseCollection.variables,
-        filters={"institution": db_institution.get("_id")},
+        filters={"institution": db_institution.get(InstitutionField._id)},
         sort=[["variable_index", ASCENDING]],
     )
     for db_variable in db_variables:
@@ -302,9 +302,9 @@ def _group_db_institutions(db_institutions: List[Dict[str, Any]]) -> Dict[str, A
     """
     db_institutions_group = {}
     for db_institution in db_institutions:
-        country = db_institution.get("country")
-        category = db_institution.get("category")
-        name = db_institution.get("name")
+        country = db_institution.get(InstitutionField.country)
+        category = db_institution.get(InstitutionField.category)
+        name = db_institution.get(InstitutionField.name)
         db_institutions_group.update({f"{country}{category}{name}": db_institution})
     return db_institutions_group
 
@@ -328,8 +328,8 @@ def _gather_gs_institutions(
     """
     gs_format = formatted_sheet_data.meta_data.get("format")
     if gs_format == GoogleSheetsFormat.institution_and_composite_variable:
-        country = formatted_sheet_data.meta_data.get("country")
-        category = formatted_sheet_data.meta_data.get("category")
+        country = formatted_sheet_data.meta_data.get(InstitutionField.country)
+        category = formatted_sheet_data.meta_data.get(InstitutionField.category)
         name = formatted_sheet_data.meta_data.get("variable_heading")
         return [
             GsInstitution(
@@ -338,9 +338,9 @@ def _gather_gs_institutions(
                 sheet_id=formatted_sheet_data.sheet_id,
                 sheet_title=formatted_sheet_data.sheet_title,
                 data={
-                    "country": country,
-                    "category": category,
-                    "name": name,
+                    [InstitutionField.country]: country,
+                    [InstitutionField.category]: category,
+                    [InstitutionField.name]: name,
                     "childs": formatted_sheet_data.formatted_data,
                 },
             )
@@ -419,8 +419,8 @@ def _compare_gs_institution(
             FieldComparison(
                 "Institution name",
                 FieldComparisonType.meta,
-                (Datasource.database, db_institution.get("name")),
-                (Datasource.googlesheet, gs_institution.data.get("name")),
+                (Datasource.database, db_institution.get(InstitutionField.name)),
+                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.name)),
             )
         )
         # compare institution country
@@ -428,8 +428,8 @@ def _compare_gs_institution(
             FieldComparison(
                 "Institution country",
                 FieldComparisonType.meta,
-                (Datasource.database, db_institution.get("country")),
-                (Datasource.googlesheet, gs_institution.data.get("country")),
+                (Datasource.database, db_institution.get(InstitutionField.country)),
+                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.country)),
             )
         )
         # compare institution category
@@ -437,8 +437,8 @@ def _compare_gs_institution(
             FieldComparison(
                 "Institution category",
                 FieldComparisonType.meta,
-                (Datasource.database, db_institution.get("category")),
-                (Datasource.googlesheet, gs_institution.data.get("category")),
+                (Datasource.database, db_institution.get(InstitutionField.category)),
+                (Datasource.googlesheet, gs_institution.data.get(InstitutionField.category)),
             )
         )
 
@@ -538,7 +538,7 @@ def _compare_gs_institution(
     return Comparison(
         spreadsheet_title=gs_institution.spreadsheet_title,
         sheet_title=gs_institution.sheet_title,
-        name=gs_institution.data.get("name"),
+        name=gs_institution.data.get(InstitutionField.name),
         data_comparisons=[institution_comparison, *variable_comparisons],
     )
 
@@ -564,10 +564,10 @@ def _compare_gs_composite_variable(
         A list of comparisons for the two composite variable data. One for each of its parent institution.
     """
 
-    institution_country = formatted_sheet_data.meta_data.get("country")
-    institution_category = formatted_sheet_data.meta_data.get("category")
+    institution_country = formatted_sheet_data.meta_data.get(InstitutionField.country)
+    institution_category = formatted_sheet_data.meta_data.get(InstitutionField.category)
     institution_names = [
-        name.strip() for name in formatted_sheet_data.meta_data.get("name").split(";")
+        name.strip() for name in formatted_sheet_data.meta_data.get(InstitutionField.name).split(";")
     ]
     institution_names.sort()
     variable_heading = formatted_sheet_data.meta_data.get("variable_heading")
@@ -582,9 +582,9 @@ def _compare_gs_composite_variable(
         db_institutions = db.find(
             collection=DatabaseCollection.institutions,
             filters={
-                "country": institution_country,
-                "category": institution_category,
-                "name": institution_name,
+                InstitutionField.country: institution_country,
+                InstitutionField.category: institution_category,
+                InstitutionField.name: institution_name,
             },
         )
 
@@ -603,7 +603,7 @@ def _compare_gs_composite_variable(
             institution_name_comparison = FieldComparison(
                 "Institution name",
                 FieldComparisonType.meta,
-                (Datasource.database, db_institution.get("name")),
+                (Datasource.database, db_institution.get(InstitutionField.name)),
                 (Datasource.googlesheet, institution_name),
             )
             logic_field_comparisons.append(institution_name_comparison)
@@ -613,7 +613,7 @@ def _compare_gs_composite_variable(
                 db_variables = db.find(
                     collection=DatabaseCollection.variables,
                     filters={
-                        "institution": db_institution.get("_id"),
+                        "institution": db_institution.get(InstitutionField._id),
                         "heading": variable_heading,
                         "name": variable_name,
                         "type": VariableType.composite,
@@ -735,9 +735,9 @@ def _write_extra_db_institutions(
 
     extra_db_institutions = []
     for db_institution in db_institutions:
-        country = db_institution.get("country")
-        category = db_institution.get("category")
-        name = db_institution.get("name")
+        country = db_institution.get(InstitutionField.country)
+        category = db_institution.get(InstitutionField.category)
+        name = db_institution.get(InstitutionField.name)
         if gs_institutions_group.get(f"{country}{category}{name}") is None:
             extra_db_institutions.append(db_institution)
 
@@ -745,24 +745,24 @@ def _write_extra_db_institutions(
     if extra_db_institutions:
         with open(filename, "w") as error_file:
             fieldnames = [
-                "_id",
-                "spreadsheet_id",
-                "sheet_id",
-                "country",
-                "category",
-                "name",
+                InstitutionField._id,
+                InstitutionField.spreadsheet_id,
+                InstitutionField.sheet_id,
+                InstitutionField.country,
+                InstitutionField.category,
+                InstitutionField.name,
             ]
             writer = csv.DictWriter(error_file, fieldnames=fieldnames, delimiter="\t")
             writer.writeheader()
             for db_institution in extra_db_institutions:
                 writer.writerow(
                     {
-                        "_id": db_institution.get("_id"),
-                        "spreadsheet_id": db_institution.get("spreadsheet_id"),
-                        "sheet_id": db_institution.get("sheet_id"),
-                        "country": db_institution.get("country"),
-                        "category": db_institution.get("category"),
-                        "name": db_institution.get("name"),
+                        InstitutionField._id: db_institution.get(InstitutionField._id),
+                        InstitutionField.spreadsheet_id: db_institution.get(InstitutionField.spreadsheet_id),
+                        InstitutionField.sheet_id: db_institution.get(InstitutionField.sheet_id),
+                        InstitutionField.country: db_institution.get(InstitutionField.country),
+                        InstitutionField.category: db_institution.get(InstitutionField.category),
+                        InstitutionField.name: db_institution.get(InstitutionField.name),
                     }
                 )
         return filename
