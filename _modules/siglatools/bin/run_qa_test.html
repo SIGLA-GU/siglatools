@@ -396,6 +396,10 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">data_comparisons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ObjectComparison</span><span class="p">]</span>
 
+<div class="viewcode-block" id="Comparison.get_name"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="s2">&quot;Return the name of the comparison with / replaced with |.&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Comparison.has_error"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.has_error">[docs]</a>    <span class="k">def</span> <span class="nf">has_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="s2">&quot;Does any of the group of ObjectCOmparison has a mismatch?&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">comparison</span><span class="o">.</span><span class="n">has_error</span><span class="p">()</span> <span class="k">for</span> <span class="n">comparison</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_comparisons</span><span class="p">])</span></div>
@@ -406,7 +410,7 @@
 
 <div class="viewcode-block" id="Comparison.get_filename"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.get_filename">[docs]</a>    <span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;Get the file name.&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.txt&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2">.txt&quot;</span></div>
 
 <div class="viewcode-block" id="Comparison.write"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -677,6 +681,22 @@
                 <span class="p">(</span>
                     <span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span>
                     <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">category</span><span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># compare institution sub category</span>
+        <span class="n">institution_field_comparisons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">FieldComparison</span><span class="p">(</span>
+                <span class="s2">&quot;Institution sub category&quot;</span><span class="p">,</span>
+                <span class="n">FieldComparisonType</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+                <span class="p">(</span>
+                    <span class="n">Datasource</span><span class="o">.</span><span class="n">database</span><span class="p">,</span>
+                    <span class="n">db_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">sub_category</span><span class="p">,</span> <span class="p">[]),</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="n">Datasource</span><span class="o">.</span><span class="n">googlesheet</span><span class="p">,</span>
+                    <span class="n">gs_institution</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">InstitutionField</span><span class="o">.</span><span class="n">sub_category</span><span class="p">,</span> <span class="p">[]),</span>
                 <span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
