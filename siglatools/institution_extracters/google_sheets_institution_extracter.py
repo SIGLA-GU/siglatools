@@ -16,8 +16,9 @@ from ..databases.constants import (
     VariableType,
 )
 from . import exceptions
-from .constants import GoogleSheetsFormat as gs_format, MetaDataField
-from .utils import FormattedSheetData, SheetData
+from .constants import GoogleSheetsFormat as gs_format
+from .constants import MetaDataField
+from .utils import FormattedSheetData, SheetData, create_institution_sub_category
 
 ###############################################################################
 
@@ -94,12 +95,9 @@ def _get_multilple_sigla_answer_variable(
             InstitutionField.category: sheet_data.meta_data.get(
                 InstitutionField.category
             ),
-            InstitutionField.sub_category: [
-                " ".join(sub_cat.strip().split())
-                for sub_cat in sheet_data.meta_data.get(InstitutionField.sub_category)
-                .strip()
-                .split(";")
-            ],
+            InstitutionField.sub_category: create_institution_sub_category(
+                sheet_data.meta_data.get(InstitutionField.sub_category)
+            ),
             "childs": [
                 {
                     VariableField.heading: variable_row[0],
@@ -148,6 +146,9 @@ def _get_standard_institution(
             InstitutionField.name: institution_name,
             InstitutionField.category: sheet_data.meta_data.get(
                 InstitutionField.category
+            ),
+            InstitutionField.sub_category: create_institution_sub_category(
+                sheet_data.meta_data.get(InstitutionField.sub_category)
             ),
             "childs": [
                 {

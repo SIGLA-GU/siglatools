@@ -118,3 +118,21 @@ def convert_col_to_name(col: int) -> str:
         col_num = int((col_num - 1) / 26)
 
     return col_str
+
+
+def create_institution_sub_category(sub_categories: str) -> List[str]:
+    """
+    Create a list of institution sub categories.
+
+    Parameters
+    ----------
+    sub_categories: str
+        The list of sub categories, separated by ;.
+    Returns
+    -------
+    sub_categories_list: List[str]
+        The list of sub categories.
+    """
+    if not sub_categories:
+        return []
+    return [" ".join(sub_cat.strip().split()) for sub_cat in sub_categories.split(";")]
