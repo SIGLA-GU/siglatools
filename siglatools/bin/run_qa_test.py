@@ -175,6 +175,10 @@ class Comparison(NamedTuple):
     name: str
     data_comparisons: List[ObjectComparison]
 
+    def get_name(self) -> str:
+        "Return the name of the comparison with / replaced with |."
+        return self.name.replace("/", "|")
+
     def has_error(self) -> bool:
         "Does any of the group of ObjectCOmparison has a mismatch?"
         return any([comparison.has_error() for comparison in self.data_comparisons])
@@ -185,7 +189,7 @@ class Comparison(NamedTuple):
 
     def get_filename(self):
         "Get the file name."
-        return f"tmp/{self.spreadsheet_title},{self.sheet_title},{self.name}.txt"
+        return f"tmp/{self.spreadsheet_title},{self.sheet_title},{self.get_name()}.txt"
 
     def write(self) -> str:
         """
@@ -456,6 +460,22 @@ def _compare_gs_institution(
                 (
                     Datasource.googlesheet,
                     gs_institution.data.get(InstitutionField.category),
+                ),
+            )
+        )
+
+        # compare institution sub category
+        institution_field_comparisons.append(
+            FieldComparison(
+                "Institution sub category",
+                FieldComparisonType.meta,
+                (
+                    Datasource.database,
+                    db_institution.get(InstitutionField.sub_category, []),
+                ),
+                (
+                    Datasource.googlesheet,
+                    gs_institution.data.get(InstitutionField.sub_category, []),
                 ),
             )
         )
