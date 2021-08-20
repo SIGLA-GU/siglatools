@@ -339,6 +339,24 @@
         <span class="n">col_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">col_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">26</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">col_str</span></div>
+
+
+<div class="viewcode-block" id="create_institution_sub_category"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.utils.create_institution_sub_category">[docs]</a><span class="k">def</span> <span class="nf">create_institution_sub_category</span><span class="p">(</span><span class="n">sub_categories</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of institution sub categories.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sub_categories: str</span>
+<span class="sd">        The list of sub categories, separated by ;.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sub_categories_list: List[str]</span>
+<span class="sd">        The list of sub categories.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_categories</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_cat</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">sub_cat</span> <span class="ow">in</span> <span class="n">sub_categories</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)]</span></div>
 </pre></div>
 
            </div>
