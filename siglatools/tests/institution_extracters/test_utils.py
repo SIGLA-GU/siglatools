@@ -7,6 +7,7 @@ import pytest
 from siglatools.institution_extracters.utils import (
     convert_col_to_name,
     convert_rowcol_to_A1_name,
+    create_institution_sub_category,
 )
 
 
@@ -54,3 +55,19 @@ def test_convert_col_to_name(col, expected):
 )
 def test_convert_rowcol_to_A1_name(row, col, expected):
     assert convert_rowcol_to_A1_name(row, col) == expected
+
+
+@pytest.mark.parametrize(
+    "sub_categories, expected",
+    [
+        (None, []),
+        ("", []),
+        ("a", ["a"]),
+        ("a;b", ["a", "b"]),
+        (" a ; b ", ["a", "b"]),
+        ("a; b c", ["a", "b c"]),
+        ("a; b c;d", ["a", "b c", "d"]),
+    ],
+)
+def test_create_institution_sub_category(sub_categories, expected):
+    assert create_institution_sub_category(sub_categories) == expected
