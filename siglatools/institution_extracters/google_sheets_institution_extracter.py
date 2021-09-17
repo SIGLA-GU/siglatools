@@ -111,7 +111,7 @@ def _get_multilple_sigla_answer_variable(
                 for i, variable_row in enumerate(sheet_data.data[1:])
             ],
         }
-
+        log.info(f"Found 1 institution from {sheet_data.sheet_title}")
         return [institution]
     except IndexError:
         log.info("=*80")
