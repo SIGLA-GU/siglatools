@@ -146,6 +146,23 @@ def _load_composites_data(
     database.close_connection()
 
 
+@task
+def _log_spreadsheets(spreadsheets_data: List[List[SheetData]]):
+    """
+    Prefect task to log the spreadsheet titles.
+
+    Parameters
+    ----------
+    spreadsheets_data: List[List[SheetData]]
+        The list of spreadsheet data.
+    """
+    spreadsheets_title = [
+        spreadsheet_data[0].spreadsheet_title for spreadsheet_data in spreadsheets_data
+    ]
+    log.info("=" * 80)
+    log.info(f"""Finished processing {", ".join(spreadsheets_title)}.""")
+
+
 def _create_filter_task(gs_formats: List[str]) -> FilterTask:
     """
     Create a Prefect FilterTask that filters FormattedSheetData based on the given GoogleSheet formats.
