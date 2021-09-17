@@ -208,7 +208,7 @@ def main():
         dbg = args.debug
         if args.master_spreadsheet_id is None:
             raise Exception("No main spreadsheet id found.")
-        if args.db_env.strip() not in [Environment.staging, Environment.production]:
+        if args.db_env not in [Environment.staging, Environment.production]:
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
@@ -220,7 +220,7 @@ def main():
             args.master_spreadsheet_id,
             args.google_api_credentials_path,
             args.staging_db_connection_url
-            if args.db_env.strip() == Environment.staging
+            if args.db_env == Environment.staging
             else args.prod_db_connection_url,
         )
     except Exception as e:

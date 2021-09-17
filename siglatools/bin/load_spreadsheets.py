@@ -326,7 +326,7 @@ def main():
         ]
         if not spreadsheet_ids:
             raise Exception("No spreadsheet ids found.")
-        if args.db_env.strip() not in [Environment.staging, Environment.production]:
+        if args.db_env not in [Environment.staging, Environment.production]:
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
