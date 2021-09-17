@@ -338,15 +338,19 @@
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No main spreadsheet id found.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
             <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Loading all spreadsheets in the master spreadsheet </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot; to the </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="si">}</span><span class="s2"> database.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">run_sigla_pipeline</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">google_api_credentials_path</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">staging_db_connection_url</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">Environment</span><span class="o">.</span><span class="n">staging</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="o">==</span> <span class="n">Environment</span><span class="o">.</span><span class="n">staging</span>
             <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">prod_db_connection_url</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>

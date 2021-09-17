@@ -1184,9 +1184,9 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">()</span>
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
+                <span class="s2">&quot;Incorrect database environment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
             <span class="p">)</span>
         <span class="n">run_qa_test</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
