@@ -212,6 +212,10 @@ def main():
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
+        log.info(
+            f"""Loading all spreadsheets in the master spreadsheet {args.master_spreadsheet_id}""",
+            f" to the {args.db_env} database.",
+        )
         run_sigla_pipeline(
             args.master_spreadsheet_id,
             args.google_api_credentials_path,

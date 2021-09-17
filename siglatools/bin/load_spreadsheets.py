@@ -335,6 +335,9 @@ def main():
             if args.db_env == Environment.staging
             else args.prod_db_connection_url
         )
+        log.info(
+            f"""Loading spreadsheets {", ".join(spreadsheet_ids)} to the {args.db_env} database."""
+        )
         load_spreadsheets(
             spreadsheet_ids,
             db_connection_url,
