@@ -326,7 +326,7 @@ def main():
         ]
         if not spreadsheet_ids:
             raise Exception("No spreadsheet ids found.")
-        if args.db_env.strip() not in [Environment.staging, Environment.production]:
+        if args.db_env not in [Environment.staging, Environment.production]:
             raise Exception(
                 "Incorrect database enviroment specification. Use 'staging' or 'production'."
             )
@@ -334,6 +334,9 @@ def main():
             args.staging_db_connection_url
             if args.db_env == Environment.staging
             else args.prod_db_connection_url
+        )
+        log.info(
+            f"""Loading spreadsheets {", ".join(spreadsheet_ids)} to the {args.db_env} database."""
         )
         load_spreadsheets(
             spreadsheet_ids,
