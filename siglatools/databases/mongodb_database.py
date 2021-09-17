@@ -403,7 +403,9 @@ class MongoDBDatabase:
         cursor = self._db.get_collection(collection).find(filters)
         if sort:
             cursor.sort(sort)
-        return [doc for doc in cursor]
+        docs = [doc for doc in cursor]
+        log.info(f"Found {len(docs)} {collection} with filters: {filters}.")
+        return docs
 
     def delete_many(self, collection: str, doc_ids: List[ObjectId]):
         """

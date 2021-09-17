@@ -34,6 +34,7 @@ from ..pipelines.utils import (
     _extract,
     _load_composites_data,
     _load_institutions_data,
+    _log_spreadsheets,
     _transform,
 )
 
@@ -233,11 +234,13 @@ def load_spreadsheets(
             gs_institutions_data, unmapped(db_connection_url)
         )
         # load composite data
-        _load_composites_data.map(
+        load_composites_data_task = _load_composites_data.map(
             gs_composites_data,
             unmapped(db_connection_url),
             upstream_tasks=[unmapped(load_institutions_data_task)],
         )
+        # log spreadsheets that were loaded
+        _log_spreadsheets(spreadsheets_data, upstream_tasks=[load_composites_data_task])
 
     # Run the flow
     flow.run(executor=DaskExecutor(cluster.scheduler_address))
