@@ -1,0 +1,15 @@
+name: Test
+
+on:
+  workflow_dispatch
+
+jobs:
+  authorization:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Authorization check
+      uses: octokit/request-action@v2.0.0
+      with:
+        route: GET /repos/${{ github.repository }}/collaborators/${{ github.actor }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
