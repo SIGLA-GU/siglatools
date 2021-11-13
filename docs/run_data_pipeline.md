@@ -40,3 +40,4 @@ In cases where the pipeline failed, here are potential errors and how to change 
 - UnableToFindDocument: In the metadata section of a Google Sheet, make sure the variable_heading and variable_name exactly matches the variable heading and variable name of the corresponding Google Sheet's variable row. For example, in the Constitutional Rights sheet's metadata section, the variable_heading and variable_name must match the variable heading and variable name of the accompanying Google Sheet's rights variable row.
 - IndexError: There's probably an illegal non-empty cell in the data section of a Google Sheet.
 - HttpError 429: The number of Google Sheets read operations has been exhausted. Maybe wait 15-30 minutes and re-run the pipeline by using the re-run workflow button.
+- UnableToAccessSpreadsheet: The script was unable to access the spreadsheet. It could be that the spreadsheet is not located in the PROD folder.
