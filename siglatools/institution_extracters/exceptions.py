@@ -4,6 +4,16 @@
 from typing import Union
 
 
+class UnableToAccessSpreadsheet(Exception):
+    def __init__(self, spreadsheet_id: str, error_msg: str, **kwargs):
+        super().__init__(**kwargs)
+        self.spreadsheet_id = spreadsheet_id
+        self.error_msg = error_msg
+
+    def __str__(self):
+        return f"Unable to access spreadsheet ${self.spreadsheet_id}. ${self.error_msg}"
+
+
 class IncompleteColumnRangeInA1Notation(Exception):
     def __init__(self, sheet_title: str, start_column: str, end_column: int, **kwargs):
         super().__init__(**kwargs)

@@ -7,6 +7,7 @@ from typing import Dict, List, NamedTuple, Optional, Union
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 from ..databases.constants import (
     CompositeVariableField,
@@ -341,20 +342,23 @@ class GoogleSheetsInstitutionExtracter:
         a1_notations: List[A1Notatoin]
             The list of A1Notations, one for each sheet.
         """
-        # Get the spreadsheet
-        spreadsheet_response = self.spreadsheets.get(
-            spreadsheetId=spreadsheet_id
-        ).execute()
-        # Create an A1Notation for each sheet's meta data
-        return [
-            A1Notation(
-                sheet_id=sheet.get("properties").get("sheetId"),
-                sheet_title=sheet.get("properties").get("title"),
-                start_row=1,
-                end_row=2,
-            )
-            for sheet in spreadsheet_response.get("sheets")
-        ]
+        try:
+            # Get the spreadsheet
+            spreadsheet_response = self.spreadsheets.get(
+                spreadsheetId=spreadsheet_id
+            ).execute()
+            # Create an A1Notation for each sheet's meta data
+            return [
+                A1Notation(
+                    sheet_id=sheet.get("properties").get("sheetId"),
+                    sheet_title=sheet.get("properties").get("title"),
+                    start_row=1,
+                    end_row=2,
+                )
+                for sheet in spreadsheet_response.get("sheets")
+            ]
+        except HttpError as http_error:
+            raise exceptions.UnableToAccessSpreadsheet(spreadsheet_id, f"{http_error}")
 
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
         """
