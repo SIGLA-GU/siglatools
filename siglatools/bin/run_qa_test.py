@@ -40,7 +40,7 @@ from ..pipelines.utils import (
     _get_spreadsheet_ids,
     _transform,
 )
-from ..utils.exceptions import ErrorInfo
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -1059,8 +1059,12 @@ def main():
         args = Args()
         dbg = args.debug
         if args.db_env not in [Environment.staging, Environment.production]:
-            raise Exception(
-                "Incorrect database environment specification. Use 'staging' or 'production'."
+            raise InvalidWorkflowInputs(
+                ErrorInfo(
+                    {
+                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                    }
+                )
             )
         run_qa_test(
             args.master_spreadsheet_id,

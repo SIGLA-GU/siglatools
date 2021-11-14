@@ -19,10 +19,17 @@ class BaseError(Exception):
         super().__init__(message)
         self.message = message
         self.info = info
-        sys.stderr.write(f"{self.__class__.__name__}: {self.message} {str(self.info)}\n")
+        sys.stderr.write(
+            f"{self.__class__.__name__}: {self.message} {str(self.info)}\n"
+        )
 
     def __str__(self):
         return f"{self.message} {str(self.info)}"
 
     def __reduce__(self):
         return (self.__class__, self.message, self.info)
+
+
+class InvalidWorkflowInputs(BaseError):
+    def __init__(self, info: ErrorInfo):
+        super().__init__("Missing required input(s).", info)

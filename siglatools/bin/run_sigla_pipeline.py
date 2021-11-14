@@ -30,7 +30,7 @@ from ..pipelines.utils import (
     _log_spreadsheets,
     _transform,
 )
-from ..utils.exceptions import ErrorInfo
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -211,10 +211,16 @@ def main():
         args = Args()
         dbg = args.debug
         if args.master_spreadsheet_id is None:
-            raise Exception("No main spreadsheet id found.")
+            raise InvalidWorkflowInputs(
+                ErrorInfo({"reason": "No main spreadsheet id found."})
+            )
         if args.db_env not in [Environment.staging, Environment.production]:
-            raise Exception(
-                "Incorrect database enviroment specification. Use 'staging' or 'production'."
+            raise InvalidWorkflowInputs(
+                ErrorInfo(
+                    {
+                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                    }
+                )
             )
         log.info(
             f"""Loading all spreadsheets in the master spreadsheet {args.master_spreadsheet_id}""",
