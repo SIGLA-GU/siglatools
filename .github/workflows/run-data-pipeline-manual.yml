@@ -30,12 +30,21 @@ jobs:
       - name: Run Data Pipeline
         run: |
           run_sigla_pipeline -gacp $HOME/secrets/google-api-credentials.json -msi ${{ github.event.inputs.master_spreadsheet_id }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
+      - name: Upload Data Pipeline Errors Artifact
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: data-pipeline-errors
+          path: data-pipeline-errors.txt
       - name: Create tmp dir
+        if: ${{ success() }}
         run: mkdir -p tmp
       - name: Run QA Test
+        if: ${{ success() }}
         run: |
           run_qa_test  -gacp $HOME/secrets/google-api-credentials.json -msi ${{ github.event.inputs.master_spreadsheet_id }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
-      - name: Upload Artifact
+      - name: Upload QA Test Artifact
+        if: ${{ success() }}
         uses: actions/upload-artifact@v2
         with:
           name: qa-test-artifact

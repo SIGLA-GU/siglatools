@@ -27,8 +27,6 @@ jobs:
         run: ./.github/scripts/decrypt_google_api_secret.sh
         env:
           GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
-      - name: Create tmp dir
-        run: mkdir -p tmp
       - name: Load spreadsheets
         run: |
           load_spreadsheets -gacp $HOME/secrets/google-api-credentials.json -ssi ${{ github.event.inputs.spreadsheet_ids }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
@@ -37,7 +35,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: load-spreadsheets-errors
-          path: load-spreadsheets-errors.txt
+          path: data-pipeline-errors.txt
+      - name: Create tmp dir
+        if: ${{ success() }}
+        run: mkdir -p tmp
       - name: Run QA Test
         if: ${{ success() }}
         run: |
