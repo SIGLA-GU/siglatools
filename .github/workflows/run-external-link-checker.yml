@@ -11,26 +11,25 @@ jobs:
   external_link_checker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install Dependencies
-      run: |
-        pip install --upgrade pip setuptools wheel
-        pip install .[all]
-    - uses: actions/checkout@v2
-    - name: Decrypt Google API secret
-      run: ./.github/scripts/decrypt_google_api_secret.sh
-      env:
-        GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
-    - name: Run External Link Checker
-      run: |
-        run_external_link_checker -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: external-link-artifact
-        path: external_links.csv
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install .[all]
+      - name: Decrypt Google API secret
+        run: ./.github/scripts/decrypt_google_api_secret.sh
+        env:
+          GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
+      - name: Run External Link Checker
+        run: |
+          run_external_link_checker -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: external-link-artifact
+          path: external_links.csv
   
