@@ -25,6 +25,7 @@ from siglatools import get_module_version
 
 from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import SheetData, convert_rowcol_to_A1_name
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import _extract, _get_spreadsheet_ids
 
 ###############################################################################
@@ -280,6 +281,8 @@ def run_external_link_checker(
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    if state.is_failed():
+        raise PrefectFlowFailure(flow.name)
     # Get the list of CheckedURL
     checked_links = state.result[flow.get_tasks(name="_check_external_link")[0]].result
     log.info("=" * 80)

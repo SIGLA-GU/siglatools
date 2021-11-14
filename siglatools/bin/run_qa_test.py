@@ -33,6 +33,7 @@ from ..databases.constants import (
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat, MetaDataField
 from ..institution_extracters.utils import FormattedSheetData
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
@@ -878,7 +879,7 @@ def run_qa_test(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("Run QA Test") as flow:
+    with Flow("QA Test") as flow:
         # get a list of spreadsheet ids
         spreadsheet_ids = _get_spreadsheet_ids(
             master_spreadsheet_id, google_api_credentials_path, spreadsheet_ids_str
@@ -945,6 +946,8 @@ def run_qa_test(
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    if state.is_failed():
+        raise PrefectFlowFailure(flow.name)
     # get write comparison tasks
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
     # get the comparisons

@@ -23,6 +23,7 @@ from siglatools import get_module_version
 from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.exceptions import InvalidDateRange
 from ..institution_extracters.utils import SheetData
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import _extract, _get_spreadsheet_ids
 
 ###############################################################################
@@ -222,6 +223,10 @@ def get_next_uv_dates(
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    # Check the flow's final state
+    if state.is_failed():
+        raise PrefectFlowFailure(flow.name)
+
     # Get the list of CheckedNextUVDates
     checked_next_uv_dates = state.result[
         flow.get_tasks(name="_check_next_uv_date")[0]

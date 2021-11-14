@@ -20,6 +20,7 @@ from siglatools import get_module_version
 from ..databases import MongoDBDatabase
 from ..databases.constants import Environment
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
@@ -79,7 +80,7 @@ def run_sigla_pipeline(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("ETL Pipeline") as flow:
+    with Flow("SIGLA Data Pipeline") as flow:
         # Delete all documents from db
         clean_up_task = _clean_up(db_connection_url)
         # Get spreadsheet ids
@@ -129,7 +130,9 @@ def run_sigla_pipeline(
         _log_spreadsheets(spreadsheets_data, upstream_tasks=[load_composites_data_task])
 
     # Run the flow
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    if state.is_failed():
+        raise PrefectFlowFailure(flow.name)
 
 
 ###############################################################################

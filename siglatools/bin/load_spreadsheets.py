@@ -29,6 +29,7 @@ from ..databases.constants import (
 )
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
@@ -243,7 +244,10 @@ def load_spreadsheets(
         _log_spreadsheets(spreadsheets_data, upstream_tasks=[load_composites_data_task])
 
     # Run the flow
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    # Check the flow's final state
+    if state.is_failed():
+        raise PrefectFlowFailure(flow.name)
 
 
 ###############################################################################
