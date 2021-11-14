@@ -562,7 +562,17 @@ class GoogleSheetsInstitutionExtracter:
                     get_data_key
                 ]
             )
-            formatted_data = get_data_function(sheet_data)
+            try:
+                formatted_data = get_data_function(sheet_data)
+            except Exception:
+                raise exceptions.UnableToCreateFormattedSheetData(
+                    ErrorInfo(
+                        {
+                            GoogleSheetsInfoField.spreadsheet_title: sheet_data.spreadsheet_title,
+                            GoogleSheetsInfoField.sheet_title: sheet_data.sheet_title,
+                        }
+                    )
+                )
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
                 ErrorInfo(

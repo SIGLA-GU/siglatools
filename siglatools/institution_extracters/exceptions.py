@@ -29,3 +29,8 @@ class UnrecognizedGoogleSheetsFormat(BaseError):
 class InvalidDateRange(BaseError):
     def __init__(self, info: ErrorInfo):
         super().__init__("Invalid date range.", info)
+
+
+class UnableToCreateFormattedSheetData(BaseError):
+    def __init__(self, info: ErrorInfo):
+        super().__init__("The sheet data is invalid.", info)
