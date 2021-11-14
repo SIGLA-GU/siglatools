@@ -16,9 +16,10 @@ from ..databases.constants import (
     VariableField,
     VariableType,
 )
+from ..utils.exceptions import ErrorInfo
 from . import exceptions
 from .constants import GoogleSheetsFormat as gs_format
-from .constants import MetaDataField
+from .constants import GoogleSheetsInfoField, MetaDataField
 from .utils import FormattedSheetData, SheetData, create_institution_sub_category
 
 ###############################################################################
@@ -287,7 +288,13 @@ class GoogleSheetsInstitutionExtracter:
         if int(a1_notation.start_row) > int(a1_notation.end_row):
             # Start row is greater than end row
             raise exceptions.InvalidRangeInA1Notation(
-                a1_notation.sheet_title, a1_notation.start_row, a1_notation.end_row
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
+                        MetaDataField.start_row: a1_notation.start_row,
+                        MetaDataField.end_row: a1_notation.end_row,
+                    }
+                )
             )
         elif (
             a1_notation.start_column is not None and a1_notation.end_column is not None
@@ -296,17 +303,25 @@ class GoogleSheetsInstitutionExtracter:
             if len(a1_notation.start_column) > len(a1_notation.end_column):
                 # Length of start column is greater than length end column
                 raise exceptions.InvalidRangeInA1Notation(
-                    a1_notation.sheet_title,
-                    a1_notation.start_column,
-                    a1_notation.end_column,
+                    ErrorInfo(
+                        {
+                            GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
+                            MetaDataField.start_column: a1_notation.start_column,
+                            MetaDataField.end_column: a1_notation.end_column,
+                        }
+                    )
                 )
             elif len(a1_notation.start_column) == len(a1_notation.end_column):
                 if a1_notation.start_column > a1_notation.end_column:
                     # Start column is greater than end column
                     raise exceptions.InvalidRangeInA1Notation(
-                        a1_notation.sheet_title,
-                        a1_notation.start_column,
-                        a1_notation.end_column,
+                        ErrorInfo(
+                            {
+                                GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
+                                MetaDataField.start_column: a1_notation.start_column,
+                                MetaDataField.end_column: a1_notation.end_column,
+                            }
+                        )
                     )
                 else:
                     # Start column is less than or equal to end column
@@ -320,9 +335,13 @@ class GoogleSheetsInstitutionExtracter:
         ):
             # Either start column or end column is present
             raise exceptions.IncompleteColumnRangeInA1Notation(
-                a1_notation.sheet_title,
-                a1_notation.start_column,
-                a1_notation.end_column,
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
+                        MetaDataField.start_column: a1_notation.start_column,
+                        MetaDataField.end_column: a1_notation.end_column,
+                    }
+                )
             )
         else:
             # Neither start column nor end column is present
@@ -358,7 +377,14 @@ class GoogleSheetsInstitutionExtracter:
                 for sheet in spreadsheet_response.get("sheets")
             ]
         except HttpError as http_error:
-            raise exceptions.UnableToAccessSpreadsheet(spreadsheet_id, f"{http_error}")
+            raise exceptions.UnableToAccessSpreadsheet(
+                ErrorInfo(
+                    {
+                        InstitutionField.spreadsheet_id: spreadsheet_id,
+                        "error": f"{http_error}",
+                    }
+                )
+            )
 
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
         """
@@ -539,9 +565,18 @@ class GoogleSheetsInstitutionExtracter:
             formatted_data = get_data_function(sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
-                sheet_data.sheet_title,
-                sheet_data.meta_data.get(MetaDataField.format),
-                sheet_data.meta_data.get(MetaDataField.data_type),
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.spreadsheet_title: sheet_data.spreadsheet_title,
+                        GoogleSheetsInfoField.sheet_title: sheet_data.sheet_title,
+                        MetaDataField.format: sheet_data.meta_data.get(
+                            MetaDataField.format
+                        ),
+                        MetaDataField.data_type: sheet_data.meta_data.get(
+                            MetaDataField.data_type
+                        ),
+                    }
+                )
             )
 
         return FormattedSheetData(

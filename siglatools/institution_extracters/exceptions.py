@@ -11,7 +11,7 @@ class UnableToAccessSpreadsheet(BaseError):
 
 class IncompleteColumnRangeInA1Notation(BaseError):
     def __init__(self, info: ErrorInfo):
-        super().__init__("Metadata's start_column or end_column is missing.", info)
+        super().__init__("A1 Notation's start_column or end_column is missing.", info)
 
 
 class InvalidRangeInA1Notation(BaseError):
