@@ -40,6 +40,7 @@ from ..pipelines.utils import (
     _get_spreadsheet_ids,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo
 
 ###############################################################################
 
@@ -947,7 +948,7 @@ def run_qa_test(
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     if state.is_failed():
-        raise PrefectFlowFailure(flow.name)
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
     # get write comparison tasks
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
     # get the comparisons

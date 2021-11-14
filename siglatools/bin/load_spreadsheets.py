@@ -38,6 +38,7 @@ from ..pipelines.utils import (
     _log_spreadsheets,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo
 
 ###############################################################################
 
@@ -247,7 +248,7 @@ def load_spreadsheets(
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     # Check the flow's final state
     if state.is_failed():
-        raise PrefectFlowFailure(flow.name)
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
 
 
 ###############################################################################

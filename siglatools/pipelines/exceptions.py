@@ -1,7 +1,9 @@
-class PrefectFlowFailure(Exception):
-    def __init__(self, flow_name: str, **kwargs):
-        super().__init__(**kwargs)
-        self.flow_name = flow_name
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-    def __str__(self):
-        return f"{self.flow_name} failed."
+from ..utils.exceptions import BaseError, ErrorInfo
+
+
+class PrefectFlowFailure(BaseError):
+    def __init__(self, info: ErrorInfo):
+        super().__init__("Prefect flow failed.", info)

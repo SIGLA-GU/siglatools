@@ -228,7 +228,7 @@ def get_next_uv_dates(
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     # Check the flow's final state
     if state.is_failed():
-        raise PrefectFlowFailure(flow.name)
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
 
     # Get the list of CheckedNextUVDates
     checked_next_uv_dates = state.result[

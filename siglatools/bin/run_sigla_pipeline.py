@@ -30,6 +30,7 @@ from ..pipelines.utils import (
     _log_spreadsheets,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo
 
 ###############################################################################
 
@@ -132,7 +133,7 @@ def run_sigla_pipeline(
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
     if state.is_failed():
-        raise PrefectFlowFailure(flow.name)
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
 
 
 ###############################################################################
