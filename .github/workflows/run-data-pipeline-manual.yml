@@ -29,7 +29,7 @@ jobs:
           GOOGLE_API_SECRET_PASSPHRASE: ${{ secrets.GOOGLE_API_SECRET_PASSPHRASE }}
       - name: Run Data Pipeline
         run: |
-          run_sigla_pipeline -gacp $HOME/secrets/google-api-credentials.json -msi ${{ github.event.inputs.master_spreadsheet_id }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
+          run_sigla_pipeline -gacp $HOME/secrets/google-api-credentials.json -msi ${{ github.event.inputs.master_spreadsheet_id }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }} 2>data-pipeline-errors.txt
       - name: Upload Data Pipeline Errors Artifact
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
