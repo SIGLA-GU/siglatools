@@ -234,8 +234,8 @@ def _check_external_link(url_data: URLData) -> CheckedURL:
 
 
 def run_external_link_checker(
-    master_spreadsheet_id: str,
     google_api_credentials_path: str,
+    master_spreadsheet_id: Optional[str] = None,
     spreadsheet_ids_str: Optional[str] = None,
 ):
     """
@@ -393,9 +393,9 @@ def main():
         args = Args()
         dbg = args.debug
         run_external_link_checker(
-            args.master_spreadsheet_id,
-            args.google_api_credentials_path,
-            args.spreadsheet_ids,
+            master_spreadsheet_id=args.master_spreadsheet_id,
+            google_api_credentials_path=args.google_api_credentials_path,
+            spreadsheet_ids_str=args.spreadsheet_ids,
         )
     except Exception as e:
         log.error("=============================================")

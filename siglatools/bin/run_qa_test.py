@@ -856,9 +856,9 @@ def _write_extra_db_institutions(
 
 
 def run_qa_test(
-    master_spreadsheet_id: str,
     db_connection_url: str,
     google_api_credentials_path: str,
+    master_spreadsheet_id: Optional[str] = None,
     spreadsheet_ids_str: Optional[str] = None,
 ):
     """
@@ -1066,13 +1066,16 @@ def main():
                     }
                 )
             )
-        run_qa_test(
-            args.master_spreadsheet_id,
+        db_connection_url = (
             args.staging_db_connection_url
             if args.db_env == Environment.staging
             else args.prod_db_connection_url,
-            args.google_api_credentials_path,
-            args.spreadsheet_ids,
+        )
+        run_qa_test(
+            master_spreadsheet_id=args.master_spreadsheet_id,
+            db_connection_url=db_connection_url,
+            google_api_credentials_path=args.google_api_credentials_path,
+            spreadsheet_ids_str=args.spreadsheet_ids,
         )
     except Exception as e:
         log.error("=============================================")
