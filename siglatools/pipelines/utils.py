@@ -12,6 +12,7 @@ from ..databases import MongoDBDatabase
 from ..institution_extracters import GoogleSheetsInstitutionExtracter
 from ..institution_extracters.constants import MetaDataField
 from ..institution_extracters.utils import FormattedSheetData, SheetData
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -47,21 +48,27 @@ def _get_spreadsheet_ids(
     spreadsheet_ids: List[str]
         The list of spreadsheet ids.
     """
-    # If spreadsheet ids are provided
-    if spreadsheet_ids_str:
-        return [
-            spreadsheet_id.strip() for spreadsheet_id in spreadsheet_ids_str.split(",")
-        ]
 
-    # If spreadsheet ids are not provided
-    # Create a connection to the google sheets reader
-    google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
-        google_api_credentials_path
-    )
-    # Get the list of spreadsheets ids from the master spreadsheet
-    spreadsheet_ids = google_sheets_institution_extracter.get_spreadsheet_ids(
-        master_spreadsheet_id
-    )
+    spreadsheet_ids = []
+    if spreadsheet_ids_str:
+        # If spreadsheet ids are provided
+        spreadsheet_ids = [
+            spreadsheet_id.strip()
+            for spreadsheet_id in spreadsheet_ids_str.split(",")
+            if spreadsheet_id.strip()
+        ]
+    elif master_spreadsheet_id:
+        # If spreadsheet ids are not provided
+        # Create a connection to the google sheets reader
+        google_sheets_institution_extracter = GoogleSheetsInstitutionExtracter(
+            google_api_credentials_path
+        )
+        # Get the list of spreadsheets ids from the master spreadsheet
+        spreadsheet_ids = google_sheets_institution_extracter.get_spreadsheet_ids(
+            master_spreadsheet_id
+        )
+    if not spreadsheet_ids:
+        raise InvalidWorkflowInputs(ErrorInfo({"reason": "No spreadsheet ids found."}))
     return spreadsheet_ids
 
 
