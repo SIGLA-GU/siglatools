@@ -450,7 +450,7 @@ class GoogleSheetsInstitutionExtracter:
         try:
             # Get an A1Notation for each sheet's meta data
             meta_data_a1_notations = self._get_meta_data_a1_notations(
-                spreadshet_id=spreadsheet_id
+                spreadsheet_id=spreadsheet_id
             )
             # Get the spreadsheet title
             spreadsheet_response = self.spreadsheets.get(
@@ -475,7 +475,6 @@ class GoogleSheetsInstitutionExtracter:
 
             # Create a1 notations to get next uv dates
             next_uv_date_a1_notations = self._get_next_uv_dates_a1_annotations(
-                spreadsheet_id=spreadsheet_id,
                 a1_notations=meta_data_a1_notations,
                 meta_data=meta_data,
             )
