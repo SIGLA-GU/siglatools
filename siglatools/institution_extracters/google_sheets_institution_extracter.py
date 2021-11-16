@@ -460,7 +460,7 @@ class GoogleSheetsInstitutionExtracter:
             # Get the meta data for each sheet
             meta_data = self._get_meta_data(
                 spreadsheet_id=spreadsheet_id,
-                meta_data_a1_notations=meta_data_a1_notations,
+                a1_notations=meta_data_a1_notations,
             )
             # Use the meta datum to create an a1 notation to get the datum of each sheet
             bounding_box_a1_notations = self._get_data_a1_notations(
