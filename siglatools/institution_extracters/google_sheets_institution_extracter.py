@@ -3,7 +3,7 @@
 
 import logging
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Union
+from typing import Dict, List, NamedTuple, Optional, Union, Any
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -20,7 +20,11 @@ from ..utils.exceptions import ErrorInfo
 from . import exceptions
 from .constants import GoogleSheetsFormat as gs_format
 from .constants import GoogleSheetsInfoField, MetaDataField
-from .utils import FormattedSheetData, SheetData, create_institution_sub_category
+from .utils import (
+    FormattedSheetData,
+    SheetData,
+    create_institution_sub_category,
+)
 
 ###############################################################################
 
@@ -210,6 +214,62 @@ class A1Notation(NamedTuple):
     start_column: Optional[str] = None
     end_column: Optional[str] = None
 
+    def raise_for_validity(self) -> None:
+        """
+        Raise an error if the a1 notation is invalid.
+        https://developers.google.com/sheets/api/guides/concepts#a1_notation
+
+        For a description of an A1 notation, please view the A1Notation class atttributes.
+        """
+
+        if int(self.start_row) > int(self.end_row):
+            # Start row is greater than end row
+            raise exceptions.InvalidRangeInA1Notation(
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.sheet_title: self.sheet_title,
+                        MetaDataField.start_row: self.start_row,
+                        MetaDataField.end_row: self.end_row,
+                    }
+                )
+            )
+        elif self.start_column is not None and self.end_column is not None:
+            # Start and end column are both present
+            if len(self.start_column) > len(self.end_column):
+                # Length of start column is greater than length end column
+                raise exceptions.InvalidRangeInA1Notation(
+                    ErrorInfo(
+                        {
+                            GoogleSheetsInfoField.sheet_title: self.sheet_title,
+                            MetaDataField.start_column: self.start_column,
+                            MetaDataField.end_column: self.end_column,
+                        }
+                    )
+                )
+            elif len(self.start_column) == len(self.end_column):
+                if self.start_column > self.end_column:
+                    # Start column is greater than end column
+                    raise exceptions.InvalidRangeInA1Notation(
+                        ErrorInfo(
+                            {
+                                GoogleSheetsInfoField.sheet_title: self.sheet_title,
+                                MetaDataField.start_column: self.start_column,
+                                MetaDataField.end_column: self.end_column,
+                            }
+                        )
+                    )
+        elif any(field is not None for field in [self.start_column, self.end_column]):
+            # Either start column or end column is present
+            raise exceptions.IncompleteColumnRangeInA1Notation(
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.sheet_title: self.sheet_title,
+                        MetaDataField.start_column: self.start_column,
+                        MetaDataField.end_column: self.end_column,
+                    }
+                )
+            )
+
     def __str__(self) -> str:
         """
         Returns str representation of the a1 notation.
@@ -240,114 +300,10 @@ class GoogleSheetsInstitutionExtracter:
         # Store the spreadsheets service
         self.spreadsheets = service.spreadsheets()
 
-    @staticmethod
-    def _construct_a1_notation(a1_notation: A1Notation) -> str:
-        """
-        Construction an A1 Notation str
-        https://developers.google.com/sheets/api/guides/concepts#a1_notation
-
-        For a description of an A1 notation, please view the A1Notation class atttributes.
-
-        Parameters
-        ----------
-        a1_notation: A1Notation
-            The attributes of an A1 notation
-
-        Returns
-        ----------
-        a1_notation: str
-            The str representation of an A1 notation.
-
-        Examples
-        ----------
-        ```
-        # Get A1 notation for the all the cells in top two rows of Sheet1
-        GoogleSheetsInstitutionExtracter.__construct_a1_notation(
-            A1Notation(
-                sheet_id="0",
-                sheet_title="Sheet1",
-                start_row=1,
-                end_row=2,
-            )
-        )
-
-        # Get A1 notation for the first two cells in the top two rows of Sheet1
-        GoogleSheetsInstitutionExtracter.__construct_a1_notation(
-            A1Notation(
-                sheet_id="0",
-                sheet_title="Sheet1",
-                start_row=1,
-                end_row=2,
-                start_column="A",
-                end_column="B",
-            )
-        )
-        ```
-        """
-
-        if int(a1_notation.start_row) > int(a1_notation.end_row):
-            # Start row is greater than end row
-            raise exceptions.InvalidRangeInA1Notation(
-                ErrorInfo(
-                    {
-                        GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
-                        MetaDataField.start_row: a1_notation.start_row,
-                        MetaDataField.end_row: a1_notation.end_row,
-                    }
-                )
-            )
-        elif (
-            a1_notation.start_column is not None and a1_notation.end_column is not None
-        ):
-            # Start and end column are both present
-            if len(a1_notation.start_column) > len(a1_notation.end_column):
-                # Length of start column is greater than length end column
-                raise exceptions.InvalidRangeInA1Notation(
-                    ErrorInfo(
-                        {
-                            GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
-                            MetaDataField.start_column: a1_notation.start_column,
-                            MetaDataField.end_column: a1_notation.end_column,
-                        }
-                    )
-                )
-            elif len(a1_notation.start_column) == len(a1_notation.end_column):
-                if a1_notation.start_column > a1_notation.end_column:
-                    # Start column is greater than end column
-                    raise exceptions.InvalidRangeInA1Notation(
-                        ErrorInfo(
-                            {
-                                GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
-                                MetaDataField.start_column: a1_notation.start_column,
-                                MetaDataField.end_column: a1_notation.end_column,
-                            }
-                        )
-                    )
-                else:
-                    # Start column is less than or equal to end column
-                    return str(a1_notation)
-            else:
-                # Length of start column is less than end column
-                return str(a1_notation)
-        elif any(
-            field is not None
-            for field in [a1_notation.start_column, a1_notation.end_column]
-        ):
-            # Either start column or end column is present
-            raise exceptions.IncompleteColumnRangeInA1Notation(
-                ErrorInfo(
-                    {
-                        GoogleSheetsInfoField.sheet_title: a1_notation.sheet_title,
-                        MetaDataField.start_column: a1_notation.start_column,
-                        MetaDataField.end_column: a1_notation.end_column,
-                    }
-                )
-            )
-        else:
-            # Neither start column nor end column is present
-            return str(a1_notation)
-
-    def _get_meta_data_a1_notations(self, spreadsheet_id: str) -> List[A1Notation]:
+    def _get_meta_data_a1_notations(
+        self,
+        spreadsheet_id: str,
+    ) -> List[A1Notation]:
         """
         Construct an A1Notation for each sheet from its first two rows of meta data
 
@@ -361,30 +317,121 @@ class GoogleSheetsInstitutionExtracter:
         a1_notations: List[A1Notatoin]
             The list of A1Notations, one for each sheet.
         """
-        try:
-            # Get the spreadsheet
-            spreadsheet_response = self.spreadsheets.get(
-                spreadsheetId=spreadsheet_id
-            ).execute()
-            # Create an A1Notation for each sheet's meta data
-            return [
-                A1Notation(
-                    sheet_id=sheet.get("properties").get("sheetId"),
-                    sheet_title=sheet.get("properties").get("title"),
-                    start_row=1,
-                    end_row=2,
-                )
-                for sheet in spreadsheet_response.get("sheets")
-            ]
-        except HttpError as http_error:
-            raise exceptions.UnableToAccessSpreadsheet(
-                ErrorInfo(
-                    {
-                        InstitutionField.spreadsheet_id: spreadsheet_id,
-                        "error": f"{http_error}",
-                    }
-                )
+        # Get the spreadsheet
+        spreadsheet_response = self.spreadsheets.get(
+            spreadsheetId=spreadsheet_id
+        ).execute()
+        # Create an A1Notation for each sheet's meta data
+        return [
+            A1Notation(
+                sheet_id=sheet.get("properties").get("sheetId"),
+                sheet_title=sheet.get("properties").get("title"),
+                start_row=1,
+                end_row=2,
             )
+            for sheet in spreadsheet_response.get("sheets")
+        ]
+
+    def _get_meta_data(
+        self, spreadsheet_id: str, a1_notations: List[A1Notation]
+    ) -> List[Dict[str, str]]:
+        "Get the rows specified by the a1 notations"
+        # Get the meta data for each sheet
+        meta_data_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[str(a1_notation) for a1_notation in a1_notations],
+                majorDimension="COLUMNS",
+            )
+            .execute()
+        )
+        # Get data within a range (specified by an a1 notation) for each sheet
+        meta_data_value_ranges = meta_data_response.get("valueRanges")
+        # print(meta_data_value_ranges)
+        # Create the meta datum for each sheet
+        meta_data = [
+            {value[0].strip(): value[1].strip() for value in value_range.get("values")}
+            for value_range in meta_data_value_ranges
+        ]
+
+        return meta_data
+
+    def _get_data_a1_notations(
+        self, a1_notations: List[A1Notation], meta_data: List[Dict[str, str]]
+    ) -> List[A1Notation]:
+        # Use the meta datum to create an a1 notation to get the datum of each sheet
+        bounding_box_a1_notations = [
+            A1Notation(
+                sheet_id=a1_notations[i].sheet_id,
+                sheet_title=a1_notations[i].sheet_title,
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.start_column),
+                end_column=meta_datum.get(MetaDataField.end_column),
+            )
+            for i, meta_datum in enumerate(meta_data)
+        ]
+
+        for a1_anotation in bounding_box_a1_notations:
+            a1_anotation.raise_for_validity()
+
+        return bounding_box_a1_notations
+
+    def _get_data(self, spreadsheet_id: str, a1_notations: List[A1Notation]) -> List[List[List[Any]]]:
+        data_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[str(a1_notation) for a1_notation in a1_notations],
+                majorDimension="ROWS",
+            )
+            .execute()
+        )
+        data = [
+            value_range.get("values")
+            for value_range in data_response.get("valueRanges")
+        ]
+
+        return data
+
+    def _get_next_uv_dates_a1_annotations(
+        self, a1_notations: List[A1Notation], meta_data: List[Dict[str, str]]
+    ) -> List[A1Notation]:
+        # Create a1 notations to get next uv dates
+        next_uv_date_a1_notations = [
+            A1Notation(
+                sheet_id=a1_notations[i].sheet_id,
+                sheet_title=a1_notations[i].sheet_title,
+                start_row=int(meta_datum.get(MetaDataField.start_row)),
+                end_row=int(meta_datum.get(MetaDataField.end_row)),
+                start_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
+                end_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
+            )
+            for i, meta_datum in enumerate(meta_data)
+            if meta_datum.get(MetaDataField.date_of_next_uv_column) is not None
+        ]
+        for a1_notation in next_uv_date_a1_notations:
+            a1_notation.raise_for_validity()
+        return next_uv_date_a1_notations
+
+    def _get_next_uv_dates_data(
+        self, spreadsheet_id: str, a1_notations: List[A1Notation]
+    ) -> List[List[Any]]:
+        next_uv_date_response = (
+            self.spreadsheets.values()
+            .batchGet(
+                spreadsheetId=spreadsheet_id,
+                ranges=[str(a1_notation) for a1_notation in a1_notations],
+                majorDimension="COLUMNS",
+            )
+            .execute()
+        )
+        next_uv_date_data = [
+            value_range.get("values")[0]
+            for value_range in next_uv_date_response.get("valueRanges") or []
+        ]
+        return next_uv_date_data
 
     def get_spreadsheet_data(self, spreadsheet_id: str) -> List[SheetData]:
         """
@@ -400,94 +447,47 @@ class GoogleSheetsInstitutionExtracter:
         spreadsheet_data: List[SheetData]
             The spreadsheet data. Please the SheetData class to view its attributes.
         """
-        # Get an A1Notation for each sheet's meta data
-        meta_data_a1_notations = self._get_meta_data_a1_notations(spreadsheet_id)
-        # Get the spreadsheet title
-        spreadsheet_response = self.spreadsheets.get(
-            spreadsheetId=spreadsheet_id
-        ).execute()
-        spreadsheet_title = spreadsheet_response.get("properties").get("title")
-        # Get the meta data for each sheet
-        meta_data_response = (
-            self.spreadsheets.values()
-            .batchGet(
-                spreadsheetId=spreadsheet_id,
-                ranges=[
-                    self._construct_a1_notation(a1_notation)
-                    for a1_notation in meta_data_a1_notations
-                ],
-                majorDimension="COLUMNS",
+        try:
+            # Get an A1Notation for each sheet's meta data
+            meta_data_a1_notations = self._get_meta_data_a1_notations(
+                spreadshet_id=spreadsheet_id
             )
-            .execute()
-        )
-        # Get data within a range (specified by an a1 notation) for each sheet
-        meta_data_value_ranges = meta_data_response.get("valueRanges")
-        # print(meta_data_value_ranges)
-        # Create the meta datum for each sheet
-        meta_data = [
-            {value[0].strip(): value[1].strip() for value in value_range.get("values")}
-            for value_range in meta_data_value_ranges
-        ]
-        # Use the meta datum to create an a1 notation to get the datum of each sheet
-        bounding_box_a1_notations = [
-            A1Notation(
-                sheet_id=meta_data_a1_notations[i].sheet_id,
-                sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get(MetaDataField.start_row)),
-                end_row=int(meta_datum.get(MetaDataField.end_row)),
-                start_column=meta_datum.get(MetaDataField.start_column),
-                end_column=meta_datum.get(MetaDataField.end_column),
+            # Get the spreadsheet title
+            spreadsheet_response = self.spreadsheets.get(
+                spreadsheetId=spreadsheet_id
+            ).execute()
+            spreadsheet_title = spreadsheet_response.get("properties").get("title")
+            # Get the meta data for each sheet
+            meta_data = self._get_meta_data(
+                spreadsheet_id=spreadsheet_id,
+                meta_data_a1_notations=meta_data_a1_notations,
             )
-            for i, meta_datum in enumerate(meta_data)
-        ]
-        # Get data within a range (specified by an a1 notation) for each sheet
-        data_response = (
-            self.spreadsheets.values()
-            .batchGet(
-                spreadsheetId=spreadsheet_id,
-                ranges=[
-                    self._construct_a1_notation(a1_notation)
-                    for a1_notation in bounding_box_a1_notations
-                ],
-                majorDimension="ROWS",
+            # Use the meta datum to create an a1 notation to get the datum of each sheet
+            bounding_box_a1_notations = self._get_data_a1_notations(
+                a1_notations=meta_data_a1_notations,
+                meta_data=meta_data,
             )
-            .execute()
-        )
-        data = [
-            value_range.get("values")
-            for value_range in data_response.get("valueRanges")
-        ]
+            # Get data within a range (specified by an a1 notation) for each sheet
+            data = self._get_data(
+                spreadsheet_id=spreadsheet_id,
+                a1_notations=bounding_box_a1_notations,
+            )
 
-        # Create a1 notations to get next uv dates
-        next_uv_date_a1_notations = [
-            A1Notation(
-                sheet_id=meta_data_a1_notations[i].sheet_id,
-                sheet_title=meta_data_a1_notations[i].sheet_title,
-                start_row=int(meta_datum.get(MetaDataField.start_row)),
-                end_row=int(meta_datum.get(MetaDataField.end_row)),
-                start_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
-                end_column=meta_datum.get(MetaDataField.date_of_next_uv_column),
+            # Create a1 notations to get next uv dates
+            next_uv_date_a1_notations = self._get_next_uv_dates_a1_annotations(
+                spreadsheet_id=spreadsheet_id,
+                a1_notations=meta_data_a1_notations,
+                meta_data=meta_data,
             )
-            for i, meta_datum in enumerate(meta_data)
-            if meta_datum.get(MetaDataField.date_of_next_uv_column) is not None
-        ]
-        # Get the next uv dates
-        next_uv_date_response = (
-            self.spreadsheets.values()
-            .batchGet(
-                spreadsheetId=spreadsheet_id,
-                ranges=[
-                    self._construct_a1_notation(a1_notation)
-                    for a1_notation in next_uv_date_a1_notations
-                ],
-                majorDimension="COLUMNS",
+            # Get the next uv dates
+            next_uv_date_data = self._get_next_uv_dates_data(
+                spreadsheet_id=spreadsheet_id, a1_notations=next_uv_date_a1_notations
             )
-            .execute()
-        )
-        next_uv_date_data = [
-            value_range.get("values")[0]
-            for value_range in next_uv_date_response.get("valueRanges") or []
-        ]
+        except HttpError as http_error:
+            raise exceptions.UnableToAccessSpreadsheet(
+                ErrorInfo({GoogleSheetsInfoField.spreadsheet_title: spreadsheet_title, "reason": f"{http_error}"})
+            )
+
         next_uv_date_data_iter = iter(next_uv_date_data)
 
         log.info(f"Finished extracting spreadsheet {spreadsheet_title}")
