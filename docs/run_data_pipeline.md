@@ -41,3 +41,6 @@ In cases where the pipeline failed, here are potential errors and how to change 
 - IndexError: There's probably an illegal non-empty cell in the data section of a Google Sheet.
 - HttpError 429: The number of Google Sheets read operations has been exhausted. Maybe wait 15-30 minutes and re-run the pipeline by using the re-run workflow button.
 - UnableToAccessSpreadsheet: The script was unable to access the spreadsheet. It could be that the spreadsheet is not located in the PROD folder.
+- UnableToCreateFormattedSheetData: The script was unable to parse the Googlesheet data.
+- PrefectFlowFailure: The script failed to complete without errors.
+- InvalidWorkflowInputs: The inputs to the script are invalid.
