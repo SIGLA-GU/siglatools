@@ -29,6 +29,7 @@ from ..databases.constants import (
 )
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
@@ -37,6 +38,7 @@ from ..pipelines.utils import (
     _log_spreadsheets,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -243,7 +245,10 @@ def load_spreadsheets(
         _log_spreadsheets(spreadsheets_data, upstream_tasks=[load_composites_data_task])
 
     # Run the flow
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    # Check the flow's final state
+    if state.is_failed():
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
 
 
 ###############################################################################
@@ -322,13 +327,21 @@ def main():
         args = Args()
         dbg = args.debug
         spreadsheet_ids = [
-            spreadsheet_id.strip() for spreadsheet_id in args.spreadsheet_ids.split(",")
+            spreadsheet_id.strip()
+            for spreadsheet_id in args.spreadsheet_ids.split(",")
+            if spreadsheet_id.strip()
         ]
         if not spreadsheet_ids:
-            raise Exception("No spreadsheet ids found.")
+            raise InvalidWorkflowInputs(
+                ErrorInfo({"reason": "No spreadsheet ids found."})
+            )
         if args.db_env not in [Environment.staging, Environment.production]:
-            raise Exception(
-                "Incorrect database enviroment specification. Use 'staging' or 'production'."
+            raise InvalidWorkflowInputs(
+                ErrorInfo(
+                    {
+                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                    }
+                )
             )
         db_connection_url = (
             args.staging_db_connection_url

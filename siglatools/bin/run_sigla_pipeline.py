@@ -20,6 +20,7 @@ from siglatools import get_module_version
 from ..databases import MongoDBDatabase
 from ..databases.constants import Environment
 from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
@@ -29,6 +30,7 @@ from ..pipelines.utils import (
     _log_spreadsheets,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -79,7 +81,7 @@ def run_sigla_pipeline(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("ETL Pipeline") as flow:
+    with Flow("SIGLA Data Pipeline") as flow:
         # Delete all documents from db
         clean_up_task = _clean_up(db_connection_url)
         # Get spreadsheet ids
@@ -129,7 +131,9 @@ def run_sigla_pipeline(
         _log_spreadsheets(spreadsheets_data, upstream_tasks=[load_composites_data_task])
 
     # Run the flow
-    flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    if state.is_failed():
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
 
 
 ###############################################################################
@@ -207,10 +211,16 @@ def main():
         args = Args()
         dbg = args.debug
         if args.master_spreadsheet_id is None:
-            raise Exception("No main spreadsheet id found.")
+            raise InvalidWorkflowInputs(
+                ErrorInfo({"reason": "No main spreadsheet id found."})
+            )
         if args.db_env not in [Environment.staging, Environment.production]:
-            raise Exception(
-                "Incorrect database enviroment specification. Use 'staging' or 'production'."
+            raise InvalidWorkflowInputs(
+                ErrorInfo(
+                    {
+                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                    }
+                )
             )
         log.info(
             f"""Loading all spreadsheets in the master spreadsheet {args.master_spreadsheet_id}""",

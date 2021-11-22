@@ -5,22 +5,22 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from bson.objectid import ObjectId
-from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateOne, UpdateMany
+from pymongo import DeleteMany, MongoClient, ReturnDocument, UpdateMany, UpdateOne
 
 from ..institution_extracters import exceptions
-from ..institution_extracters.constants import (
-    GoogleSheetsFormat as gs_format,
-    MetaDataField,
-)
+from ..institution_extracters.constants import GoogleSheetsFormat as gs_format
+from ..institution_extracters.constants import GoogleSheetsInfoField, MetaDataField
 from ..institution_extracters.utils import FormattedSheetData
+from ..utils.exceptions import ErrorInfo
+from .constants import CompositeVariableField
+from .constants import DatabaseCollection as db_collection
 from .constants import (
-    CompositeVariableField,
-    DatabaseCollection as db_collection,
+    DatabaseField,
     InstitutionField,
     SiglaAnswerField,
     VariableField,
+    VariableType,
 )
-from .constants import VariableType
 from .exceptions import UnableToFindDocument
 
 ###############################################################################
@@ -70,7 +70,15 @@ class MongoDBDatabase:
         variable_docs_id = [doc.get(VariableField._id) for doc in variable_docs]
 
         if len(variable_docs_id) != len(institution_names):
-            raise UnableToFindDocument(sheet_title, db_collection.variables, variable)
+            raise UnableToFindDocument(
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.sheet_title: sheet_title,
+                        DatabaseField.collection: db_collection.variables,
+                        DatabaseField.primary_keys: str(variable),
+                    }
+                )
+            )
 
         # update the variables to have type composite and the right hyperlink
         update_variables_request = UpdateMany(
@@ -372,9 +380,13 @@ class MongoDBDatabase:
             self._load_function_dict[load_function_key](formatted_sheet_data)
         else:
             raise exceptions.UnrecognizedGoogleSheetsFormat(
-                formatted_sheet_data.sheet_title,
-                load_function_key,
-                formatted_sheet_data.meta_data.get(MetaDataField.data_type),
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.spreadsheet_title: formatted_sheet_data.spreadsheet_title,
+                        GoogleSheetsInfoField.sheet_title: formatted_sheet_data.sheet_title,
+                        MetaDataField.format: load_function_key,
+                    }
+                )
             )
 
     def find(

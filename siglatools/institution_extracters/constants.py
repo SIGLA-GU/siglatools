@@ -19,3 +19,8 @@ class MetaDataField:
     variable_heading = "variable_heading"
     variable_name = "variable_name"
     date_of_next_uv_column = "date_of_next_uv_column"
+
+
+class GoogleSheetsInfoField:
+    spreadsheet_title = "spreadsheet_title"
+    sheet_title = "sheet_title"

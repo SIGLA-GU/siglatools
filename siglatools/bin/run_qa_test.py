@@ -33,12 +33,14 @@ from ..databases.constants import (
 from ..databases.mongodb_database import MongoDBDatabase
 from ..institution_extracters.constants import GoogleSheetsFormat, MetaDataField
 from ..institution_extracters.utils import FormattedSheetData
+from ..pipelines.exceptions import PrefectFlowFailure
 from ..pipelines.utils import (
     _create_filter_task,
     _extract,
     _get_spreadsheet_ids,
     _transform,
 )
+from ..utils.exceptions import ErrorInfo, InvalidWorkflowInputs
 
 ###############################################################################
 
@@ -854,9 +856,9 @@ def _write_extra_db_institutions(
 
 
 def run_qa_test(
-    master_spreadsheet_id: str,
     db_connection_url: str,
     google_api_credentials_path: str,
+    master_spreadsheet_id: Optional[str] = None,
     spreadsheet_ids_str: Optional[str] = None,
 ):
     """
@@ -878,7 +880,7 @@ def run_qa_test(
     # Log the dashboard link
     log.info(f"Dashboard available at: {cluster.dashboard_link}")
     # Setup workflow
-    with Flow("Run QA Test") as flow:
+    with Flow("QA Test") as flow:
         # get a list of spreadsheet ids
         spreadsheet_ids = _get_spreadsheet_ids(
             master_spreadsheet_id, google_api_credentials_path, spreadsheet_ids_str
@@ -945,6 +947,8 @@ def run_qa_test(
 
     # Run the flow
     state = flow.run(executor=DaskExecutor(cluster.scheduler_address))
+    if state.is_failed():
+        raise PrefectFlowFailure(ErrorInfo({"flow_name": flow.name}))
     # get write comparison tasks
     _write_comparison_tasks = flow.get_tasks(name="_write_comparison")
     # get the comparisons
@@ -1055,16 +1059,23 @@ def main():
         args = Args()
         dbg = args.debug
         if args.db_env not in [Environment.staging, Environment.production]:
-            raise Exception(
-                "Incorrect database environment specification. Use 'staging' or 'production'."
+            raise InvalidWorkflowInputs(
+                ErrorInfo(
+                    {
+                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                    }
+                )
             )
-        run_qa_test(
-            args.master_spreadsheet_id,
+        db_connection_url = (
             args.staging_db_connection_url
             if args.db_env == Environment.staging
             else args.prod_db_connection_url,
-            args.google_api_credentials_path,
-            args.spreadsheet_ids,
+        )
+        run_qa_test(
+            master_spreadsheet_id=args.master_spreadsheet_id,
+            db_connection_url=db_connection_url,
+            google_api_credentials_path=args.google_api_credentials_path,
+            spreadsheet_ids_str=args.spreadsheet_ids,
         )
     except Exception as e:
         log.error("=============================================")

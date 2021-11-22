@@ -4,6 +4,6 @@
 from ..utils.exceptions import BaseError, ErrorInfo
 
 
-class UnableToFindDocument(BaseError):
+class PrefectFlowFailure(BaseError):
     def __init__(self, info: ErrorInfo):
-        super().__init__("Unable to find document in database", info)
+        super().__init__("Prefect flow failed.", info)

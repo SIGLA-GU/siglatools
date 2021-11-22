@@ -5,7 +5,6 @@
 import pytest
 
 from siglatools.institution_extracters import (
-    GoogleSheetsInstitutionExtracter,
     exceptions,
 )
 from siglatools.institution_extracters.google_sheets_institution_extracter import (
@@ -87,6 +86,5 @@ from siglatools.institution_extracters.google_sheets_institution_extracter impor
     ],
 )
 def test_construct_a1_notation(a1_notation, expected):
-    assert (
-        GoogleSheetsInstitutionExtracter._construct_a1_notation(a1_notation) == expected
-    )
+    a1_notation.raise_for_validity()
+    assert str(a1_notation) == expected

@@ -55,3 +55,8 @@ class CompositeVariableField:
 class SiglaAnswerField:
     name = "name"
     answer = "answer"
+
+
+class DatabaseField:
+    collection = "collection"
+    primary_keys = "primary_keys"
