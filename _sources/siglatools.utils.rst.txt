@@ -1,0 +1,22 @@
+siglatools.utils package
+========================
+
+Submodules
+----------
+
+siglatools.utils.exceptions module
+----------------------------------
+
+.. automodule:: siglatools.utils.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: siglatools.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -51,6 +51,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
@@ -131,64 +132,39 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">..utils.exceptions</span> <span class="kn">import</span> <span class="n">BaseError</span><span class="p">,</span> <span class="n">ErrorInfo</span>
 
 
-<div class="viewcode-block" id="IncompleteColumnRangeInA1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">[docs]</a><span class="k">class</span> <span class="nc">IncompleteColumnRangeInA1Notation</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_column</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span> <span class="o">=</span> <span class="n">sheet_title</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span> <span class="o">=</span> <span class="n">start_column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span> <span class="o">=</span> <span class="n">end_column</span>
+<div class="viewcode-block" id="UnableToAccessSpreadsheet"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet">[docs]</a><span class="k">class</span> <span class="nc">UnableToAccessSpreadsheet</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Unable to access spreadsheet.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, mising either the start_column value or end_column value. </span><span class="se">\</span>
-<span class="s2">                Both values must be present or not present together. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Received start_column: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="si">}</span><span class="s2">, end_column: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="IncompleteColumnRangeInA1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">[docs]</a><span class="k">class</span> <span class="nc">IncompleteColumnRangeInA1Notation</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;A1 Notation&#39;s start_column or end_column is missing.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InvalidRangeInA1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">[docs]</a><span class="k">class</span> <span class="nc">InvalidRangeInA1Notation</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;A1 Notation&#39;s start value is greater than its end value.&quot;</span><span class="p">,</span> <span class="n">info</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="InvalidRangeInA1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">[docs]</a><span class="k">class</span> <span class="nc">InvalidRangeInA1Notation</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span> <span class="o">=</span> <span class="n">sheet_title</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, the start value is greater than the end value. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Received start: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">, end: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
+<div class="viewcode-block" id="UnrecognizedGoogleSheetsFormat"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">[docs]</a><span class="k">class</span> <span class="nc">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Invalid Googlesheet format.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="UnrecognizedGoogleSheetsFormat"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">[docs]</a><span class="k">class</span> <span class="nc">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">sheet_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">google_sheets_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span> <span class="o">=</span> <span class="n">sheet_title</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">google_sheets_format</span> <span class="o">=</span> <span class="n">google_sheets_format</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">, the specified format is not a valid Google Sheets format. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Received format: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">google_sheets_format</span><span class="si">}</span><span class="s2">, data_type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="si">}</span><span class="s2">.&quot;</span>
-        <span class="p">)</span></div>
+<div class="viewcode-block" id="InvalidDateRange"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidDateRange">[docs]</a><span class="k">class</span> <span class="nc">InvalidDateRange</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Invalid date range.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="InvalidDateRange"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidDateRange">[docs]</a><span class="k">class</span> <span class="nc">InvalidDateRange</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="n">start_date</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="n">end_date</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;InvalidDateRange: The start date </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="si">}</span><span class="s2"> is greater than the end date </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="si">}</span><span class="s2">.&quot;</span></div>
+<div class="viewcode-block" id="UnableToCreateFormattedSheetData"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData">[docs]</a><span class="k">class</span> <span class="nc">UnableToCreateFormattedSheetData</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;The sheet data is invalid.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

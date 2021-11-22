@@ -54,6 +54,7 @@
 <li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -462,7 +463,7 @@ users’ virtualenv when the parent module is installed using pip.</p>
 
 <dl class="function">
 <dt id="siglatools.bin.run_external_link_checker.run_external_link_checker">
-<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">siglatools.bin.run_external_link_checker.</code><code class="sig-name descname">run_external_link_checker</code><span class="sig-paren">(</span><em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">master_spreadsheet_id: Optional[str] = None</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_external_link_checker.html#run_external_link_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_external_link_checker.run_external_link_checker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the the external link checker.
 If a list of spreadsheet ids are provided, run the external link checker
 against the list of spreadsheet ids, instead of the spreadsheet ids gathered
@@ -774,7 +775,7 @@ users’ virtualenv when the parent module is installed using pip.</p>
 
 <dl class="function">
 <dt id="siglatools.bin.run_qa_test.run_qa_test">
-<code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">run_qa_test</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em>, <em class="sig-param">db_connection_url: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#run_qa_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.run_qa_test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">siglatools.bin.run_qa_test.</code><code class="sig-name descname">run_qa_test</code><span class="sig-paren">(</span><em class="sig-param">db_connection_url: str</em>, <em class="sig-param">google_api_credentials_path: str</em>, <em class="sig-param">master_spreadsheet_id: Optional[str] = None</em>, <em class="sig-param">spreadsheet_ids_str: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/bin/run_qa_test.html#run_qa_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.bin.run_qa_test.run_qa_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run QA test</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

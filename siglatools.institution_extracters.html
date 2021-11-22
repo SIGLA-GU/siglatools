@@ -54,6 +54,7 @@
 <li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -168,6 +169,22 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">GoogleSheetsInfoField</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsInfoField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title">
+<code class="sig-name descname">sheet_title</code><em class="property"> = 'sheet_title'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title">
+<code class="sig-name descname">spreadsheet_title</code><em class="property"> = 'spreadsheet_title'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="siglatools.institution_extracters.constants.MetaDataField">
 <em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">MetaDataField</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#MetaDataField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -223,26 +240,38 @@
 <span id="siglatools-institution-extracters-exceptions-module"></span><h2>siglatools.institution_extracters.exceptions module<a class="headerlink" href="#module-siglatools.institution_extracters.exceptions" title="Permalink to this headline">¶</a></h2>
 <dl class="exception">
 <dt id="siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">IncompleteColumnRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str</em>, <em class="sig-param">start_column: str</em>, <em class="sig-param">end_column: int</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#IncompleteColumnRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">IncompleteColumnRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#IncompleteColumnRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="siglatools.institution_extracters.exceptions.InvalidDateRange">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidDateRange</code><span class="sig-paren">(</span><em class="sig-param">start_date: str</em>, <em class="sig-param">end_date: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidDateRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidDateRange" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidDateRange</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidDateRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidDateRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str, start: Union[int, str], end: Union[int, str], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnableToAccessSpreadsheet</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToAccessSpreadsheet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData">
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnableToCreateFormattedSheetData</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToCreateFormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnrecognizedGoogleSheetsFormat</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str</em>, <em class="sig-param">google_sheets_format: str</em>, <em class="sig-param">data_type: str</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnrecognizedGoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnrecognizedGoogleSheetsFormat</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnrecognizedGoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
 </dd></dl>
 
 </section>
@@ -283,6 +312,14 @@ but they don’t have to be.</p>
 <dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row">
 <code class="sig-name descname">end_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">
+<code class="sig-name descname">raise_for_validity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation.raise_for_validity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise an error if the a1 notation is invalid.
+<a class="reference external" href="https://developers.google.com/sheets/api/guides/concepts#a1_notation">https://developers.google.com/sheets/api/guides/concepts#a1_notation</a></p>
+<p>For a description of an A1 notation, please view the A1Notation class atttributes.</p>
 </dd></dl>
 
 <dl class="attribute">

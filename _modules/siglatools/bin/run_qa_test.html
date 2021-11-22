@@ -51,6 +51,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
@@ -163,12 +164,14 @@
 <span class="kn">from</span> <span class="nn">..databases.mongodb_database</span> <span class="kn">import</span> <span class="n">MongoDBDatabase</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span><span class="p">,</span> <span class="n">MetaDataField</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span>
+<span class="kn">from</span> <span class="nn">..pipelines.exceptions</span> <span class="kn">import</span> <span class="n">PrefectFlowFailure</span>
 <span class="kn">from</span> <span class="nn">..pipelines.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_create_filter_task</span><span class="p">,</span>
     <span class="n">_extract</span><span class="p">,</span>
     <span class="n">_get_spreadsheet_ids</span><span class="p">,</span>
     <span class="n">_transform</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..utils.exceptions</span> <span class="kn">import</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="n">InvalidWorkflowInputs</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -984,9 +987,9 @@
 
 
 <div class="viewcode-block" id="run_qa_test"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.run_qa_test">[docs]</a><span class="k">def</span> <span class="nf">run_qa_test</span><span class="p">(</span>
-    <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">google_api_credentials_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spreadsheet_ids_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1008,7 +1011,7 @@
     <span class="c1"># Log the dashboard link</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dashboard available at: </span><span class="si">{</span><span class="n">cluster</span><span class="o">.</span><span class="n">dashboard_link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Setup workflow</span>
-    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;Run QA Test&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;QA Test&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
         <span class="c1"># get a list of spreadsheet ids</span>
         <span class="n">spreadsheet_ids</span> <span class="o">=</span> <span class="n">_get_spreadsheet_ids</span><span class="p">(</span>
             <span class="n">master_spreadsheet_id</span><span class="p">,</span> <span class="n">google_api_credentials_path</span><span class="p">,</span> <span class="n">spreadsheet_ids_str</span>
@@ -1075,6 +1078,8 @@
 
     <span class="c1"># Run the flow</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">PrefectFlowFailure</span><span class="p">(</span><span class="n">ErrorInfo</span><span class="p">({</span><span class="s2">&quot;flow_name&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">}))</span>
     <span class="c1"># get write comparison tasks</span>
     <span class="n">_write_comparison_tasks</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;_write_comparison&quot;</span><span class="p">)</span>
     <span class="c1"># get the comparisons</span>
@@ -1185,16 +1190,23 @@
         <span class="n">args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">()</span>
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Incorrect database environment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
+            <span class="k">raise</span> <span class="n">InvalidWorkflowInputs</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
             <span class="p">)</span>
-        <span class="n">run_qa_test</span><span class="p">(</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
+        <span class="n">db_connection_url</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">staging_db_connection_url</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="o">==</span> <span class="n">Environment</span><span class="o">.</span><span class="n">staging</span>
             <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">prod_db_connection_url</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">google_api_credentials_path</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">spreadsheet_ids</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">run_qa_test</span><span class="p">(</span>
+            <span class="n">master_spreadsheet_id</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="p">,</span>
+            <span class="n">db_connection_url</span><span class="o">=</span><span class="n">db_connection_url</span><span class="p">,</span>
+            <span class="n">google_api_credentials_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">google_api_credentials_path</span><span class="p">,</span>
+            <span class="n">spreadsheet_ids_str</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">spreadsheet_ids</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;=============================================&quot;</span><span class="p">)</span>

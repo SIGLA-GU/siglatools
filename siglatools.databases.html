@@ -54,6 +54,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -194,6 +195,22 @@
 <dl class="attribute">
 <dt id="siglatools.databases.constants.DatabaseCollection.variables">
 <code class="sig-name descname">variables</code><em class="property"> = 'variables'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseCollection.variables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="siglatools.databases.constants.DatabaseField">
+<em class="property">class </em><code class="sig-prename descclassname">siglatools.databases.constants.</code><code class="sig-name descname">DatabaseField</code><a class="reference internal" href="_modules/siglatools/databases/constants.html#DatabaseField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.constants.DatabaseField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="siglatools.databases.constants.DatabaseField.collection">
+<code class="sig-name descname">collection</code><em class="property"> = 'collection'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseField.collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="siglatools.databases.constants.DatabaseField.primary_keys">
+<code class="sig-name descname">primary_keys</code><em class="property"> = 'primary_keys'</em><a class="headerlink" href="#siglatools.databases.constants.DatabaseField.primary_keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -343,8 +360,8 @@
 <span id="siglatools-databases-exceptions-module"></span><h2>siglatools.databases.exceptions module<a class="headerlink" href="#module-siglatools.databases.exceptions" title="Permalink to this headline">¶</a></h2>
 <dl class="exception">
 <dt id="siglatools.databases.exceptions.UnableToFindDocument">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.databases.exceptions.</code><code class="sig-name descname">UnableToFindDocument</code><span class="sig-paren">(</span><em class="sig-param">sheet_title: str, collection: str, primary_keys: List[Dict[str, Union[int, str]]], **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/exceptions.html#UnableToFindDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.exceptions.UnableToFindDocument" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">siglatools.databases.exceptions.</code><code class="sig-name descname">UnableToFindDocument</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/databases/exceptions.html#UnableToFindDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.databases.exceptions.UnableToFindDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
 </dd></dl>
 
 </section>

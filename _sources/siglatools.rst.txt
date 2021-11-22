@@ -10,6 +10,7 @@ Subpackages
    siglatools.databases
    siglatools.institution_extracters
    siglatools.pipelines
+   siglatools.utils
 
 Module contents
 ---------------

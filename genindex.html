@@ -52,6 +52,7 @@
 <li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
@@ -187,6 +188,10 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.utils.html#siglatools.utils.exceptions.BaseError">BaseError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseCollection.body_of_law">body_of_law (siglatools.databases.constants.DatabaseCollection attribute)</a>
 </li>
   </ul></td>
@@ -208,6 +213,8 @@
       <li><a href="siglatools.databases.html#siglatools.databases.mongodb_database.MongoDBDatabase.close_connection">close_connection() (siglatools.databases.mongodb_database.MongoDBDatabase method)</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.GoogleSheetCell.col_index">col_index (siglatools.bin.run_external_link_checker.GoogleSheetCell attribute)</a>
+</li>
+      <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseField.collection">collection (siglatools.databases.constants.DatabaseField attribute)</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.get_next_uv_dates.NextUVDateData.column_name">column_name (siglatools.bin.get_next_uv_dates.NextUVDateData attribute)</a>
 </li>
@@ -255,6 +262,8 @@
 </li>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseCollection">DatabaseCollection (class in siglatools.databases.constants)</a>
 </li>
+      <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseField">DatabaseField (class in siglatools.databases.constants)</a>
+</li>
       <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.Datasource">Datasource (class in siglatools.bin.run_qa_test)</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.MetaDataField.date_of_next_uv_column">date_of_next_uv_column (siglatools.institution_extracters.constants.MetaDataField attribute)</a>
@@ -282,6 +291,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.Environment">Environment (class in siglatools.databases.constants)</a>
+</li>
+      <li><a href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo">ErrorInfo (class in siglatools.utils.exceptions)</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison.expected">expected (siglatools.bin.run_qa_test.FieldComparison attribute)</a>
 </li>
@@ -351,6 +362,8 @@
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsFormat">GoogleSheetsFormat (class in siglatools.institution_extracters.constants)</a>
 </li>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsInfoField">GoogleSheetsInfoField (class in siglatools.institution_extracters.constants)</a>
+</li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter">GoogleSheetsInstitutionExtracter (class in siglatools.institution_extracters.google_sheets_institution_extracter)</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.GsInstitution">GsInstitution (class in siglatools.bin.run_qa_test)</a>
@@ -402,6 +415,8 @@
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidDateRange">InvalidDateRange</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">InvalidRangeInA1Notation</a>
+</li>
+      <li><a href="siglatools.utils.html#siglatools.utils.exceptions.InvalidWorkflowInputs">InvalidWorkflowInputs</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.get_next_uv_dates.NextUVDateStatus.irrelevant">irrelevant (siglatools.bin.get_next_uv_dates.NextUVDateStatus attribute)</a>
 </li>
@@ -505,10 +520,14 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">process_sheet_data() (siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter static method)</a>
+      <li><a href="siglatools.pipelines.html#siglatools.pipelines.exceptions.PrefectFlowFailure">PrefectFlowFailure</a>
+</li>
+      <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseField.primary_keys">primary_keys (siglatools.databases.constants.DatabaseField attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">process_sheet_data() (siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter static method)</a>
+</li>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.Environment.production">production (siglatools.databases.constants.Environment attribute)</a>
 </li>
   </ul></td>
@@ -517,6 +536,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">raise_for_validity() (siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation method)</a>
+</li>
       <li><a href="siglatools.bin.html#siglatools.bin.get_next_uv_dates.NextUVDateStatus.requires_uv">requires_uv (siglatools.bin.get_next_uv_dates.NextUVDateStatus attribute)</a>
 </li>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.DatabaseCollection.rights">rights (siglatools.databases.constants.DatabaseCollection attribute)</a>
@@ -562,6 +583,8 @@
 </li>
         <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.GsInstitution.sheet_title">(siglatools.bin.run_qa_test.GsInstitution attribute)</a>
 </li>
+        <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title">(siglatools.institution_extracters.constants.GoogleSheetsInfoField attribute)</a>
+</li>
         <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">(siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation attribute)</a>
 </li>
         <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">(siglatools.institution_extracters.utils.FormattedSheetData attribute)</a>
@@ -599,10 +622,10 @@
 </li>
       <li><a href="siglatools.databases.html#module-siglatools.databases.mongodb_database">siglatools.databases.mongodb_database (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.institution_extracters.html#module-siglatools.institution_extracters">siglatools.institution_extracters (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.institution_extracters.html#module-siglatools.institution_extracters.constants">siglatools.institution_extracters.constants (module)</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#module-siglatools.institution_extracters.exceptions">siglatools.institution_extracters.exceptions (module)</a>
@@ -613,7 +636,13 @@
 </li>
       <li><a href="siglatools.pipelines.html#module-siglatools.pipelines">siglatools.pipelines (module)</a>
 </li>
+      <li><a href="siglatools.pipelines.html#module-siglatools.pipelines.exceptions">siglatools.pipelines.exceptions (module)</a>
+</li>
       <li><a href="siglatools.pipelines.html#module-siglatools.pipelines.utils">siglatools.pipelines.utils (module)</a>
+</li>
+      <li><a href="siglatools.utils.html#module-siglatools.utils">siglatools.utils (module)</a>
+</li>
+      <li><a href="siglatools.utils.html#module-siglatools.utils.exceptions">siglatools.utils.exceptions (module)</a>
 </li>
       <li><a href="siglatools.databases.html#siglatools.databases.constants.VariableField.source">source (siglatools.databases.constants.VariableField attribute)</a>
 </li>
@@ -635,6 +664,8 @@
         <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.spreadsheet_title">(siglatools.bin.run_qa_test.Comparison attribute)</a>
 </li>
         <li><a href="siglatools.bin.html#siglatools.bin.run_qa_test.GsInstitution.spreadsheet_title">(siglatools.bin.run_qa_test.GsInstitution attribute)</a>
+</li>
+        <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title">(siglatools.institution_extracters.constants.GoogleSheetsInfoField attribute)</a>
 </li>
         <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">(siglatools.institution_extracters.utils.FormattedSheetData attribute)</a>
 </li>
@@ -677,18 +708,22 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet">UnableToAccessSpreadsheet</a>
+</li>
+      <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData">UnableToCreateFormattedSheetData</a>
+</li>
       <li><a href="siglatools.databases.html#siglatools.databases.exceptions.UnableToFindDocument">UnableToFindDocument</a>
 </li>
       <li><a href="siglatools.institution_extracters.html#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">UnrecognizedGoogleSheetsFormat</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.GoogleSheetCell.url">url (siglatools.bin.run_external_link_checker.GoogleSheetCell attribute)</a>
 
       <ul>
         <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData.url">(siglatools.bin.run_external_link_checker.URLData attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL.url_data">url_data (siglatools.bin.run_external_link_checker.CheckedURL attribute)</a>
 </li>
       <li><a href="siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData">URLData (class in siglatools.bin.run_external_link_checker)</a>

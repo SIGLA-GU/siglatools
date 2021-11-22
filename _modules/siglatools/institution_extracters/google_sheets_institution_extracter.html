@@ -51,6 +51,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
@@ -133,10 +134,11 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">google.oauth2</span> <span class="kn">import</span> <span class="n">service_account</span>
 <span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
+<span class="kn">from</span> <span class="nn">googleapiclient.errors</span> <span class="kn">import</span> <span class="n">HttpError</span>
 
 <span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CompositeVariableField</span><span class="p">,</span>
@@ -145,10 +147,15 @@
     <span class="n">VariableField</span><span class="p">,</span>
     <span class="n">VariableType</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..utils.exceptions</span> <span class="kn">import</span> <span class="n">ErrorInfo</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
-<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">MetaDataField</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FormattedSheetData</span><span class="p">,</span> <span class="n">SheetData</span><span class="p">,</span> <span class="n">create_institution_sub_category</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsInfoField</span><span class="p">,</span> <span class="n">MetaDataField</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FormattedSheetData</span><span class="p">,</span>
+    <span class="n">SheetData</span><span class="p">,</span>
+    <span class="n">create_institution_sub_category</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -338,6 +345,62 @@
     <span class="n">start_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">end_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="A1Notation.raise_for_validity"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">[docs]</a>    <span class="k">def</span> <span class="nf">raise_for_validity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Raise an error if the a1 notation is invalid.</span>
+<span class="sd">        https://developers.google.com/sheets/api/guides/concepts#a1_notation</span>
+
+<span class="sd">        For a description of an A1 notation, please view the A1Notation class atttributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="p">):</span>
+            <span class="c1"># Start row is greater than end row</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="p">,</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Start and end column are both present</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">):</span>
+                <span class="c1"># Length of start column is greater than length end column</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
+                    <span class="n">ErrorInfo</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                            <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
+                            <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span>
+                    <span class="c1"># Start column is greater than end column</span>
+                    <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
+                        <span class="n">ErrorInfo</span><span class="p">(</span>
+                            <span class="p">{</span>
+                                <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                                <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
+                                <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
+                            <span class="p">}</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">]):</span>
+            <span class="c1"># Either start column or end column is present</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">IncompleteColumnRangeInA1Notation</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns str representation of the a1 notation.</span>
@@ -368,96 +431,10 @@
         <span class="c1"># Store the spreadsheets service</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_construct_a1_notation</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">:</span> <span class="n">A1Notation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construction an A1 Notation str</span>
-<span class="sd">        https://developers.google.com/sheets/api/guides/concepts#a1_notation</span>
-
-<span class="sd">        For a description of an A1 notation, please view the A1Notation class atttributes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        a1_notation: A1Notation</span>
-<span class="sd">            The attributes of an A1 notation</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        ----------</span>
-<span class="sd">        a1_notation: str</span>
-<span class="sd">            The str representation of an A1 notation.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        ----------</span>
-<span class="sd">        ```</span>
-<span class="sd">        # Get A1 notation for the all the cells in top two rows of Sheet1</span>
-<span class="sd">        GoogleSheetsInstitutionExtracter.__construct_a1_notation(</span>
-<span class="sd">            A1Notation(</span>
-<span class="sd">                sheet_id=&quot;0&quot;,</span>
-<span class="sd">                sheet_title=&quot;Sheet1&quot;,</span>
-<span class="sd">                start_row=1,</span>
-<span class="sd">                end_row=2,</span>
-<span class="sd">            )</span>
-<span class="sd">        )</span>
-
-<span class="sd">        # Get A1 notation for the first two cells in the top two rows of Sheet1</span>
-<span class="sd">        GoogleSheetsInstitutionExtracter.__construct_a1_notation(</span>
-<span class="sd">            A1Notation(</span>
-<span class="sd">                sheet_id=&quot;0&quot;,</span>
-<span class="sd">                sheet_title=&quot;Sheet1&quot;,</span>
-<span class="sd">                start_row=1,</span>
-<span class="sd">                end_row=2,</span>
-<span class="sd">                start_column=&quot;A&quot;,</span>
-<span class="sd">                end_column=&quot;B&quot;,</span>
-<span class="sd">            )</span>
-<span class="sd">        )</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">start_row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">end_row</span><span class="p">):</span>
-            <span class="c1"># Start row is greater than end row</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
-                <span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_row</span><span class="p">,</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_row</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">):</span>
-            <span class="c1"># Start and end column are both present</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">):</span>
-                <span class="c1"># Length of start column is greater than length end column</span>
-                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
-                    <span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                    <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
-                    <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span> <span class="o">&gt;</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span>
-                    <span class="c1"># Start column is greater than end column</span>
-                    <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
-                        <span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                        <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
-                        <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Start column is less than or equal to end column</span>
-                    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Length of start column is less than end column</span>
-                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span>
-            <span class="n">field</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span> <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">]</span>
-        <span class="p">):</span>
-            <span class="c1"># Either start column or end column is present</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">IncompleteColumnRangeInA1Notation</span><span class="p">(</span>
-                <span class="n">a1_notation</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">a1_notation</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
-                <span class="n">a1_notation</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Neither start column nor end column is present</span>
-            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_meta_data_a1_notations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_get_meta_data_a1_notations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an A1Notation for each sheet from its first two rows of meta data</span>
 
@@ -486,6 +463,107 @@
             <span class="k">for</span> <span class="n">sheet</span> <span class="ow">in</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sheets&quot;</span><span class="p">)</span>
         <span class="p">]</span>
 
+    <span class="k">def</span> <span class="nf">_get_meta_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">a1_notations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="s2">&quot;Get the rows specified by the a1 notations&quot;</span>
+        <span class="c1"># Get the meta data for each sheet</span>
+        <span class="n">meta_data_response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
+                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span> <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">a1_notations</span><span class="p">],</span>
+                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="c1"># Get data within a range (specified by an a1 notation) for each sheet</span>
+        <span class="n">meta_data_value_ranges</span> <span class="o">=</span> <span class="n">meta_data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
+        <span class="c1"># print(meta_data_value_ranges)</span>
+        <span class="c1"># Create the meta datum for each sheet</span>
+        <span class="n">meta_data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)}</span>
+            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">meta_data_value_ranges</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">meta_data</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_a1_notations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">a1_notations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">],</span> <span class="n">meta_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]:</span>
+        <span class="c1"># Use the meta datum to create an a1 notation to get the datum of each sheet</span>
+        <span class="n">bounding_box_a1_notations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">A1Notation</span><span class="p">(</span>
+                <span class="n">sheet_id</span><span class="o">=</span><span class="n">a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
+                <span class="n">sheet_title</span><span class="o">=</span><span class="n">a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
+                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
+                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">),</span>
+                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">a1_anotation</span> <span class="ow">in</span> <span class="n">bounding_box_a1_notations</span><span class="p">:</span>
+            <span class="n">a1_anotation</span><span class="o">.</span><span class="n">raise_for_validity</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">bounding_box_a1_notations</span>
+
+    <span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">a1_notations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
+        <span class="n">data_response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
+                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span> <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">a1_notations</span><span class="p">],</span>
+                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;ROWS&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">_get_next_uv_dates_a1_annotations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">a1_notations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">],</span> <span class="n">meta_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]:</span>
+        <span class="c1"># Create a1 notations to get next uv dates</span>
+        <span class="n">next_uv_date_a1_notations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">A1Notation</span><span class="p">(</span>
+                <span class="n">sheet_id</span><span class="o">=</span><span class="n">a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
+                <span class="n">sheet_title</span><span class="o">=</span><span class="n">a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
+                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
+                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
+                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">next_uv_date_a1_notations</span><span class="p">:</span>
+            <span class="n">a1_notation</span><span class="o">.</span><span class="n">raise_for_validity</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">next_uv_date_a1_notations</span>
+
+    <span class="k">def</span> <span class="nf">_get_next_uv_dates_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">a1_notations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+        <span class="n">next_uv_date_response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
+                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span> <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">a1_notations</span><span class="p">],</span>
+                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">next_uv_date_data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">next_uv_date_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">next_uv_date_data</span>
+
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_spreadsheet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spreadsheet data given a spreadsheet id.</span>
@@ -500,94 +578,46 @@
 <span class="sd">        spreadsheet_data: List[SheetData]</span>
 <span class="sd">            The spreadsheet data. Please the SheetData class to view its attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get an A1Notation for each sheet&#39;s meta data</span>
-        <span class="n">meta_data_a1_notations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_meta_data_a1_notations</span><span class="p">(</span><span class="n">spreadsheet_id</span><span class="p">)</span>
-        <span class="c1"># Get the spreadsheet title</span>
-        <span class="n">spreadsheet_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="n">spreadsheet_title</span> <span class="o">=</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
-        <span class="c1"># Get the meta data for each sheet</span>
-        <span class="n">meta_data_response</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
-                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_construct_a1_notation</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">meta_data_a1_notations</span>
-                <span class="p">],</span>
-                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">,</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get an A1Notation for each sheet&#39;s meta data</span>
+            <span class="n">meta_data_a1_notations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_meta_data_a1_notations</span><span class="p">(</span>
+                <span class="n">spreadsheet_id</span><span class="o">=</span><span class="n">spreadsheet_id</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="c1"># Get data within a range (specified by an a1 notation) for each sheet</span>
-        <span class="n">meta_data_value_ranges</span> <span class="o">=</span> <span class="n">meta_data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
-        <span class="c1"># print(meta_data_value_ranges)</span>
-        <span class="c1"># Create the meta datum for each sheet</span>
-        <span class="n">meta_data</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)}</span>
-            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">meta_data_value_ranges</span>
-        <span class="p">]</span>
-        <span class="c1"># Use the meta datum to create an a1 notation to get the datum of each sheet</span>
-        <span class="n">bounding_box_a1_notations</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">A1Notation</span><span class="p">(</span>
-                <span class="n">sheet_id</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
-                <span class="n">sheet_title</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
-                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
-                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">),</span>
-                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">),</span>
+            <span class="c1"># Get the spreadsheet title</span>
+            <span class="n">spreadsheet_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">spreadsheet_title</span> <span class="o">=</span> <span class="n">spreadsheet_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
+            <span class="c1"># Get the meta data for each sheet</span>
+            <span class="n">meta_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_meta_data</span><span class="p">(</span>
+                <span class="n">spreadsheet_id</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">a1_notations</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="c1"># Get data within a range (specified by an a1 notation) for each sheet</span>
-        <span class="n">data_response</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
-                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_construct_a1_notation</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">bounding_box_a1_notations</span>
-                <span class="p">],</span>
-                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;ROWS&quot;</span><span class="p">,</span>
+            <span class="c1"># Use the meta datum to create an a1 notation to get the datum of each sheet</span>
+            <span class="n">bounding_box_a1_notations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_a1_notations</span><span class="p">(</span>
+                <span class="n">a1_notations</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">,</span>
+                <span class="n">meta_data</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">data_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span>
-        <span class="p">]</span>
+            <span class="c1"># Get data within a range (specified by an a1 notation) for each sheet</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span>
+                <span class="n">spreadsheet_id</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+                <span class="n">a1_notations</span><span class="o">=</span><span class="n">bounding_box_a1_notations</span><span class="p">,</span>
+            <span class="p">)</span>
 
-        <span class="c1"># Create a1 notations to get next uv dates</span>
-        <span class="n">next_uv_date_a1_notations</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">A1Notation</span><span class="p">(</span>
-                <span class="n">sheet_id</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
-                <span class="n">sheet_title</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">start_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">)),</span>
-                <span class="n">end_row</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">)),</span>
-                <span class="n">start_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
-                <span class="n">end_column</span><span class="o">=</span><span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">),</span>
+            <span class="c1"># Create a1 notations to get next uv dates</span>
+            <span class="n">next_uv_date_a1_notations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_next_uv_dates_a1_annotations</span><span class="p">(</span>
+                <span class="n">a1_notations</span><span class="o">=</span><span class="n">meta_data_a1_notations</span><span class="p">,</span>
+                <span class="n">meta_data</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">meta_datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">meta_datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">date_of_next_uv_column</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">]</span>
-        <span class="c1"># Get the next uv dates</span>
-        <span class="n">next_uv_date_response</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-            <span class="o">.</span><span class="n">batchGet</span><span class="p">(</span>
-                <span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span>
-                <span class="n">ranges</span><span class="o">=</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_construct_a1_notation</span><span class="p">(</span><span class="n">a1_notation</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">a1_notation</span> <span class="ow">in</span> <span class="n">next_uv_date_a1_notations</span>
-                <span class="p">],</span>
-                <span class="n">majorDimension</span><span class="o">=</span><span class="s2">&quot;COLUMNS&quot;</span><span class="p">,</span>
+            <span class="c1"># Get the next uv dates</span>
+            <span class="n">next_uv_date_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_next_uv_dates_data</span><span class="p">(</span>
+                <span class="n">spreadsheet_id</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">a1_notations</span><span class="o">=</span><span class="n">next_uv_date_a1_notations</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">next_uv_date_data</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">value_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">value_range</span> <span class="ow">in</span> <span class="n">next_uv_date_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valueRanges&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
-        <span class="p">]</span>
+        <span class="k">except</span> <span class="n">HttpError</span> <span class="k">as</span> <span class="n">http_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnableToAccessSpreadsheet</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">({</span><span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">:</span> <span class="n">spreadsheet_title</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">http_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+            <span class="p">)</span>
+
         <span class="n">next_uv_date_data_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">next_uv_date_data</span><span class="p">)</span>
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Finished extracting spreadsheet </span><span class="si">{</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -662,12 +692,31 @@
                     <span class="n">get_data_key</span>
                 <span class="p">]</span>
             <span class="p">)</span>
-            <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">get_data_function</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">formatted_data</span> <span class="o">=</span> <span class="n">get_data_function</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnableToCreateFormattedSheetData</span><span class="p">(</span>
+                    <span class="n">ErrorInfo</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+                            <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">UnrecognizedGoogleSheetsFormat</span><span class="p">(</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span><span class="p">),</span>
-                <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">),</span>
+                <span class="n">ErrorInfo</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="p">,</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="n">MetaDataField</span><span class="o">.</span><span class="n">format</span>
+                        <span class="p">),</span>
+                        <span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span><span class="p">:</span> <span class="n">sheet_data</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="n">MetaDataField</span><span class="o">.</span><span class="n">data_type</span>
+                        <span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">FormattedSheetData</span><span class="p">(</span>

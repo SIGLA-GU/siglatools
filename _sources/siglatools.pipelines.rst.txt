@@ -4,6 +4,14 @@ siglatools.pipelines package
 Submodules
 ----------
 
+siglatools.pipelines.exceptions module
+--------------------------------------
+
+.. automodule:: siglatools.pipelines.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 siglatools.pipelines.utils module
 ---------------------------------
 

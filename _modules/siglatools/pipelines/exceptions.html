@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>siglatools.databases.exceptions &mdash; SIGLA Tools 0.1.0 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>siglatools.pipelines.exceptions &mdash; SIGLA Tools 0.1.0 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
@@ -119,7 +119,7 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
           <li><a href="../../siglatools.html">siglatools</a> &raquo;</li>
-      <li>siglatools.databases.exceptions</li>
+      <li>siglatools.pipelines.exceptions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -128,16 +128,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for siglatools.databases.exceptions</h1><div class="highlight"><pre>
+  <h1>Source code for siglatools.pipelines.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="kn">from</span> <span class="nn">..utils.exceptions</span> <span class="kn">import</span> <span class="n">BaseError</span><span class="p">,</span> <span class="n">ErrorInfo</span>
 
 
-<div class="viewcode-block" id="UnableToFindDocument"><a class="viewcode-back" href="../../../siglatools.databases.html#siglatools.databases.exceptions.UnableToFindDocument">[docs]</a><span class="k">class</span> <span class="nc">UnableToFindDocument</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
+<div class="viewcode-block" id="PrefectFlowFailure"><a class="viewcode-back" href="../../../siglatools.pipelines.html#siglatools.pipelines.exceptions.PrefectFlowFailure">[docs]</a><span class="k">class</span> <span class="nc">PrefectFlowFailure</span><span class="p">(</span><span class="n">BaseError</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">ErrorInfo</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Unable to find document in database&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Prefect flow failed.&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

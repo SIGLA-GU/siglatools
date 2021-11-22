@@ -51,6 +51,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.databases.html">siglatools.databases package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.institution_extracters.html">siglatools.institution_extracters package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../siglatools.html#module-siglatools">Module contents</a></li>
@@ -150,6 +151,7 @@
 <span class="kn">from</span> <span class="nn">..databases</span> <span class="kn">import</span> <span class="n">MongoDBDatabase</span>
 <span class="kn">from</span> <span class="nn">..databases.constants</span> <span class="kn">import</span> <span class="n">Environment</span>
 <span class="kn">from</span> <span class="nn">..institution_extracters.constants</span> <span class="kn">import</span> <span class="n">GoogleSheetsFormat</span> <span class="k">as</span> <span class="n">gs_format</span>
+<span class="kn">from</span> <span class="nn">..pipelines.exceptions</span> <span class="kn">import</span> <span class="n">PrefectFlowFailure</span>
 <span class="kn">from</span> <span class="nn">..pipelines.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_create_filter_task</span><span class="p">,</span>
     <span class="n">_extract</span><span class="p">,</span>
@@ -159,6 +161,7 @@
     <span class="n">_log_spreadsheets</span><span class="p">,</span>
     <span class="n">_transform</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..utils.exceptions</span> <span class="kn">import</span> <span class="n">ErrorInfo</span><span class="p">,</span> <span class="n">InvalidWorkflowInputs</span>
 
 <span class="c1">###############################################################################</span>
 
@@ -209,7 +212,7 @@
     <span class="c1"># Log the dashboard link</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dashboard available at: </span><span class="si">{</span><span class="n">cluster</span><span class="o">.</span><span class="n">dashboard_link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Setup workflow</span>
-    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;ETL Pipeline&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">Flow</span><span class="p">(</span><span class="s2">&quot;SIGLA Data Pipeline&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
         <span class="c1"># Delete all documents from db</span>
         <span class="n">clean_up_task</span> <span class="o">=</span> <span class="n">_clean_up</span><span class="p">(</span><span class="n">db_connection_url</span><span class="p">)</span>
         <span class="c1"># Get spreadsheet ids</span>
@@ -259,7 +262,9 @@
         <span class="n">_log_spreadsheets</span><span class="p">(</span><span class="n">spreadsheets_data</span><span class="p">,</span> <span class="n">upstream_tasks</span><span class="o">=</span><span class="p">[</span><span class="n">load_composites_data_task</span><span class="p">])</span>
 
     <span class="c1"># Run the flow</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span></div>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="n">DaskExecutor</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">scheduler_address</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">PrefectFlowFailure</span><span class="p">(</span><span class="n">ErrorInfo</span><span class="p">({</span><span class="s2">&quot;flow_name&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">}))</span></div>
 
 
 <span class="c1">###############################################################################</span>
@@ -337,10 +342,16 @@
         <span class="n">args</span> <span class="o">=</span> <span class="n">Args</span><span class="p">()</span>
         <span class="n">dbg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No main spreadsheet id found.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidWorkflowInputs</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">({</span><span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;No main spreadsheet id found.&quot;</span><span class="p">})</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">db_env</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Environment</span><span class="o">.</span><span class="n">staging</span><span class="p">,</span> <span class="n">Environment</span><span class="o">.</span><span class="n">production</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
+            <span class="k">raise</span> <span class="n">InvalidWorkflowInputs</span><span class="p">(</span>
+                <span class="n">ErrorInfo</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Incorrect database enviroment specification. Use &#39;staging&#39; or &#39;production&#39;.&quot;</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
             <span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Loading all spreadsheets in the master spreadsheet </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">master_spreadsheet_id</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
