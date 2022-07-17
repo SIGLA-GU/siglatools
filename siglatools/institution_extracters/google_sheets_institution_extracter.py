@@ -300,27 +300,46 @@ class GoogleSheetsInstitutionExtracter:
         # Store the spreadsheets service
         self.spreadsheets = service.spreadsheets()
 
+    def _get_spreadsheet(self, spreadsheet_id: str) -> Any:
+        """
+        Get the spreadsheet from a spreadsheet_id
+
+        Parameters
+        ----------
+        spreadsheet_id: str
+            The id of the spreadsheet
+
+        Returns
+        -------
+        spreadsheet: The spreadsheet.
+        See https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#Spreadsheet.
+
+        """
+        # Get the spreadsheet
+        return self.spreadsheets.get(spreadsheetId=spreadsheet_id).execute()
+
+    def _get_spreadsheet_tile(self, spreadsheet: Any) -> str:
+        """Get the title of a spreadsheet"""
+        return spreadsheet.get("properties").get("title")
+
     def _get_meta_data_a1_notations(
         self,
-        spreadsheet_id: str,
+        spreadsheet: Any,
     ) -> List[A1Notation]:
         """
         Construct an A1Notation for each sheet from its first two rows of meta data
 
         Parameters
         ----------
-        spreadsheet_id: str
-            The id of a spreadsheet
+        spreadsheet: str
+            The spreadsheet object.
+            See https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#Spreadsheet
 
         Returns
         -------
         a1_notations: List[A1Notatoin]
             The list of A1Notations, one for each sheet.
         """
-        # Get the spreadsheet
-        spreadsheet_response = self.spreadsheets.get(
-            spreadsheetId=spreadsheet_id
-        ).execute()
         # Create an A1Notation for each sheet's meta data
         return [
             A1Notation(
@@ -329,7 +348,7 @@ class GoogleSheetsInstitutionExtracter:
                 start_row=1,
                 end_row=2,
             )
-            for sheet in spreadsheet_response.get("sheets")
+            for sheet in spreadsheet.get("sheets")
         ]
 
     def _get_meta_data(
@@ -378,7 +397,9 @@ class GoogleSheetsInstitutionExtracter:
 
         return bounding_box_a1_notations
 
-    def _get_data(self, spreadsheet_id: str, a1_notations: List[A1Notation]) -> List[List[List[Any]]]:
+    def _get_data(
+        self, spreadsheet_id: str, a1_notations: List[A1Notation]
+    ) -> List[List[List[Any]]]:
         data_response = (
             self.spreadsheets.values()
             .batchGet(
@@ -448,15 +469,13 @@ class GoogleSheetsInstitutionExtracter:
             The spreadsheet data. Please the SheetData class to view its attributes.
         """
         try:
+            spreadsheet = self._get_spreadsheet(spreadsheet_id=spreadsheet_id)
             # Get an A1Notation for each sheet's meta data
             meta_data_a1_notations = self._get_meta_data_a1_notations(
-                spreadsheet_id=spreadsheet_id
+                spreadsheet=spreadsheet
             )
             # Get the spreadsheet title
-            spreadsheet_response = self.spreadsheets.get(
-                spreadsheetId=spreadsheet_id
-            ).execute()
-            spreadsheet_title = spreadsheet_response.get("properties").get("title")
+            spreadsheet_title = self._get_spreadsheet_tile(spreadsheet=spreadsheet)
             # Get the meta data for each sheet
             meta_data = self._get_meta_data(
                 spreadsheet_id=spreadsheet_id,
@@ -484,7 +503,12 @@ class GoogleSheetsInstitutionExtracter:
             )
         except HttpError as http_error:
             raise exceptions.UnableToAccessSpreadsheet(
-                ErrorInfo({GoogleSheetsInfoField.spreadsheet_title: spreadsheet_title, "reason": f"{http_error}"})
+                ErrorInfo(
+                    {
+                        GoogleSheetsInfoField.spreadsheet_title: spreadsheet_title,
+                        "reason": f"{http_error}",
+                    }
+                )
             )
 
         next_uv_date_data_iter = iter(next_uv_date_data)
