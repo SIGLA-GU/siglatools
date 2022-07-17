@@ -439,6 +439,9 @@ class GoogleSheetsInstitutionExtracter:
     def _get_next_uv_dates_data(
         self, spreadsheet_id: str, a1_notations: List[A1Notation]
     ) -> List[List[Any]]:
+        if not a1_notations:
+            return []
+        
         next_uv_date_response = (
             self.spreadsheets.values()
             .batchGet(
