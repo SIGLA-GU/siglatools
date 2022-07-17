@@ -296,7 +296,15 @@ class GoogleSheetsInstitutionExtracter:
             self._credentials_path, scopes=GOOGLE_API_SCOPES
         )
         # Construct a Resource for interacting with Google Sheets API
-        service = build("sheets", "v4", credentials=credentials, cache_discovery=False)
+        # `num_retries` downstreams
+        # See https://github.com/googleapis/google-api-python-client/issues/1049#issuecomment-702893972
+        service = build(
+            "sheets",
+            "v4",
+            credentials=credentials,
+            cache_discovery=False,
+            num_retries=3,
+        )
         # Store the spreadsheets service
         self.spreadsheets = service.spreadsheets()
 
@@ -441,7 +449,7 @@ class GoogleSheetsInstitutionExtracter:
     ) -> List[List[Any]]:
         if not a1_notations:
             return []
-        
+
         next_uv_date_response = (
             self.spreadsheets.values()
             .batchGet(
