@@ -24,14 +24,15 @@ dev_requirements = [
     "bumpversion>=0.5.3",
     "coverage>=5.0a4",
     "flake8>=3.7.7",
+    "furo>=2022.4.7",
+    "jinja2>=2.11.2",
     "ipython>=7.5.0",
-    "m2r>=0.2.1",
+    "m2r2>=0.2.7",
     "pytest>=4.3.0",
     "pytest-cov==2.6.1",
     "pytest-raises>=0.10",
     "pytest-runner>=4.4",
-    "Sphinx>=2.0.0b1,<3",
-    "sphinx_rtd_theme>=0.1.2",
+    "Sphinx>=3.4.3",
     "tox>=3.5.2",
     "twine>=1.13.0",
     "wheel>=0.33.1",
@@ -70,7 +71,7 @@ extra_requirements = {
 }
 
 setup(
-    author="To Huynh",
+    author="SIGLA",
     author_email="huynh.nto@gmail.com",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
