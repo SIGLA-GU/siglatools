@@ -1,5 +1,5 @@
 Welcome to SIGLA Tools's documentation!
-======================================
+=======================================
 
 .. toctree::
    :hidden:

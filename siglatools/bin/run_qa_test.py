@@ -178,18 +178,18 @@ class Comparison(NamedTuple):
     data_comparisons: List[ObjectComparison]
 
     def get_name(self) -> str:
-        "Return the name of the comparison with / replaced with |."
+        "Return the name of the comparison with `/` replaced with `|`."
         return self.name.replace("/", "|")
 
     def has_error(self) -> bool:
         "Does any of the group of ObjectCOmparison has a mismatch?"
         return any([comparison.has_error() for comparison in self.data_comparisons])
 
-    def get_gs_source(self):
+    def get_gs_source(self) -> str:
         "Get the GoogleSheet source."
         return f"Spreadsheet: {self.spreadsheet_title}, Sheet: {self.sheet_title}"
 
-    def get_filename(self):
+    def get_filename(self) -> str:
         "Get the file name."
         return f"tmp/{self.spreadsheet_title},{self.sheet_title},{self.get_name()}.txt"
 

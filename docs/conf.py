@@ -21,8 +21,6 @@
 import os
 import sys
 
-import sphinx_rtd_theme
-
 import siglatools
 
 sys.path.insert(0, os.path.abspath(".."))
@@ -41,7 +39,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
     "sphinx.ext.mathjax",
-    "m2r",
+    "m2r2",
 ]
 
 # Control napoleon
@@ -70,8 +68,8 @@ master_doc = "index"
 
 # General information about the project.
 project = u"SIGLA Tools"
-copyright = u'2020, To Huynh'
-author = u"To Huynh"
+copyright = u'2022, SIGLA'
+author = u"SIGLA"
 
 # The version info for the project you"re documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -106,16 +104,13 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {
-    "collapse_navigation": False,
-    "prev_next_buttons_location": "top",
-}
+html_theme_options = {}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -155,7 +150,7 @@ latex_elements = {
 latex_documents = [
     (master_doc, "siglatools.tex",
      u"SIGLA Tools Documentation",
-     u"To Huynh", "manual"),
+     u"SIGLA", "manual"),
 ]
 
 
@@ -183,3 +178,20 @@ texinfo_documents = [
      "One line description of project.",
      "Miscellaneous"),
 ]
+
+
+# -- Extra docstring configurations ------------------------------------
+def no_namedtuple_attrib_docstring(app, what, name, obj, options, lines):
+    is_namedtuple_docstring = len(lines) == 1 and lines[0].startswith(
+        "Alias for field number"
+    )
+    if is_namedtuple_docstring:
+        # We don't return, so we need to purge in-place
+        del lines[:]
+
+
+def setup(app):
+    app.connect(
+        "autodoc-process-docstring",
+        no_namedtuple_attrib_docstring,
+    )
