@@ -44,7 +44,6 @@ siglatools.bin.run\_sigla\_pipeline module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

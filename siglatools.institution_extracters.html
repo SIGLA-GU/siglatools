@@ -1,285 +1,360 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="siglatools.pipelines package" href="siglatools.pipelines.html" /><link rel="prev" title="siglatools.databases package" href="siglatools.databases.html" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>siglatools.institution_extracters package &mdash; SIGLA Tools 0.1.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="siglatools.pipelines package" href="siglatools.pipelines.html" />
-    <link rel="prev" title="siglatools.databases package" href="siglatools.databases.html" /> 
-</head>
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>siglatools.institution_extracters package - SIGLA Tools 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> SIGLA Tools
-          </a>
-              <div class="version">
-                0.1.0
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p><span class="caption-text">Contents:</span></p>
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">SIGLA Tools 0.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">SIGLA Tools 0.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#stable-release">Stable release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="siglatools.html">siglatools package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="siglatools.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="siglatools.bin.html">siglatools.bin package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">siglatools.institution_extracters package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="siglatools.html#module-siglatools">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">Package modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="siglatools.html">siglatools package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="siglatools.bin.html">siglatools.bin package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.databases.html">siglatools.databases package</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">siglatools.institution_extracters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.pipelines.html">siglatools.pipelines package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="siglatools.utils.html">siglatools.utils package</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#institutions">Institutions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#variables">Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#rights">Rights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#amendments">Amendments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="document_store_schema.html#body-of-laws">Body of Laws</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_data_pipeline.html#debugging-data-pipeline-logs">Debugging Data Pipeline Logs</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="load_spreadsheets.html">Run Data(subset) Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="load_spreadsheets.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_external_link_checker.html#external-links-reasons">External Links Reasons</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="get_next_uv_dates.html">Get next update and verify dates</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="get_next_uv_dates.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="run_qa_test.html">Run QA Test</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#command-line">Command line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#github-actions-for-collaborators-only">GitHub Actions (for collaborators+ only)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="run_qa_test.html#qa-test-artifact-zip-file">QA Test Artifact Zip File</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="document_store_schema.html">Document Store Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_data_pipeline.html">Run Data Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_spreadsheets.html">Run Data(subset) Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_external_link_checker.html">Run External Link Checker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_next_uv_dates.html">Get next update and verify dates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_qa_test.html">Run QA Test</a></li>
 <li class="toctree-l1"><a class="reference internal" href="spreadsheet_id_format.html">Spreadsheet Id Format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#get-started">Get Started!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#deploying">Deploying</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">SIGLA Tools</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">siglatools</a> &raquo;</li>
-          <li><a href="siglatools.html">siglatools package</a> &raquo;</li>
-      <li>siglatools.institution_extracters package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/siglatools.institution_extracters.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="siglatools.databases.html" class="btn btn-neutral float-left" title="siglatools.databases package" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="siglatools.pipelines.html" class="btn btn-neutral float-right" title="siglatools.pipelines package" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-  </div>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="siglatools-institution-extracters-package">
-<h1>siglatools.institution_extracters package<a class="headerlink" href="#siglatools-institution-extracters-package" title="Permalink to this headline">¶</a></h1>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="siglatools-institution-extracters-package">
+<h1>siglatools.institution_extracters package<a class="headerlink" href="#siglatools-institution-extracters-package" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="module-siglatools.institution_extracters.constants">
-<span id="siglatools-institution-extracters-constants-module"></span><h2>siglatools.institution_extracters.constants module<a class="headerlink" href="#module-siglatools.institution_extracters.constants" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">GoogleSheetsFormat</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
+<span id="siglatools-institution-extracters-constants-module"></span><h2>siglatools.institution_extracters.constants module<a class="headerlink" href="#module-siglatools.institution_extracters.constants" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsFormat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.constants.</span></span><span class="sig-name descname"><span class="pre">GoogleSheetsFormat</span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.composite_variable">
-<code class="sig-name descname">composite_variable</code><em class="property"> = 'composite-variable'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.composite_variable" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsFormat.composite_variable">
+<span class="sig-name descname"><span class="pre">composite_variable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'composite-variable'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.composite_variable" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable">
-<code class="sig-name descname">institution_and_composite_variable</code><em class="property"> = 'institution-and-composite-variable'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable">
+<span class="sig-name descname"><span class="pre">institution_and_composite_variable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'institution-and-composite-variable'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.institution_and_composite_variable" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.multiple_sigla_answer_variable">
-<code class="sig-name descname">multiple_sigla_answer_variable</code><em class="property"> = 'multiple-sigla-answer-variable'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.multiple_sigla_answer_variable" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsFormat.multiple_sigla_answer_variable">
+<span class="sig-name descname"><span class="pre">multiple_sigla_answer_variable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'multiple-sigla-answer-variable'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.multiple_sigla_answer_variable" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsFormat.standard_institution">
-<code class="sig-name descname">standard_institution</code><em class="property"> = 'standard-institution'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.standard_institution" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsFormat.standard_institution">
+<span class="sig-name descname"><span class="pre">standard_institution</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'standard-institution'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsFormat.standard_institution" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">GoogleSheetsInfoField</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsInfoField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsInfoField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.constants.</span></span><span class="sig-name descname"><span class="pre">GoogleSheetsInfoField</span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#GoogleSheetsInfoField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title">
-<code class="sig-name descname">sheet_title</code><em class="property"> = 'sheet_title'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title">
+<span class="sig-name descname"><span class="pre">sheet_title</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sheet_title'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.sheet_title" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title">
-<code class="sig-name descname">spreadsheet_title</code><em class="property"> = 'spreadsheet_title'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title">
+<span class="sig-name descname"><span class="pre">spreadsheet_title</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'spreadsheet_title'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.GoogleSheetsInfoField.spreadsheet_title" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="siglatools.institution_extracters.constants.MetaDataField">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.constants.</code><code class="sig-name descname">MetaDataField</code><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#MetaDataField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.constants.</span></span><span class="sig-name descname"><span class="pre">MetaDataField</span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/constants.html#MetaDataField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.data_type">
-<code class="sig-name descname">data_type</code><em class="property"> = 'data_type'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.data_type" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.data_type">
+<span class="sig-name descname"><span class="pre">data_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'data_type'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.data_type" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.date_of_next_uv_column">
-<code class="sig-name descname">date_of_next_uv_column</code><em class="property"> = 'date_of_next_uv_column'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.date_of_next_uv_column" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.date_of_next_uv_column">
+<span class="sig-name descname"><span class="pre">date_of_next_uv_column</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'date_of_next_uv_column'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.date_of_next_uv_column" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.end_column">
-<code class="sig-name descname">end_column</code><em class="property"> = 'end_column'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.end_column" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.end_column">
+<span class="sig-name descname"><span class="pre">end_column</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'end_column'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.end_column" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.end_row">
-<code class="sig-name descname">end_row</code><em class="property"> = 'end_row'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.end_row" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.end_row">
+<span class="sig-name descname"><span class="pre">end_row</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'end_row'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.end_row" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.format">
-<code class="sig-name descname">format</code><em class="property"> = 'format'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.format" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.format">
+<span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'format'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.format" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.start_column">
-<code class="sig-name descname">start_column</code><em class="property"> = 'start_column'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.start_column" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.start_column">
+<span class="sig-name descname"><span class="pre">start_column</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'start_column'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.start_column" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.start_row">
-<code class="sig-name descname">start_row</code><em class="property"> = 'start_row'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.start_row" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.start_row">
+<span class="sig-name descname"><span class="pre">start_row</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'start_row'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.start_row" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.variable_heading">
-<code class="sig-name descname">variable_heading</code><em class="property"> = 'variable_heading'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.variable_heading" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.variable_heading">
+<span class="sig-name descname"><span class="pre">variable_heading</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'variable_heading'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.variable_heading" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.constants.MetaDataField.variable_name">
-<code class="sig-name descname">variable_name</code><em class="property"> = 'variable_name'</em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.variable_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.constants.MetaDataField.variable_name">
+<span class="sig-name descname"><span class="pre">variable_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'variable_name'</span></em><a class="headerlink" href="#siglatools.institution_extracters.constants.MetaDataField.variable_name" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-siglatools.institution_extracters.exceptions">
-<span id="siglatools-institution-extracters-exceptions-module"></span><h2>siglatools.institution_extracters.exceptions module<a class="headerlink" href="#module-siglatools.institution_extracters.exceptions" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">IncompleteColumnRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#IncompleteColumnRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<span id="siglatools-institution-extracters-exceptions-module"></span><h2>siglatools.institution_extracters.exceptions module<a class="headerlink" href="#module-siglatools.institution_extracters.exceptions" title="Permalink to this heading">#</a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">IncompleteColumnRangeInA1Notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#IncompleteColumnRangeInA1Notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.IncompleteColumnRangeInA1Notation" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.InvalidDateRange">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidDateRange</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidDateRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidDateRange" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.InvalidDateRange">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidDateRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidDateRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidDateRange" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">InvalidRangeInA1Notation</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidRangeInA1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidRangeInA1Notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#InvalidRangeInA1Notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.InvalidRangeInA1Notation" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnableToAccessSpreadsheet</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToAccessSpreadsheet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnableToAccessSpreadsheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToAccessSpreadsheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToAccessSpreadsheet" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnableToCreateFormattedSheetData</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToCreateFormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnableToCreateFormattedSheetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnableToCreateFormattedSheetData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnableToCreateFormattedSheetData" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">
-<em class="property">exception </em><code class="sig-prename descclassname">siglatools.institution_extracters.exceptions.</code><code class="sig-name descname">UnrecognizedGoogleSheetsFormat</code><span class="sig-paren">(</span><em class="sig-param">info: siglatools.utils.exceptions.ErrorInfo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnrecognizedGoogleSheetsFormat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">siglatools.utils.exceptions.BaseError</span></code></a></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnrecognizedGoogleSheetsFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.ErrorInfo" title="siglatools.utils.exceptions.ErrorInfo"><span class="pre">ErrorInfo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/exceptions.html#UnrecognizedGoogleSheetsFormat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.exceptions.UnrecognizedGoogleSheetsFormat" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="siglatools.utils.html#siglatools.utils.exceptions.BaseError" title="siglatools.utils.exceptions.BaseError"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseError</span></code></a></p>
 </dd></dl>
 
 </section>
 <section id="module-siglatools.institution_extracters.google_sheets_institution_extracter">
-<span id="siglatools-institution-extracters-google-sheets-institution-extracter-module"></span><h2>siglatools.institution_extracters.google_sheets_institution_extracter module<a class="headerlink" href="#module-siglatools.institution_extracters.google_sheets_institution_extracter" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">A1Notation</code><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="Permalink to this definition">¶</a></dt>
+<span id="siglatools-institution-extracters-google-sheets-institution-extracter-module"></span><h2>siglatools.institution_extracters.google_sheets_institution_extracter module<a class="headerlink" href="#module-siglatools.institution_extracters.google_sheets_institution_extracter" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.google_sheets_institution_extracter.</span></span><span class="sig-name descname"><span class="pre">A1Notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>A1 notation refers to a group of cells within a bounding rectangle in a sheet.
 This doesn’t capture all possible A1 notations because start_row and end_row are required,
@@ -302,107 +377,101 @@ but they don’t have to be.</p>
 </dd>
 </dl>
 <p>Create new instance of A1Notation(sheet_id, sheet_title, start_row, end_row, start_column, end_column)</p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column">
-<code class="sig-name descname">end_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column">
+<span class="sig-name descname"><span class="pre">end_column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_column" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row">
-<code class="sig-name descname">end_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row">
+<span class="sig-name descname"><span class="pre">end_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.end_row" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="method">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">
-<code class="sig-name descname">raise_for_validity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation.raise_for_validity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">
+<span class="sig-name descname"><span class="pre">raise_for_validity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#A1Notation.raise_for_validity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity" title="Permalink to this definition">#</a></dt>
 <dd><p>Raise an error if the a1 notation is invalid.
 <a class="reference external" href="https://developers.google.com/sheets/api/guides/concepts#a1_notation">https://developers.google.com/sheets/api/guides/concepts#a1_notation</a></p>
 <p>For a description of an A1 notation, please view the A1Notation class atttributes.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id">
-<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id">
+<span class="sig-name descname"><span class="pre">sheet_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">
-<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title">
+<span class="sig-name descname"><span class="pre">sheet_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.sheet_title" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column">
-<code class="sig-name descname">start_column</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column">
+<span class="sig-name descname"><span class="pre">start_column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_column" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row">
-<code class="sig-name descname">start_row</code><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row">
+<span class="sig-name descname"><span class="pre">start_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.start_row" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.google_sheets_institution_extracter.</code><code class="sig-name descname">GoogleSheetsInstitutionExtracter</code><span class="sig-paren">(</span><em class="sig-param">credentials_path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.google_sheets_institution_extracter.</span></span><span class="sig-name descname"><span class="pre">GoogleSheetsInstitutionExtracter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">
-<code class="sig-name descname">get_spreadsheet_data</code><span class="sig-paren">(</span><em class="sig-param">spreadsheet_id: str</em><span class="sig-paren">)</span> &#x2192; List[siglatools.institution_extracters.utils.SheetData]<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">
+<span class="sig-name descname"><span class="pre">get_spreadsheet_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spreadsheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#siglatools.institution_extracters.utils.SheetData" title="siglatools.institution_extracters.utils.SheetData"><span class="pre">SheetData</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the spreadsheet data given a spreadsheet id.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>spreadsheet_id</strong> (<em>str</em>) – The id of the spreadsheet.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>spreadsheet_data</strong> – The spreadsheet data. Please the SheetData class to view its attributes.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[<a class="reference internal" href="#siglatools.institution_extracters.utils.SheetData" title="siglatools.institution_extracters.utils.SheetData">SheetData</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_ids">
-<code class="sig-name descname">get_spreadsheet_ids</code><span class="sig-paren">(</span><em class="sig-param">master_spreadsheet_id: str</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheet_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_ids" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_ids">
+<span class="sig-name descname"><span class="pre">get_spreadsheet_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master_spreadsheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.get_spreadsheet_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_ids" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the list of spreadsheet ids from a master spreadsheet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>master_spreadsheet_id</strong> (<em>str</em>) – The id of the master spreadsheet.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>spreadsheet_ids</strong> – The list of spreadsheet ids.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict">
-<code class="sig-name descname">google_sheets_format_to_function_dict</code><em class="property"> = {'composite-variable': &lt;function _get_composite_variable&gt;, 'institution-and-composite-variable': &lt;function _get_composite_variable&gt;, 'multiple-sigla-answer-variable': &lt;function _get_multilple_sigla_answer_variable&gt;, 'standard-institution': &lt;function _get_standard_institution&gt;}</em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict">
+<span class="sig-name descname"><span class="pre">google_sheets_format_to_function_dict</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'composite-variable':</span> <span class="pre">&lt;function</span> <span class="pre">_get_composite_variable&gt;,</span> <span class="pre">'institution-and-composite-variable':</span> <span class="pre">&lt;function</span> <span class="pre">_get_composite_variable&gt;,</span> <span class="pre">'multiple-sigla-answer-variable':</span> <span class="pre">&lt;function</span> <span class="pre">_get_multilple_sigla_answer_variable&gt;,</span> <span class="pre">'standard-institution':</span> <span class="pre">&lt;function</span> <span class="pre">_get_standard_institution&gt;}</span></em><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.google_sheets_format_to_function_dict" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">
-<em class="property">static </em><code class="sig-name descname">process_sheet_data</code><span class="sig-paren">(</span><em class="sig-param">sheet_data: siglatools.institution_extracters.utils.SheetData</em><span class="sig-paren">)</span> &#x2192; siglatools.institution_extracters.utils.FormattedSheetData<a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.process_sheet_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_sheet_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sheet_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#siglatools.institution_extracters.utils.SheetData" title="siglatools.institution_extracters.utils.SheetData"><span class="pre">SheetData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#siglatools.institution_extracters.utils.FormattedSheetData" title="siglatools.institution_extracters.utils.FormattedSheetData"><span class="pre">FormattedSheetData</span></a></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/google_sheets_institution_extracter.html#GoogleSheetsInstitutionExtracter.process_sheet_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data" title="Permalink to this definition">#</a></dt>
 <dd><p>Process a sheet to get its data in a format ready to consumed by DB.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sheet_data</strong> (<em>SheetData</em>) – The data of the sheet.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>formatted_sheet_data</strong> – The data in reqired format.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#siglatools.institution_extracters.utils.FormattedSheetData" title="siglatools.institution_extracters.utils.FormattedSheetData">FormattedSheetData</a></p>
 </dd>
 </dl>
@@ -412,10 +481,10 @@ but they don’t have to be.</p>
 
 </section>
 <section id="module-siglatools.institution_extracters.utils">
-<span id="siglatools-institution-extracters-utils-module"></span><h2>siglatools.institution_extracters.utils module<a class="headerlink" href="#module-siglatools.institution_extracters.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">FormattedSheetData</code><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#FormattedSheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData" title="Permalink to this definition">¶</a></dt>
+<span id="siglatools-institution-extracters-utils-module"></span><h2>siglatools.institution_extracters.utils module<a class="headerlink" href="#module-siglatools.institution_extracters.utils" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.utils.</span></span><span class="sig-name descname"><span class="pre">FormattedSheetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spreadsheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spreadsheet_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#FormattedSheetData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>The formatted data from a Google Sheet.</p>
 <dl class="simple">
@@ -436,47 +505,41 @@ but they don’t have to be.</p>
 </dd>
 </dl>
 <p>Create new instance of FormattedSheetData(spreadsheet_id, spreadsheet_title, sheet_id, sheet_title, meta_data, formatted_data)</p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.formatted_data">
-<code class="sig-name descname">formatted_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.formatted_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.formatted_data">
+<span class="sig-name descname"><span class="pre">formatted_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.formatted_data" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.meta_data">
-<code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.meta_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.meta_data">
+<span class="sig-name descname"><span class="pre">meta_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.meta_data" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_id">
-<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_id">
+<span class="sig-name descname"><span class="pre">sheet_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">
-<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.sheet_title">
+<span class="sig-name descname"><span class="pre">sheet_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.sheet_title" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id">
-<code class="sig-name descname">spreadsheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id">
+<span class="sig-name descname"><span class="pre">spreadsheet_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">
-<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title">
+<span class="sig-name descname"><span class="pre">spreadsheet_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.FormattedSheetData.spreadsheet_title" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="siglatools.institution_extracters.utils.SheetData">
-<em class="property">class </em><code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">SheetData</code><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#SheetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.utils.</span></span><span class="sig-name descname"><span class="pre">SheetData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spreadsheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spreadsheet_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_uv_dates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#SheetData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>The extracted data from a Google Sheet.</p>
 <dl class="simple">
@@ -499,99 +562,92 @@ but they don’t have to be.</p>
 </dd>
 </dl>
 <p>Create new instance of SheetData(spreadsheet_id, spreadsheet_title, sheet_id, sheet_title, meta_data, data, next_uv_dates)</p>
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.data">
-<code class="sig-name descname">data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.data" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.meta_data">
-<code class="sig-name descname">meta_data</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.meta_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.meta_data">
+<span class="sig-name descname"><span class="pre">meta_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.meta_data" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.next_uv_dates">
-<code class="sig-name descname">next_uv_dates</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.next_uv_dates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 6</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.next_uv_dates">
+<span class="sig-name descname"><span class="pre">next_uv_dates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.next_uv_dates" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.sheet_id">
-<code class="sig-name descname">sheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.sheet_id">
+<span class="sig-name descname"><span class="pre">sheet_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.sheet_title">
-<code class="sig-name descname">sheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.sheet_title">
+<span class="sig-name descname"><span class="pre">sheet_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.sheet_title" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.spreadsheet_id">
-<code class="sig-name descname">spreadsheet_id</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.spreadsheet_id">
+<span class="sig-name descname"><span class="pre">spreadsheet_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="siglatools.institution_extracters.utils.SheetData.spreadsheet_title">
-<code class="sig-name descname">spreadsheet_title</code><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.SheetData.spreadsheet_title">
+<span class="sig-name descname"><span class="pre">spreadsheet_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#siglatools.institution_extracters.utils.SheetData.spreadsheet_title" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="siglatools.institution_extracters.utils.convert_col_to_name">
-<code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">convert_col_to_name</code><span class="sig-paren">(</span><em class="sig-param">col: int</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_col_to_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_col_to_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.convert_col_to_name">
+<span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.utils.</span></span><span class="sig-name descname"><span class="pre">convert_col_to_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_col_to_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_col_to_name" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a zero indexed column cell reference to a string.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>col</strong> (<em>int</em>) – The cell column.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>col_str</strong> – The column style string.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="siglatools.institution_extracters.utils.convert_rowcol_to_A1_name">
-<code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">convert_rowcol_to_A1_name</code><span class="sig-paren">(</span><em class="sig-param">row: int</em>, <em class="sig-param">col: int</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_rowcol_to_A1_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_rowcol_to_A1_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.convert_rowcol_to_A1_name">
+<span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.utils.</span></span><span class="sig-name descname"><span class="pre">convert_rowcol_to_A1_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#convert_rowcol_to_A1_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.convert_rowcol_to_A1_name" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts row and col to an A1 name.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>row</strong> (<em>int</em>) – The row number.</p></li>
 <li><p><strong>col</strong> (<em>int</em>) – The column number.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>A1_cell</strong> – The A1 cell str.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="siglatools.institution_extracters.utils.create_institution_sub_category">
-<code class="sig-prename descclassname">siglatools.institution_extracters.utils.</code><code class="sig-name descname">create_institution_sub_category</code><span class="sig-paren">(</span><em class="sig-param">sub_categories: str</em><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#create_institution_sub_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.create_institution_sub_category" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="siglatools.institution_extracters.utils.create_institution_sub_category">
+<span class="sig-prename descclassname"><span class="pre">siglatools.institution_extracters.utils.</span></span><span class="sig-name descname"><span class="pre">create_institution_sub_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/siglatools/institution_extracters/utils.html#create_institution_sub_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#siglatools.institution_extracters.utils.create_institution_sub_category" title="Permalink to this definition">#</a></dt>
 <dd><p>Create a list of institution sub categories.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sub_categories</strong> (<em>str</em>) – The list of sub categories, separated by ;.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>sub_categories_list</strong> – The list of sub categories.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
 </dd>
 </dl>
@@ -599,36 +655,90 @@ but they don’t have to be.</p>
 
 </section>
 <section id="module-siglatools.institution_extracters">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-siglatools.institution_extracters" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-siglatools.institution_extracters" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
-
-           </div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="siglatools.pipelines.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">siglatools.pipelines package</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="siglatools.databases.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">siglatools.databases package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, SIGLA
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
           </div>
-          <footer>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">siglatools.institution_extracters package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-siglatools.institution_extracters.constants">siglatools.institution_extracters.constants module</a></li>
+<li><a class="reference internal" href="#module-siglatools.institution_extracters.exceptions">siglatools.institution_extracters.exceptions module</a></li>
+<li><a class="reference internal" href="#module-siglatools.institution_extracters.google_sheets_institution_extracter">siglatools.institution_extracters.google_sheets_institution_extracter module</a></li>
+<li><a class="reference internal" href="#module-siglatools.institution_extracters.utils">siglatools.institution_extracters.utils module</a></li>
+<li><a class="reference internal" href="#module-siglatools.institution_extracters">Module contents</a></li>
+</ul>
+</li>
+</ul>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2020, To Huynh.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+          </div>
         </div>
       </div>
-    </section>
+      
+      
+    </aside>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
 </html>
