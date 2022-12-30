@@ -14,9 +14,9 @@ jobs:
   load_spreadsheets:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8
       - name: Install Dependencies
@@ -39,8 +39,7 @@ jobs:
           run_qa_test  -gacp $HOME/secrets/google-api-credentials.json -ssi ${{ github.event.inputs.spreadsheet_ids }} -dbe ${{ github.event.inputs.db_env }} -sdbcu ${{ secrets.STAGING_DB_CONNECTION_URL }} -pdbcu ${{ secrets.PRODUCTION_DB_CONNECTION_URL }}
       - name: Upload QA Test Artifact
         if: ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: qa-test-artifact
           path: qa-test.zip
-  
