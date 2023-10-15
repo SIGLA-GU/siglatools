@@ -339,7 +339,7 @@ def main():
             raise InvalidWorkflowInputs(
                 ErrorInfo(
                     {
-                        "reason": "Incorrect database enviroment specification. Use 'staging' or 'production'."
+                        "reason": "Incorrect database environment specification. Use 'staging' or 'production'."
                     }
                 )
             )

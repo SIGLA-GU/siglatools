@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 from typing import Union, Dict
 
 
@@ -19,12 +18,9 @@ class BaseError(Exception):
         super().__init__(message)
         self.message = message
         self.info = info
-        sys.stderr.write(
-            f"{self.__class__.__name__}: {self.message} {str(self.info)}\n"
-        )
 
     def __str__(self):
-        return f"{self.message} {str(self.info)}"
+        return f"{self.__class__.__name__}: {self.message} {str(self.info)}"
 
     def __reduce__(self):
         return (self.__class__, self.message, self.info)

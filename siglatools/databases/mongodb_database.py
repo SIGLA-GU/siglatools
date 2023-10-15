@@ -73,6 +73,7 @@ class MongoDBDatabase:
             raise UnableToFindDocument(
                 ErrorInfo(
                     {
+                        InstitutionField.country: meta_data.get(InstitutionField.country),
                         GoogleSheetsInfoField.sheet_title: sheet_title,
                         DatabaseField.collection: db_collection.variables,
                         DatabaseField.primary_keys: str(variable),

@@ -24,3 +24,4 @@ class MetaDataField:
 class GoogleSheetsInfoField:
     spreadsheet_title = "spreadsheet_title"
     sheet_title = "sheet_title"
+    sheet_id = "sheet_id"

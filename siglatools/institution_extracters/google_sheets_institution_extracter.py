@@ -219,7 +219,7 @@ class A1Notation(NamedTuple):
         Raise an error if the a1 notation is invalid.
         https://developers.google.com/sheets/api/guides/concepts#a1_notation
 
-        For a description of an A1 notation, please view the A1Notation class atttributes.
+        For a description of an A1 notation, please view the A1Notation class attributes.
         """
 
         if int(self.start_row) > int(self.end_row):
@@ -227,6 +227,7 @@ class A1Notation(NamedTuple):
             raise exceptions.InvalidRangeInA1Notation(
                 ErrorInfo(
                     {
+                        GoogleSheetsInfoField.sheet_id: self.sheet_id,
                         GoogleSheetsInfoField.sheet_title: self.sheet_title,
                         MetaDataField.start_row: self.start_row,
                         MetaDataField.end_row: self.end_row,
@@ -240,6 +241,7 @@ class A1Notation(NamedTuple):
                 raise exceptions.InvalidRangeInA1Notation(
                     ErrorInfo(
                         {
+                            GoogleSheetsInfoField.sheet_id: self.sheet_id,
                             GoogleSheetsInfoField.sheet_title: self.sheet_title,
                             MetaDataField.start_column: self.start_column,
                             MetaDataField.end_column: self.end_column,
@@ -252,6 +254,7 @@ class A1Notation(NamedTuple):
                     raise exceptions.InvalidRangeInA1Notation(
                         ErrorInfo(
                             {
+                                GoogleSheetsInfoField.sheet_id: self.sheet_id,
                                 GoogleSheetsInfoField.sheet_title: self.sheet_title,
                                 MetaDataField.start_column: self.start_column,
                                 MetaDataField.end_column: self.end_column,
@@ -263,6 +266,7 @@ class A1Notation(NamedTuple):
             raise exceptions.IncompleteColumnRangeInA1Notation(
                 ErrorInfo(
                     {
+                        GoogleSheetsInfoField.sheet_id: self.sheet_id,
                         GoogleSheetsInfoField.sheet_title: self.sheet_title,
                         MetaDataField.start_column: self.start_column,
                         MetaDataField.end_column: self.end_column,
