@@ -275,7 +275,7 @@
 
 
 <div class="viewcode-block" id="GsInstitution"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.GsInstitution">[docs]</a><span class="k">class</span> <span class="nc">GsInstitution</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An institution from GoogleSheet.</span>
 
 <span class="sd">    Attributes:</span>
@@ -306,7 +306,7 @@
 
 
 <div class="viewcode-block" id="FieldComparison"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.FieldComparison">[docs]</a><span class="k">class</span> <span class="nc">FieldComparison</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A comparison of two values for a field.</span>
 
 <span class="sd">    Attributes:</span>
@@ -342,7 +342,7 @@
 
 
 <div class="viewcode-block" id="ObjectComparison"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.ObjectComparison">[docs]</a><span class="k">class</span> <span class="nc">ObjectComparison</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A group of FieldComparison.</span>
 
 <span class="sd">    Attributes:</span>
@@ -369,7 +369,7 @@
 
 
 <div class="viewcode-block" id="Comparison"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison">[docs]</a><span class="k">class</span> <span class="nc">Comparison</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A group of ObjectComparison.</span>
 
 <span class="sd">    Attributes:</span>
@@ -406,7 +406,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2">.txt&quot;</span></div>
 
 <div class="viewcode-block" id="Comparison.write"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_qa_test.Comparison.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write the mistmatch data_comparisons to a file.</span>
 
 <span class="sd">        Returns</span>
@@ -441,7 +441,7 @@
     <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gather institutions from the database.</span>
 
 <span class="sd">    Parameters</span>
@@ -471,7 +471,7 @@
     <span class="n">institution</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gather variables for a given institution from the database.</span>
 
 <span class="sd">    Parameters</span>
@@ -514,7 +514,7 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_group_db_institutions</span><span class="p">(</span><span class="n">db_institutions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group database institutions according to their unique key.</span>
 
 <span class="sd">    Parameters</span>
@@ -540,7 +540,7 @@
 <span class="k">def</span> <span class="nf">_gather_gs_institutions</span><span class="p">(</span>
     <span class="n">formatted_sheet_data</span><span class="p">:</span> <span class="n">FormattedSheetData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GsInstitution</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gather institutions from GoogleSheet.</span>
 
 <span class="sd">    Parameters</span>
@@ -589,7 +589,7 @@
 <span class="k">def</span> <span class="nf">_group_gs_institutions</span><span class="p">(</span>
     <span class="n">gs_institutions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GsInstitution</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group GoogleSheet institutions according to their unique key.</span>
 
 <span class="sd">    Parameters</span>
@@ -612,7 +612,7 @@
     <span class="n">gs_institution</span><span class="p">:</span> <span class="n">GsInstitution</span><span class="p">,</span>
     <span class="n">db_institutions_group</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comparison</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare GoogleSheet institution against its database institution.</span>
 
 <span class="sd">    Parameters</span>
@@ -824,7 +824,7 @@
     <span class="n">formatted_sheet_data</span><span class="p">:</span> <span class="n">FormattedSheetData</span><span class="p">,</span>
     <span class="n">db_connection_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Comparison</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare GoogleSheet composite variable data against its Database counterpart.</span>
 
 <span class="sd">    Parameters</span>
@@ -1003,7 +1003,7 @@
 <span class="k">def</span> <span class="nf">_write_extra_db_institutions</span><span class="p">(</span>
     <span class="n">db_institutions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">gs_institutions_group</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write extra database institutions doesn&#39;t have an institution in the GoogleSheet to a file.</span>
 
 <span class="sd">    Parameters</span>
@@ -1073,7 +1073,7 @@
     <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spreadsheet_ids_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run QA test</span>
 
 <span class="sd">    Parameters</span>

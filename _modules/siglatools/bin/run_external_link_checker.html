@@ -254,7 +254,7 @@
 
 
 <div class="viewcode-block" id="GoogleSheetCell"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.GoogleSheetCell">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheetCell</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A GoogleSheet cell.</span>
 
 <span class="sd">    Attributes:</span>
@@ -281,7 +281,7 @@
 
 
 <div class="viewcode-block" id="URLData"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.URLData">[docs]</a><span class="k">class</span> <span class="nc">URLData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The URL and its context.</span>
 
 <span class="sd">    Attributes:</span>
@@ -304,7 +304,7 @@
 
 
 <div class="viewcode-block" id="CheckedURL"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.run_external_link_checker.CheckedURL">[docs]</a><span class="k">class</span> <span class="nc">CheckedURL</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The status of an URL after checking.</span>
 
 <span class="sd">    Attributes:</span>
@@ -323,7 +323,7 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_extract_external_links</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect Task to extract external links from a sheet.</span>
 
 <span class="sd">    Parameters</span>
@@ -362,7 +362,7 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_unique_external_links</span><span class="p">(</span><span class="n">urls_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">URLData</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect Task to merge url data together by merging cells.</span>
 
 <span class="sd">    Parameters</span>
@@ -388,7 +388,7 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_check_external_link</span><span class="p">(</span><span class="n">url_data</span><span class="p">:</span> <span class="n">URLData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckedURL</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect Task to check the status of the URL.</span>
 
 <span class="sd">    Parameters</span>
@@ -450,7 +450,7 @@
     <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spreadsheet_ids_str</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run the the external link checker.</span>
 <span class="sd">    If a list of spreadsheet ids are provided, run the external link checker</span>
 <span class="sd">    against the list of spreadsheet ids, instead of the spreadsheet ids gathered</span>

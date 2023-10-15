@@ -250,7 +250,7 @@
 
 
 <div class="viewcode-block" id="NextUVDateData"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.get_next_uv_dates.NextUVDateData">[docs]</a><span class="k">class</span> <span class="nc">NextUVDateData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A next update and verify date and its context</span>
 
 <span class="sd">    Attributes:</span>
@@ -275,7 +275,7 @@
 
 
 <div class="viewcode-block" id="NextUVDateStatus"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.get_next_uv_dates.NextUVDateStatus">[docs]</a><span class="k">class</span> <span class="nc">NextUVDateStatus</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Possible status of a next uv date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -285,7 +285,7 @@
 
 
 <div class="viewcode-block" id="CheckedNextUVDate"><a class="viewcode-back" href="../../../siglatools.bin.html#siglatools.bin.get_next_uv_dates.CheckedNextUVDate">[docs]</a><span class="k">class</span> <span class="nc">CheckedNextUVDate</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The status of a next uv date after checking.</span>
 
 <span class="sd">    Attributes:</span>
@@ -300,7 +300,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the date range as date objects.</span>
 
 <span class="sd">    Parameters</span>
@@ -326,7 +326,7 @@
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">_extract_next_uv_dates</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NextUVDateData</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect task to gather next uv dates.</span>
 
 <span class="sd">    Parameters</span>
@@ -359,7 +359,7 @@
 <span class="k">def</span> <span class="nf">_check_next_uv_date</span><span class="p">(</span>
     <span class="n">next_uv_date_data</span><span class="p">:</span> <span class="n">NextUVDateData</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckedNextUVDate</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prefect task to check if the next uv date falls within the given start_date and end_date.</span>
 
 <span class="sd">    Parameters</span>
@@ -394,7 +394,7 @@
     <span class="n">start_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
     <span class="n">end_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get next update and verify dates or uv dates that falls within the date range.</span>
 
 <span class="sd">    Parameters</span>

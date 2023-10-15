@@ -254,7 +254,7 @@
 <span class="k">def</span> <span class="nf">_get_composite_variable</span><span class="p">(</span>
     <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the composite variable from a SheetData.</span>
 
 <span class="sd">    Parameters</span>
@@ -289,7 +289,7 @@
 <span class="k">def</span> <span class="nf">_get_multilple_sigla_answer_variable</span><span class="p">(</span>
     <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the list of institutions and their variables from a sheet.</span>
 
 <span class="sd">    Parameters</span>
@@ -339,7 +339,7 @@
 <span class="k">def</span> <span class="nf">_get_standard_institution</span><span class="p">(</span>
     <span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]]]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the list of institutions and their variables from a sheet.</span>
 
 <span class="sd">    Parameters</span>
@@ -399,7 +399,7 @@
 
 
 <div class="viewcode-block" id="A1Notation"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation">[docs]</a><span class="k">class</span> <span class="nc">A1Notation</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A1 notation refers to a group of cells within a bounding rectangle in a sheet.</span>
 <span class="sd">    This doesn&#39;t capture all possible A1 notations because start_row and end_row are required,</span>
 <span class="sd">    but they don&#39;t have to be.</span>
@@ -427,7 +427,7 @@
     <span class="n">end_column</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="A1Notation.raise_for_validity"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.A1Notation.raise_for_validity">[docs]</a>    <span class="k">def</span> <span class="nf">raise_for_validity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Raise an error if the a1 notation is invalid.</span>
 <span class="sd">        https://developers.google.com/sheets/api/guides/concepts#a1_notation</span>
 
@@ -483,7 +483,7 @@
             <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns str representation of the a1 notation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -521,7 +521,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_spreadsheet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spreadsheet from a spreadsheet_id</span>
 
 <span class="sd">        Parameters</span>
@@ -539,14 +539,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spreadsheetId</span><span class="o">=</span><span class="n">spreadsheet_id</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_spreadsheet_tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the title of a spreadsheet&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the title of a spreadsheet&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">spreadsheet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_meta_data_a1_notations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">spreadsheet</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">A1Notation</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an A1Notation for each sheet from its first two rows of meta data</span>
 
 <span class="sd">        Parameters</span>
@@ -678,7 +678,7 @@
         <span class="k">return</span> <span class="n">next_uv_date_data</span>
 
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.get_spreadsheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_spreadsheet_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SheetData</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the spreadsheet data given a spreadsheet id.</span>
 
 <span class="sd">        Parameters</span>
@@ -757,7 +757,7 @@
         <span class="p">]</span></div>
 
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.get_spreadsheet_ids"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.get_spreadsheet_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_spreadsheet_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master_spreadsheet_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of spreadsheet ids from a master spreadsheet.</span>
 
 <span class="sd">        Parameters</span>
@@ -783,7 +783,7 @@
 
 <div class="viewcode-block" id="GoogleSheetsInstitutionExtracter.process_sheet_data"><a class="viewcode-back" href="../../../siglatools.institution_extracters.html#siglatools.institution_extracters.google_sheets_institution_extracter.GoogleSheetsInstitutionExtracter.process_sheet_data">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">process_sheet_data</span><span class="p">(</span><span class="n">sheet_data</span><span class="p">:</span> <span class="n">SheetData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedSheetData</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process a sheet to get its data in a format ready to consumed by DB.</span>
 
 <span class="sd">        Parameters</span>
