@@ -7,8 +7,13 @@ on:
         description: Main Spreadsheet Id
         required: true
       db_env:
-        description: Database Environment (staging or production)
+        description: Database Environment
         required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
   run_sigla_pipeline:

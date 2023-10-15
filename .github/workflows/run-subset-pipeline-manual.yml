@@ -7,8 +7,13 @@ on:
         description: Spreadsheet Ids (delimited by comma)
         required: true
       db_env:
-        description: Database Environment (staging or production)
+        description: Database Environment
         required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
   load_spreadsheets:
