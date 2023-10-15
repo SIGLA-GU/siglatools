@@ -431,7 +431,7 @@
 <span class="sd">        Raise an error if the a1 notation is invalid.</span>
 <span class="sd">        https://developers.google.com/sheets/api/guides/concepts#a1_notation</span>
 
-<span class="sd">        For a description of an A1 notation, please view the A1Notation class atttributes.</span>
+<span class="sd">        For a description of an A1 notation, please view the A1Notation class attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="p">):</span>
@@ -439,6 +439,7 @@
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
                 <span class="n">ErrorInfo</span><span class="p">(</span>
                     <span class="p">{</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                         <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                         <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="p">,</span>
                         <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_row</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="p">,</span>
@@ -452,6 +453,7 @@
                 <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
                     <span class="n">ErrorInfo</span><span class="p">(</span>
                         <span class="p">{</span>
+                            <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                             <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                             <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
                             <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
@@ -464,6 +466,7 @@
                     <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidRangeInA1Notation</span><span class="p">(</span>
                         <span class="n">ErrorInfo</span><span class="p">(</span>
                             <span class="p">{</span>
+                                <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                                 <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                                 <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
                                 <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
@@ -475,6 +478,7 @@
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">IncompleteColumnRangeInA1Notation</span><span class="p">(</span>
                 <span class="n">ErrorInfo</span><span class="p">(</span>
                     <span class="p">{</span>
+                        <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_id</span><span class="p">,</span>
                         <span class="n">GoogleSheetsInfoField</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_title</span><span class="p">,</span>
                         <span class="n">MetaDataField</span><span class="o">.</span><span class="n">start_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_column</span><span class="p">,</span>
                         <span class="n">MetaDataField</span><span class="o">.</span><span class="n">end_column</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_column</span><span class="p">,</span>
