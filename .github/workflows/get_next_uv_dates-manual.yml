@@ -14,9 +14,9 @@ jobs:
   get_next_uv_dates:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.8
       - name: Install Dependencies
@@ -31,7 +31,7 @@ jobs:
         run: |
           get_next_uv_dates -msi ${{ secrets.PRODUCTION_MASTER_SPREADSHEET_ID }} -gacp $HOME/secrets/google-api-credentials.json -sd ${{ github.event.inputs.start_date }} -ed ${{ github.event.inputs.end_date }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: get-next-uv-dates-artifact
           path: next_uv_dates.csv
