@@ -52,7 +52,7 @@ requirements = [
     "dask[bag]==2022.7.1",
     "distributed==2022.7.1",
     "prefect==2.9.0",
-    "requests==2.28.1",
+    "requests==2.32.2",
     "urllib3==1.26.11",
 ]
 
