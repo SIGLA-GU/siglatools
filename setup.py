@@ -48,7 +48,7 @@ requirements = [
     "google-api-python-client==2.54.0",
     "google-auth==2.9.1",
     "pymongo[tls]==4.2.0",
-    "dnspython==2.2.1",
+    "dnspython==2.6.1",
     "dask[bag]==2022.7.1",
     "distributed==2022.7.1",
     "prefect==2.9.0",
