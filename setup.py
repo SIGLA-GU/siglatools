@@ -51,7 +51,7 @@ requirements = [
     "dnspython==2.2.1",
     "dask[bag]==2022.7.1",
     "distributed==2022.7.1",
-    "prefect==2.9.0",
+    "prefect==2.16.5",
     "requests==2.28.1",
     "urllib3==1.26.11",
 ]
