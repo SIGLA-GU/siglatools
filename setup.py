@@ -53,7 +53,7 @@ requirements = [
     "distributed==2022.7.1",
     "prefect==1.2.4",
     "requests==2.28.1",
-    "urllib3==1.26.11",
+    "urllib3==1.26.19",
 ]
 
 extra_requirements = {
